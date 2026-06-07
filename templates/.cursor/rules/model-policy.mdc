@@ -1,0 +1,37 @@
+---
+description: Model + tool selection policy for agentic work (planning vs execution, parallelism, subagents)
+alwaysApply: true
+---
+
+# Model & tool policy
+
+A small, reusable policy so model/tool choice is a default, not a per-task improvisation.
+
+## Match the model to the work
+
+| Work type | Model | Reasoning |
+|---|---|---|
+| Planning, architecture, expanding a phase into gated units, design trade-offs | strongest available | high |
+| Executing a well-specified plan unit | fast/mid model | medium |
+| Mechanical edits (rename, move, formatting, doc sync) | fast model | low |
+| Cheap classification / lightweight in-app helpers | smallest model | low |
+
+## Planning is a reviewed deliverable, not a side effect
+
+When expanding a phase: write the plan into `plans/<phase>/` with entry deps + verification gates **and stop**. A human reviews/approves before any execution agent builds. Don't let a planning run drift into implementation.
+
+## Parallelism
+
+- Parallelize **only independent** units (neither's entry dependency includes the other).
+- Anything with a chain dependency runs **serially**: build → verify gate → update `docs/status.md` + landing pad → PR → next.
+- Prefer one deliberate action + verification over speculative parallel edits to the same files.
+
+## Subagents
+
+- Use a specialized subagent with restricted tools for a scoped job (e.g. read-only `code-review`).
+- Keep subagents aligned with `AGENTS.md`; a stale subagent is worse than none.
+- Give a subagent the full context it needs — it doesn't see the parent conversation.
+
+## Gates must be phone-checkable
+
+Every plan unit's gate item is tagged `[CI]` / `[ARTIFACT]` / `[MANUAL]`. Favor `[CI]`. See `plans/README.md`.
