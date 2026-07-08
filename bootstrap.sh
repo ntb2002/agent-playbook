@@ -16,6 +16,7 @@ fi
 
 mkdir -p "$TARGET"
 cp -R "$PLAYBOOK_DIR/templates/." "$TARGET/"
+mv "$TARGET/gitignore" "$TARGET/.gitignore"
 
 # Portable in-place sed (GNU vs BSD/macOS).
 sed_inplace() { if sed --version >/dev/null 2>&1; then sed -i "$@"; else sed -i '' "$@"; fi; }
@@ -29,7 +30,7 @@ done < <(find "$TARGET" -type f \( -name '*.md' -o -name '*.mdc' \) -print0)
 chmod +x "$TARGET/.githooks/pre-commit" "$TARGET/scripts/hooks/"*.sh "$TARGET/.cursor/hooks/"*.sh 2>/dev/null || true
 
 cd "$TARGET"
-git init -q
+git init -q -b main
 git config core.hooksPath .githooks
 
 cat <<EOF

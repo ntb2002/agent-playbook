@@ -4,8 +4,8 @@ Run through this once when a project graduates to "can break." Skip layers a pro
 
 ## Local (per clone / per machine)
 
-- [ ] `git config core.hooksPath .githooks` — enable the pre-commit hook (secret-scan + lint/test).
-- [ ] Confirm the hook fires: a commit with a fake `sk-ant-…` string in a staged file should be blocked.
+- [ ] `git config core.hooksPath .githooks` — enable the pre-commit hook (secret-scan + lint/test). Bootstrap sets this automatically; cloud VMs use `.cursor/environment.json`.
+- [ ] Confirm the hook fires: a commit with a fake `sk-ant-…` or `sk-proj-…` string in a staged file should be blocked. If `gitleaks` is installed locally, the hook uses it automatically.
 
 ## GitHub (once per repo)
 
@@ -17,7 +17,7 @@ Run through this once when a project graduates to "can break." Skip layers a pro
 
 ## Cloud agents (Cursor / Claude Code)
 
-- [ ] Add `git config core.hooksPath .githooks` to the environment/setup script so fresh VMs enable the hook.
+- [ ] `.cursor/environment.json` runs `git config core.hooksPath .githooks` on install — fresh VMs enable the hook automatically. Add stack-specific install steps there as the project matures.
 - [ ] Confirm the agent can `gh pr create` (auth available in the environment).
 
 ## Slack + GitHub mobile orchestration

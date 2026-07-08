@@ -1,15 +1,20 @@
 # agent-playbook
 
-Portfolio-wide standard for building software with AI coding agents (Cursor, Claude Code, cloud agents), optimized for a solo builder orchestrating multiple agents and reviewing from a phone.
+Portfolio-wide standard for building software with AI coding agents (Cursor, Claude Code, cloud agents), optimized for a solo builder orchestrating multiple agents and reviewing on the go.
 
 ## Contents
 
-| Path | What |
-|---|---|
-| [`PLAYBOOK.md`](PLAYBOOK.md) | The doctrine — the seven principles, automation primitives, orchestration model. **Read this first.** |
-| [`bootstrap.sh`](bootstrap.sh) | Scaffold a new project from the templates. |
-| [`templates/`](templates/) | Copy-ready files: context docs, plans skeleton, CI, hooks, rules, commands, subagent, PR template. |
-| `templates/SETUP.md` | Per-project setup checklist (branch protection, Slack/GitHub mobile, cloud-agent bootstrap). |
+
+| Path                           | What                                                                                                  |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `[PLAYBOOK.md](PLAYBOOK.md)`   | The doctrine — the seven principles, automation primitives, orchestration model. **Read this first.** |
+| `[bootstrap.sh](bootstrap.sh)` | Scaffold a new project from the templates.                                                            |
+| `[sync.sh](sync.sh)`           | Push ritual-layer updates (skills, subagent, model policy, guard hooks) into an existing venture repo. |
+| `[templates/](templates/)`     | Copy-ready files: context docs, plans skeleton, CI, hooks, rules, skills, subagent, PR template.      |
+| `templates/SETUP.md`           | Per-project setup checklist (branch protection, Slack/GitHub mobile, cloud-agent bootstrap).          |
+
+
+
 
 ## Quick start
 
@@ -24,16 +29,18 @@ git config core.hooksPath .githooks   # enable the pre-commit hook
 
 The bootstrap copies the templates, replaces `{{PLACEHOLDERS}}`, and prints which maturity layer to enable next.
 
-## Workflow commands & subagents
+## Workflow skills & subagents
 
-The rituals are **slash commands** — markdown files in `.claude/commands/` (the `templates/.claude/commands/` copies). Each file is a saved prompt; the YAML `description`/`argument-hint` at the top tells you what it does and what to pass. **To see them all, just list that folder** — the files *are* the menu. Run one in Claude Code by typing `/<name>`; in Cursor, open the command file and run it as a prompt (or keep a Cursor `.cursor/commands/` mirror).
+The rituals are **Agent Skills** — `SKILL.md` files in `.agents/skills/<name>/` (the `templates/.agents/skills/` copies). Each skill is a saved prompt with `disable-model-invocation: true`, so it runs only when you explicitly type `/<name>`. **To see them all, list** `.agents/skills/` — the folders *are* the menu. Type `/<name>` in Cursor or Claude Code; both tools discover skills from `.agents/skills/` natively (Claude Code also follows the `.claude/skills` symlink).
 
-| Command | When | What it does |
-|---|---|---|
-| `/plan-phase <phase>` | A phase goes active | Strong model expands the phase into gated, session-sized units under `plans/<phase>/` and **stops** — writes the plan, builds nothing. You review/approve. |
-| `/start-unit <unit-path>` | Begin one unit | Loads context + conventions, restates the unit's gate as "definition of done," implements only that unit. No commit yet. |
-| `/close-unit <unit-path>` | Unit's gate is met | Verifies each gate item with evidence, updates `docs/status.md` + AGENTS landing pad, then branches → commits → pushes → opens the PR. Stops at the open PR (you merge). |
-| `/context-sync` | After any session | Reconciles the docs with what actually changed (status, landing pad, conventions, decisions). No feature code. |
+
+| Skill                     | When                | What it does                                                                                                                                                             |
+| ------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/plan-phase <phase>`     | A phase goes active | Strong model expands the phase into gated, session-sized units under `plans/<phase>/` and **stops** — writes the plan, builds nothing. You review/approve.               |
+| `/start-unit <unit-path>` | Begin one unit      | Loads context + conventions, restates the unit's gate as "definition of done," implements only that unit. No commit yet.                                                 |
+| `/close-unit <unit-path>` | Unit's gate is met  | Verifies each gate item with evidence, updates `docs/status.md` + AGENTS landing pad, then branches → commits → pushes → opens the PR. Stops at the open PR (you merge). |
+| `/context-sync`           | After any session   | Reconciles the docs with what actually changed (status, landing pad, conventions, decisions). No feature code.                                                           |
+
 
 **Subagent:** `.claude/agents/code-review.md` — a read-only reviewer (Sonnet) that checks a diff against the project's actual conventions and the unit's gate, then returns BLOCK / APPROVE-WITH-FIXES / APPROVE. Never edits or commits. Invoke before opening a PR (Claude Code subagent, or Cursor's `code-review` Task).
 

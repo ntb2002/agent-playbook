@@ -1,5 +1,7 @@
 ---
+name: context-sync
 description: Reconcile the docs with reality after a work session
+disable-model-invocation: true
 allowed-tools: Read, Edit, Bash(git status:*), Bash(git diff:*), Bash(git log:*)
 ---
 

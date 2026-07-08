@@ -1,6 +1,7 @@
 ---
+name: close-unit
 description: Verify a plan unit's gate, sync docs, and open the PR
-argument-hint: <plan unit path, e.g. plans/phase-2/unit-1.md>
+disable-model-invocation: true
 allowed-tools: Read, Edit, Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git checkout:*), Bash(git commit:*), Bash(git push:*), Bash(gh pr create:*)
 ---
 

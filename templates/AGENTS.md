@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} — Agent Constitution
 
-> **For all AI coding agents** (Cursor, Claude Code, Aider, Codex). Read this first. Single source of truth for **conventions**. `.claude/CLAUDE.md` is a thin pointer here.
+> **For all AI coding agents** (Cursor, Claude Code, Aider, Codex). Read this first. Single source of truth for **conventions**. `CLAUDE.md` imports this file via `@AGENTS.md`.
 >
 > Context is split by volatility:
 > | Doc | Holds | Changes |
@@ -73,7 +73,7 @@ Active-phase detail + gates: `plans/`. History: `docs/status.md`.
 - **When you finish a unit:** verify its gate, update `docs/status.md` + the landing pad, push the branch and open the PR (don't merge — that's the human gate).
 - **Plans are in-repo** (`plans/`), not machine-local. Tool plan modes are ephemeral scratch.
 - **One fact, one home.** Link to paths + line numbers; never paste full files into prompts.
-- **Automation:** model/tool policy in `.cursor/rules/model-policy.mdc`; rituals in `.claude/commands/`; guard via `.githooks/pre-commit` (enable with `git config core.hooksPath .githooks`) + `.cursor/hooks.json`; subagents in `.claude/agents/`.
+- **Automation:** model/tool policy in `.cursor/rules/model-policy.mdc`; rituals in `.agents/skills/`; guard via `.githooks/pre-commit` (enable with `git config core.hooksPath .githooks`) + `.cursor/hooks.json`; subagents in `.claude/agents/`.
 
 ## Quick reference
 

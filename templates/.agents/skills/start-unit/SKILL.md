@@ -1,6 +1,7 @@
 ---
+name: start-unit
 description: Load context and begin a single plan unit
-argument-hint: <plan unit path, e.g. plans/phase-2/unit-1.md>
+disable-model-invocation: true
 ---
 
 # /start-unit $ARGUMENTS

@@ -68,9 +68,11 @@ A unit is done only when every gate item is checked with evidence attached to th
 ### 5. One model/tool policy, not per-task improvisation
 
 - **Planning / architecture / expensive-to-reverse decisions** → strongest model, high reasoning.
-- **Executing a well-specified unit** → fast/mid model.
+- **Ambiguous or cross-cutting execution** (schema, auth, multi-system refactors) and **gnarly debugging** → strongest model too — decision quality during execution matters more than spec quality there.
+- **Executing a well-specified unit** → fast/mid model. The spec quality sets the model floor: a tight plan unit is what makes cheap execution safe (this is the economic function of `/plan-phase` — one strong-model plan amortized across many cheap-model units).
 - **Mechanical edits** → fast model.
 - **Cheap classification / in-session helpers** → smallest model.
+- **Escalate on first failure:** if a cheap model whiffs a unit once, hand it to the strong model — don't re-prompt the same tier. Two failed cheap runs plus review time cost more than one strong run.
 - **Parallelize only independent units** (neither's dependency includes the other). Dependent units run serially: build → verify gate → update status + landing pad → PR → next.
 
 ### 6. `main` is sacred; everything flows through a reviewed, CI-green PR
@@ -79,7 +81,7 @@ One plan unit = one branch = one PR. Never commit to `main` (it's what deploys).
 
 ### 7. One source of truth across tools
 
-`AGENTS.md` is the single source of truth for conventions. `.claude/CLAUDE.md` is a thin pointer to it so Claude Code and Cursor never drift. Don't keep agent-private state in one tool's config that another can't see. **One fact, one home.**
+`AGENTS.md` is the single source of truth for conventions. Cursor reads it natively; Claude Code imports it via `CLAUDE.md` (`@AGENTS.md` as the first line). Don't keep agent-private state in one tool's config that another can't see. **One fact, one home.**
 
 ---
 
@@ -87,12 +89,13 @@ One plan unit = one branch = one PR. Never commit to `main` (it's what deploys).
 
 | Primitive | What it is | Use for |
 |---|---|---|
-| **Rules / memory** | Always-on context (`AGENTS.md`, `.cursor/rules/*.mdc`, `.claude/CLAUDE.md`) | Conventions every agent must always follow |
-| **Commands** | Parameterized, repeatable prompts (`.claude/commands/*`) | Rituals: `/context-sync`, `/plan-phase`, `/start-unit`, `/close-unit` |
+| **Rules / memory** | Always-on context (`AGENTS.md`, `.cursor/rules/*.mdc`, `CLAUDE.md` with `@AGENTS.md`) | Conventions every agent must always follow |
+| **Skills** | Parameterized, repeatable prompts (`.agents/skills/*/SKILL.md`) | Rituals: `/context-sync`, `/plan-phase`, `/start-unit`, `/close-unit` |
 | **Subagents** | Specialized workers with restricted tools (`.claude/agents/*`, Cursor Task) | Scoped jobs, e.g. read-only `code-review` |
 | **Hooks** | Deterministic shell on lifecycle events (`.githooks/`, `.cursor/hooks.json`) | Guarantees: secret-scan, lint/test on commit |
+| **MCP** | Project-scoped tool servers (`.cursor/mcp.json`) | External integrations (DB, deploy, monitoring) — same in-repo, one-source-of-truth principle |
 
-Rule of thumb: if you'd repeat an instruction in every prompt, make it a **rule**. If it's a multi-step ritual, make it a **command**. If it needs a guarantee, make it a **hook**. If it's a specialized recurring job, make it a **subagent**. A stale automation is worse than none — refresh or delete.
+Rule of thumb: if you'd repeat an instruction in every prompt, make it a **rule**. If it's a multi-step ritual, make it a **skill**. If it needs a guarantee, make it a **hook**. If it's a specialized recurring job, make it a **subagent**. If it's an external tool integration, wire it via **MCP**. A stale automation is worse than none — refresh or delete.
 
 ---
 
@@ -112,7 +115,7 @@ Rule of thumb: if you'd repeat an instruction in every prompt, make it a **rule*
 - **Slack** — notifications (PR opened, CI pass/fail) + launching cloud agents.
 - **GitHub mobile** — the review surface: diff, CI check, gate checklist, merge.
 - **Laptop / Cursor** — interactive work; cloud agents/worktrees for parallel independent units.
-- **Claude Code** — same git flow; reads `CLAUDE.md` → `AGENTS.md`.
+- **Claude Code** — same git flow; `CLAUDE.md` imports `AGENTS.md` via `@AGENTS.md`.
 
 Per-project setup checklist lives in `templates/SETUP.md`.
 

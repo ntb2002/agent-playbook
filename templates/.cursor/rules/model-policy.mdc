@@ -12,9 +12,17 @@ A small, reusable policy so model/tool choice is a default, not a per-task impro
 | Work type | Model | Reasoning |
 |---|---|---|
 | Planning, architecture, expanding a phase into gated units, design trade-offs | strongest available | high |
+| Executing an ambiguous or cross-cutting unit (schema, auth, multi-system refactor) | strongest available | high |
+| Debugging anything gnarly (cheap-model attempts have failed or the bug spans systems) | strongest available | high |
 | Executing a well-specified plan unit | fast/mid model | medium |
 | Mechanical edits (rename, move, formatting, doc sync) | fast model | low |
 | Cheap classification / lightweight in-app helpers | smallest model | low |
+
+The spec quality sets the model floor: a tight unit spec with a clear gate makes cheap execution safe; an underdetermined unit means decisions get made during execution, so use the strong model even though it's "just execution." If the reverse cost is high (a `DECISIONS.md`-worthy call), the model cost is noise.
+
+## Escalate on first failure
+
+If a fast/mid model whiffs a unit once, hand it to the strongest model — don't re-prompt the same tier. The second cheap attempt has worse odds than the first (it's now working around its own mess, or the spec was underdetermined), and two failed cheap runs plus review time cost more than one strong run.
 
 ## Planning is a reviewed deliverable, not a side effect
 

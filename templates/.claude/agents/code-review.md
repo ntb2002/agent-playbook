@@ -6,7 +6,9 @@ tools:
   - Read
   - Grep
   - Glob
-  - Bash
+  - Bash(git status:*)
+  - Bash(git diff:*)
+  - Bash(git log:*)
 ---
 
 # Code review agent

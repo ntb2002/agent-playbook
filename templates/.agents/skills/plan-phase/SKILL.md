@@ -1,6 +1,7 @@
 ---
+name: plan-phase
 description: Expand a phase into gated, session-sized plan units (write the plan, do NOT build)
-argument-hint: <phase, e.g. "phase-2">
+disable-model-invocation: true
 ---
 
 # /plan-phase $ARGUMENTS
