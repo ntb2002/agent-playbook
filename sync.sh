@@ -30,6 +30,20 @@ cp "$T/scripts/hooks/secret-scan.sh" "$TARGET/scripts/hooks/"
 chmod +x "$TARGET/.githooks/pre-commit" "$TARGET/.cursor/hooks/commit-guard.sh" \
          "$TARGET/scripts/hooks/secret-scan.sh"
 
+# pre-commit requires project-check.sh; seed the template stub if the repo
+# doesn't have one (never overwrite — it's customized per project).
+if [ ! -f "$TARGET/scripts/hooks/project-check.sh" ]; then
+  cp "$T/scripts/hooks/project-check.sh" "$TARGET/scripts/hooks/"
+  chmod +x "$TARGET/scripts/hooks/project-check.sh"
+  echo "NOTE: seeded scripts/hooks/project-check.sh from the template — customize it for this stack."
+fi
+
+# Drop legacy copies of the rituals from the pre-skills era (now in .agents/skills/).
+for cmd in plan-phase start-unit close-unit context-sync; do
+  rm -f "$TARGET/.claude/commands/$cmd.md"
+done
+rmdir "$TARGET/.claude/commands" 2>/dev/null || true
+
 echo "Synced ritual layer into $TARGET:"
 git -C "$TARGET" status --short -- .agents .claude .cursor .githooks scripts/hooks/secret-scan.sh
 echo
