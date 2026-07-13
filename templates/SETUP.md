@@ -27,6 +27,34 @@ Run through this once when a project graduates to "can break." Skip layers a pro
 - [ ] (If using Cursor cloud agents from Slack) connect the Cursor Slack integration so you can launch agents by message.
 - [ ] Sanity check the loop: launch a trivial agent task → PR opens → Slack pings → review + merge from phone.
 
+## iOS / Apple projects (Xcode 27+)
+
+Once per machine:
+
+- [ ] Select Xcode 27 under **Xcode → Settings → Locations → Command Line Tools** (older toolchains lack the `agent` tool).
+- [ ] Export Apple's seven agent skills and install them where both tools read them:
+
+  ```bash
+  xcrun agent skills export --output-dir ~/xcode-skills   # absolute path required
+  cp -R ~/xcode-skills/* ~/.claude/skills/                # Claude Code native; Cursor reads it for compatibility
+  ```
+
+- [ ] **Xcode → Settings → Intelligence:** turn on "Allow external agents to use Xcode tools."
+- [ ] Register the Xcode MCP server in Claude Code: `claude mcp add --transport stdio xcode -- xcrun mcpbridge`
+
+Per iOS repo:
+
+- [ ] Commit a project-scoped `.cursor/mcp.json` so Cursor gets the same tools:
+
+  ```json
+  { "mcpServers": { "xcode": { "command": "xcrun", "args": ["mcpbridge"] } } }
+  ```
+
+- [ ] Know the constraints: **Xcode must be running with the project open** for `mcpbridge` to connect, and it's **local-only** — cloud agents can't use it, so it backs `[ARTIFACT]` evidence, not `[CI]`.
+- [ ] Upgrade gates accordingly: the agent can now build, run tests, drive the simulator, and screenshot it — prefer `[ARTIFACT]` (agent-attached simulator screenshot) over `[MANUAL]` in plan units.
+- [ ] Portability rule for Apple's skills: the five knowledge skills (`swiftui-specialist`, `swiftui-whats-new-27`, `test-modernizer`, `uikit-app-modernization`, `c-bounds-safety`) work in any tool; `device-interaction` and `audit-xcode-security-settings` need Xcode's own tools — use those from inside Xcode's agent.
+- [ ] Use Xcode's native agent as the specialist surface: SwiftUI preview verification, simulator interaction, and the crash-report-from-Organizer → fix flow. Cursor/Claude Code remain the daily drivers.
+
 ## Graduate when ready
 
 - [ ] Dedicated secret scanning in CI (gitleaks) for defense-in-depth beyond push protection.

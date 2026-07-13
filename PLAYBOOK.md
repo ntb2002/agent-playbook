@@ -116,6 +116,7 @@ Rule of thumb: if you'd repeat an instruction in every prompt, make it a **rule*
 - **GitHub mobile** — the review surface: diff, CI check, gate checklist, merge.
 - **Laptop / Cursor** — interactive work; cloud agents/worktrees for parallel independent units.
 - **Claude Code** — same git flow; `CLAUDE.md` imports `AGENTS.md` via `@AGENTS.md`.
+- **Xcode (iOS projects)** — specialist surface: native agent for SwiftUI previews, simulator work, and crash-report-driven fixes; its MCP server (`xcrun mcpbridge`) gives Cursor/Claude Code a real build-test-debug loop. Setup in `templates/SETUP.md`.
 
 Per-project setup checklist lives in `templates/SETUP.md`.
 
