@@ -42,13 +42,15 @@ Once per machine:
 - [ ] **Xcode → Settings → Intelligence:** turn on "Allow external agents to use Xcode tools."
 - [ ] Register the Xcode MCP server in Claude Code: `claude mcp add --transport stdio xcode -- xcrun mcpbridge`
 
-Per iOS repo:
+Per iOS repo (new repos: `bootstrap.sh <dir> "<Name>" "<one-liner>" --ios` does the first two automatically):
 
 - [ ] Commit a project-scoped `.cursor/mcp.json` so Cursor gets the same tools:
 
   ```json
   { "mcpServers": { "xcode": { "command": "xcrun", "args": ["mcpbridge"] } } }
   ```
+
+- [ ] Add the iOS agent conventions to `AGENTS.md` (verify via Xcode MCP before claiming done; simulator screenshots as `[ARTIFACT]`) — see `overlays/ios/AGENTS-ios.md` in the playbook.
 
 - [ ] Know the constraints: **Xcode must be running with the project open** for `mcpbridge` to connect, and it's **local-only** — cloud agents can't use it, so it backs `[ARTIFACT]` evidence, not `[CI]`.
 - [ ] Upgrade gates accordingly: the agent can now build, run tests, drive the simulator, and screenshot it — prefer `[ARTIFACT]` (agent-attached simulator screenshot) over `[MANUAL]` in plan units.

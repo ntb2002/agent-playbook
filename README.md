@@ -22,6 +22,9 @@ Portfolio-wide standard for building software with AI coding agents (Cursor, Cla
 # Scaffold a new project
 ./bootstrap.sh ~/Developer/my-new-app "My New App" "one-line product thesis"
 
+# iOS project? Add --ios to layer in the Xcode MCP config + iOS agent conventions
+./bootstrap.sh ~/Developer/my-ios-app "My iOS App" "one-liner" --ios
+
 # Then in the new repo:
 cd ~/Developer/my-new-app
 git config core.hooksPath .githooks   # enable the pre-commit hook

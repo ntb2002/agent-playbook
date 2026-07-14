@@ -59,9 +59,9 @@ The full template ships everything; you enable layers as the project earns them.
 
 Every plan unit ends with a gate. Each gate item is tagged by evidence tier so review is fast and confident, not a deep read:
 
-- **`[CI]`** — a green check proves it (lint, tests, build). Best tier; aim for this.
-- **`[ARTIFACT]`** — a screenshot, recording, log, or curl output attached to the PR proves it.
-- **`[MANUAL]`** — hands-on verification; spell out the exact steps + expected result.
+- **`[CI]`** — a green check proves it (lint, tests, build). Best tier; aim for this. Only tag `[CI]` if the check actually exists.
+- **`[ARTIFACT]`** — a screenshot, recording, log, or curl output attached to the PR proves it. Includes agent-captured evidence — build/test output or simulator screenshots via local tools (e.g. Xcode MCP).
+- **`[MANUAL]`** — hands-on verification an agent genuinely can't do (physical device, real payments/push, subjective feel); spell out the exact steps + expected result.
 
 A unit is done only when every gate item is checked with evidence attached to the PR.
 
