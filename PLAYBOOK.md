@@ -60,8 +60,8 @@ The full template ships everything; you enable layers as the project earns them.
 Every plan unit ends with a gate. Each gate item is tagged by evidence tier so review is fast and confident, not a deep read:
 
 - **`[CI]`** — a green check proves it (lint, tests, build). Best tier; aim for this. Only tag `[CI]` if the check actually exists.
-- **`[ARTIFACT]`** — a screenshot, recording, log, or curl output attached to the PR proves it. Includes agent-captured evidence — build/test output or simulator screenshots via local tools (e.g. Xcode MCP).
-- **`[MANUAL]`** — hands-on verification an agent genuinely can't do (physical device, real payments/push, subjective feel); spell out the exact steps + expected result.
+- **`[ARTIFACT]`** — a screenshot, recording, log, or curl output attached to the PR proves it. Includes agent-captured evidence — build/test output or preview renders via local tools (e.g. Xcode MCP). Only tag `[ARTIFACT]` if a tool can actually produce that evidence.
+- **`[MANUAL]`** — hands-on verification an agent genuinely can't do (physical device, real payments/push, interactive tap-through flows, subjective feel); spell out the exact steps + expected result.
 
 A unit is done only when every gate item is checked with evidence attached to the PR.
 
@@ -116,7 +116,7 @@ Rule of thumb: if you'd repeat an instruction in every prompt, make it a **rule*
 - **GitHub mobile** — the review surface: diff, CI check, gate checklist, merge.
 - **Laptop / Cursor** — interactive work; cloud agents/worktrees for parallel independent units.
 - **Claude Code** — same git flow; `CLAUDE.md` imports `AGENTS.md` via `@AGENTS.md`.
-- **Xcode (iOS projects)** — specialist surface: native agent for SwiftUI previews, simulator work, and crash-report-driven fixes; its MCP server (`xcrun mcpbridge`) gives Cursor/Claude Code a real build-test-debug loop. Setup in `templates/SETUP.md`.
+- **Xcode (iOS projects)** — specialist surface: native agent for SwiftUI previews, simulator work, and crash-report-driven fixes; its MCP server (`xcrun mcpbridge`) gives Cursor/Claude Code a real build-test-preview loop. Setup in `templates/SETUP.md`.
 
 Per-project setup checklist lives in `templates/SETUP.md`.
 

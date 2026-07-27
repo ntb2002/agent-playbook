@@ -15,8 +15,10 @@
 Tag each gate item by evidence tier:
 
 - **[CI]** — a green check proves it. Best tier. Only tag `[CI]` if the check actually exists.
-- **[ARTIFACT]** — screenshot / recording / log / curl output attached to the PR. Includes agent-captured evidence: build/test output or simulator screenshots via local tools (e.g. Xcode MCP).
-- **[MANUAL]** — hands-on verification an agent genuinely can't do (physical device, real payments/push, subjective feel). Spell out exact steps + expected result.
+- **[ARTIFACT]** — screenshot / recording / log / curl output attached to the PR. Includes agent-captured evidence: build/test output or preview renders via local tools (e.g. Xcode MCP).
+- **[MANUAL]** — hands-on verification an agent genuinely can't do (physical device, real payments/push, interactive tap-through flows, subjective feel). Spell out exact steps + expected result.
+
+Before tagging `[ARTIFACT]`, confirm a tool can actually produce that evidence — a gate item is worthless if it silently invites the agent to overclaim.
 
 A unit is done only when every gate item is checked with evidence on the PR.
 
