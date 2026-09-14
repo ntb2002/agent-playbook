@@ -4,11 +4,17 @@
 
 ## How plans work
 
-1. **Roadmap lives in `AGENTS.md`** as a terse phase table; the active phase points here.
-2. **When a phase becomes active**, a strong model expands it into `plans/<phase>/`: a `README.md` overview + one file per session-sized unit. The planning agent **writes the plan and stops**; a human reviews/approves before any execution.
-3. **Match ceremony to maturity:** fully expand only the *next* unit; keep later units as roadmap bullets.
+Two layouts, one doctrine (`PLAYBOOK.md` → *Phase mode and continuous mode*):
+
+- **Phase mode (pre-v1):** `plans/<phase>/README.md` + one file per unit. `/plan-phase <phase>` writes it.
+- **Continuous mode (live product):** `plans/features/<issue-id>-<slug>.md`, one file per tracker issue. `/plan-feature <issue-id>` writes it. The tracker (Linear) owns *what's next*; this folder owns *how each unit is done and proven*.
+
+1. **Roadmap lives in `AGENTS.md`** as a terse phase table (phase mode) or as a pointer to the tracker (continuous mode); the landing pad points at the next unit here.
+2. **When work becomes active**, a strong model expands it into a gated unit. The planning agent **writes the plan and stops**; a human reviews/approves before any execution.
+3. **Match ceremony to maturity:** fully expand only the *next* unit; keep later units as roadmap bullets (or as un-expanded tracker issues).
 4. **Each unit has an entry dependency + a verification gate.** Execute one at a time: build → verify gate → update `docs/status.md` + landing pad → PR → next.
 5. **Expensive-to-reverse decisions** get logged in `DECISIONS.md`.
+6. **Merged feature units** may be deleted from `plans/features/` once `docs/status.md` records them — the PR is the permanent record. Phase folders stay until the phase closes.
 
 ## Verification gates (phone-checkable)
 
@@ -24,4 +30,5 @@ A unit is done only when every gate item is checked with evidence on the PR.
 
 ## Active plans
 
-- <link to active phase folder>
+- <link to active phase folder, or the tracker view for continuous mode>
+- `features/` — issue-sized units (continuous mode)

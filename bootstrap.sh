@@ -48,9 +48,10 @@ Scaffolded "$NAME" at $TARGET
 Next steps:
   1. Fill VISION.md, then AGENTS.md (stack + conventions + landing pad).
   2. Customize the CI job in .github/workflows/ci.yml and scripts/hooks/project-check.sh for your stack.
-  3. Work the maturity ladder — see SETUP.md (branch protection, Slack/GitHub-mobile, cloud-agent bootstrap).
+  3. Work the maturity ladder — see SETUP.md (venture cell, branch protection, phone orchestration, cloud agents).
   4. The pre-commit hook is already enabled (core.hooksPath = .githooks).
-$( [ "$IOS" -eq 1 ] && echo "  5. iOS overlay applied: .cursor/mcp.json + AGENTS.md conventions. Do the per-machine Xcode setup in SETUP.md → 'iOS / Apple projects'." )
+  5. When the product goes live: SETUP.md → "Going live" (Linear team, Cursor Project pointed at docs/coordinator.md, pr-review automation).
+$( [ "$IOS" -eq 1 ] && echo "  6. iOS overlay applied: .cursor/mcp.json + AGENTS.md conventions. Do the per-machine Xcode setup in SETUP.md → 'iOS / Apple projects'." )
 
 Match ceremony to maturity: an idea-stage project may only need VISION.md + a rough phase sketch.
 EOF

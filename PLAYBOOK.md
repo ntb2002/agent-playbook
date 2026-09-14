@@ -1,6 +1,6 @@
 # The Agent Playbook
 
-> A portfolio-wide standard for building software with AI coding agents (Cursor, Claude Code, and their cloud agents) — designed for a solo builder who orchestrates multiple agents and reviews from a phone.
+> A portfolio-wide standard for building software with AI coding agents (Cursor, Claude Code, their cloud agents, and the coordinators that run them) — designed for a founder who orchestrates multiple agents across multiple ventures and reviews from a phone.
 >
 > This is the **doctrine**. The [`templates/`](templates/) are the copy-ready files; [`bootstrap.sh`](bootstrap.sh) scaffolds a new project from them. SmartSport (`~/Developer/smartSportApp`) is the live reference implementation.
 
@@ -52,8 +52,9 @@ The full template ships everything; you enable layers as the project earns them.
 ### 3. Plans live in-repo and are reviewed deliverables
 
 - Plans live under `plans/` **in the repo**, not in `~/.cursor/plans/` or a tool's todo list. In-repo plans travel to every clone, device, and cloud VM. Tool-native plan modes (Cursor `.plan.md`, Claude Code todos) are **ephemeral scratch**.
-- When a phase becomes active, a **strong model expands it into gated, session-sized units and stops**. A human reviews and approves before any execution agent builds. The planning agent's only deliverable is the plan. That review gate is where your judgment adds the most value.
+- When work becomes active, a **strong model expands it into gated, session-sized units and stops**. A human reviews and approves before any execution agent builds. The planning agent's only deliverable is the plan. That review gate is where your judgment adds the most value.
 - **Match ceremony to maturity here too:** fully expand only the *next* unit; leave later units as roadmap bullets until they're up next.
+- **Two organizing units, same doctrine** (see *Phase mode and continuous mode* below): pre-v1 work is organized by **phase** (`/plan-phase` → `plans/<phase>/`); once a product is live, work is organized by **issue** (`/plan-feature <issue>` → `plans/features/<issue>.md`) and the tracker owns *what's next*. The repo always owns *how it works*.
 
 ### 4. Verification gates must be mechanically checkable from a phone
 
@@ -64,6 +65,8 @@ Every plan unit ends with a gate. Each gate item is tagged by evidence tier so r
 - **`[MANUAL]`** — hands-on verification an agent genuinely can't do (physical device, real payments/push, interactive tap-through flows, subjective feel); spell out the exact steps + expected result.
 
 A unit is done only when every gate item is checked with evidence attached to the PR.
+
+This rule binds **every** agent in the system, including coordinators and supervisors (below). A coordinator that reports "done" without the evidence on the PR has failed the gate exactly as an execution agent would. Frontier agents still resolve well under half of real production tasks unsupervised — the evidence tiers are what make delegation safe, not the model.
 
 ### 5. One model/tool policy, not per-task improvisation
 
@@ -83,6 +86,32 @@ One plan unit = one branch = one PR. Never commit to `main` (it's what deploys).
 
 `AGENTS.md` is the single source of truth for conventions. Cursor reads it natively; Claude Code imports it via `CLAUDE.md` (`@AGENTS.md` as the first line). Don't keep agent-private state in one tool's config that another can't see. **One fact, one home.**
 
+This extends to coordinators: a Cursor Project accumulates "shared context" as it works. That is working memory, not the record. Decisions still land in `DECISIONS.md`; conventions still land in `AGENTS.md`; what shipped still lands in `docs/status.md`. If a coordinator learns something durable, it writes it to the repo file that owns it.
+
+---
+
+## Phase mode and continuous mode
+
+The playbook's original `plans/phase-N/` layout encodes a **launch model**: work converges on a v1. That's correct pre-revenue and wrong afterward — a shipping product has an ever-evolving backlog, not five phases and then perfection. Both modes use the same doctrine (in-repo gated specs, human approval, one unit = one PR); they differ in the organizing unit and in who owns *what's next*.
+
+| | Phase mode | Continuous mode |
+|---|---|---|
+| **When** | Pre-v1: converging on something you can put in front of users | Post-launch: prioritized backlog, features, fixes, tweaks |
+| **Organizing unit** | A phase → `plans/<phase>/README.md` + unit files | An issue → `plans/features/<issue-id>-<slug>.md` |
+| **What's next lives in** | `AGENTS.md` phase table + `plans/<phase>/README.md` | The tracker (Linear); the landing pad just points at it |
+| **Planning ritual** | `/plan-phase <phase>` | `/plan-feature <issue-id>` |
+| **Branch name** | `<phase>/<unit>` | `<issue-id>-<slug>` (the tracker auto-links the PR) |
+| **Done means** | Unit gate met, status + landing pad updated, PR open | Same, plus the tracker closes the issue on merge |
+
+Treat phase mode as a *special case* of continuous mode for genuinely large subsystems, not as a predecessor era — the two rituals are siblings selected by size. A live product can still run a phase for a big build (e.g. a proactive-scheduling subsystem) while the tracker handles everything else.
+
+**Tracker rules (seam rot prevention):**
+
+- The tracker owns *what's next and who's on it*. The repo owns *how it works, conventions, plans, gates*. Strategy and decisions-and-why live in the knowledge layer (Notion). One fact, one home — a venture hub page must **not** duplicate engineering status; it points at the tracker.
+- Capture is cheap: any idea goes into tracker triage as one line, from anyone (including non-technical co-founders writing plain English). Filtering against `VISION.md`'s scope fence happens at prioritization, not at capture.
+- Only big or ambiguous issues get a thinking doc (Notion). Most skip straight to acceptance criteria → `/plan-feature` → gated unit.
+- Spec direction is one-way: decided in the knowledge layer → briefed into the tracker with acceptance criteria → expanded in-repo → implemented. If implementation starts driving product definition, the seam has rotted.
+
 ---
 
 ## Automation primitives (and when to use each)
@@ -94,36 +123,57 @@ One plan unit = one branch = one PR. Never commit to `main` (it's what deploys).
 | **Subagents** | Specialized workers with restricted tools (`.claude/agents/*`, Cursor Task) | Scoped jobs, e.g. read-only `code-review` |
 | **Hooks** | Deterministic shell on lifecycle events (`.githooks/`, `.cursor/hooks.json`) | Guarantees: secret-scan, lint/test on commit |
 | **MCP** | Project-scoped tool servers (`.cursor/mcp.json`) | External integrations (DB, deploy, monitoring) — same in-repo, one-source-of-truth principle |
+| **Automations** | Event- or schedule-triggered cloud agents (Cursor Automations; prompts kept in `.cursor/automations/`) | Unattended jobs: PR review on open, CI-failure triage, autofix review comments, staleness checks |
+| **Coordinator** | A persistent agent that plans and delegates but never writes code (Cursor Project) | A body of work that outlives one chat: a tracker backlog, a migration, ongoing "gardening" of a repo |
+| **Supervisor** | An agent that reads other agents' output and pushes back (Grok Bot, or you) | Verifying `[ARTIFACT]` evidence is real, nudging stalled work, escalating to a human |
 
-Rule of thumb: if you'd repeat an instruction in every prompt, make it a **rule**. If it's a multi-step ritual, make it a **skill**. If it needs a guarantee, make it a **hook**. If it's a specialized recurring job, make it a **subagent**. If it's an external tool integration, wire it via **MCP**. A stale automation is worse than none — refresh or delete.
+Rule of thumb: if you'd repeat an instruction in every prompt, make it a **rule**. If it's a multi-step ritual, make it a **skill**. If it needs a guarantee, make it a **hook**. If it's a specialized recurring job, make it a **subagent**. If it's an external tool integration, wire it via **MCP**. If it should happen without you prompting, make it an **automation**. If it's a whole body of work, give it a **coordinator**. A stale automation is worse than none — refresh or delete.
+
+**Coordinators and supervisors — the two rules that matter:**
+
+1. **One coordinator per repo.** Two agents that both believe they own a repo's backlog is seam rot with extra steps. If a Cursor Project coordinates a venture's engineering, a personal ops agent (Grok Bot) does not dispatch coding agents to that repo directly — it files a tracker issue and the coordinator picks it up. Audit trail stays in one place.
+2. **Coordinators read the playbook; they don't replace it.** Point every coordinator at `AGENTS.md`, this doctrine, and the repo's `docs/coordinator.md` brief on creation. It pulls the next tracker issue, expands it into a gated unit (`/plan-feature`), dispatches an execution agent, watches the PR to green, and reports with evidence. It never merges. Start by reviewing every PR it produces; loosen only as gates hold.
+
+**Notes on the cloud environment:** `.cursor/environment.json`'s `install` step is what Cursor's *Builds* pre-bake, so anything that can be prepared ahead of time (deps, hook enable) belongs there — agents then boot into a warm environment. `.cursor/hooks.json` fires in cloud agents as well as locally, so the commit guard travels.
 
 ---
 
 ## Orchestration model (laptop + phone)
 
 ```
-        (you, anywhere)                         (agents, on branches)
-   pick the next plan unit  ───────────────►  agent implements unit on a branch
-            ▲                                          │
-            │                                  agent pushes + opens a PR
-   merge the PR (phone or laptop)                      │
-            ▲                                  CI runs (+ local hook ran)
-            │                                          │
-   review the PR  ◄── Slack ping ◄── GitHub ◄──────────┘
+   (knowledge layer)        (tracker)              (coordinator)            (execution agents)
+   Notion: thesis,   ──►  Linear: what's   ──►  Cursor Project: pulls  ──►  cloud agent builds one
+   decisions-and-why      next, acceptance       issue, /plan-feature,      gated unit on a branch,
+                          criteria, triage        dispatches, watches PR     pushes, opens PR
+                               ▲                        │                          │
+                               │                        │              CI runs (+ hook ran in cloud)
+                        issue closes on merge           │                          │
+                               ▲                        ▼                          ▼
+   (you, on a phone)  ◄─ merge ◄─ review evidence ◄─ Automation reviews PR ◄─ PR open ◄─┘
+                                        ▲
+                          supervisor (Grok Bot / you) checks [ARTIFACT] is real, pings you
 ```
 
-- **Slack** — notifications (PR opened, CI pass/fail) + launching cloud agents.
-- **GitHub mobile** — the review surface: diff, CI check, gate checklist, merge.
-- **Laptop / Cursor** — interactive work; cloud agents/worktrees for parallel independent units.
-- **Claude Code** — same git flow; `CLAUDE.md` imports `AGENTS.md` via `@AGENTS.md`.
-- **Xcode (iOS projects)** — specialist surface: native agent for SwiftUI previews, simulator work, and crash-report-driven fixes; its MCP server (`xcrun mcpbridge`) gives Cursor/Claude Code a real build-test-preview loop. Setup in `templates/SETUP.md`.
+Pre-v1 projects run the same loop without the tracker/coordinator columns: you pick the unit, an agent builds it, you review on your phone.
 
-Per-project setup checklist lives in `templates/SETUP.md`.
+- **Linear** — the backlog and the delegation surface. Assigning an issue to Cursor spins up a cloud agent that returns a PR; `@Cursor` in a comment adds instructions. Issue status flows from PR state via the GitHub integration.
+- **Cursor Project (one per venture repo)** — the coordinator. Holds context across months, delegates to subagents on isolated VMs, subscribes to its own PRs (fixes CI, addresses bot comments), can watch a Slack channel or run on a schedule. Never writes code, never merges.
+- **Cursor Automations** — unattended PR review, CI-failure triage, autofix of review comments, staleness checks. Starter prompts in `templates/.cursor/automations/`.
+- **Cursor iOS app** — launch and steer cloud agents, review diffs and artifacts, merge PRs. Remote Control hands a laptop agent off to your phone.
+- **Slack** — notifications (PR opened, CI pass/fail, automation summaries) + launching cloud agents by message.
+- **GitHub mobile** — the review surface: diff, CI check, gate checklist, merge.
+- **Grok Bot** — supervisor and ops agent, not a coder. Acts in tools with no API; can read cloud-agent transcripts and artifacts and push back when evidence doesn't match the claim. Its state is tied to the account — durable facts still go to the repo and the knowledge layer.
+- **Laptop / Cursor** — interactive work; ambiguous or cross-cutting units you drive yourself with the strongest model.
+- **Claude Code** — same git flow; `CLAUDE.md` imports `AGENTS.md` via `@AGENTS.md`. Best surface for messy, high-context debugging.
+- **Xcode (iOS projects)** — specialist surface: native agent for SwiftUI previews, simulator work, and crash-report-driven fixes; its MCP server (`xcrun mcpbridge`) gives Cursor/Claude Code a real build-test-preview loop. Local-only today; a self-hosted Mac worker would let cloud agents produce iOS `[ARTIFACT]` evidence. Setup in `templates/SETUP.md`.
+
+Per-project setup checklist (including the *venture cell* — everything a new venture needs beyond the repo) lives in `templates/SETUP.md`.
 
 ---
 
 ## How to use this playbook
 
 1. **New project:** run `./bootstrap.sh <path> "<Project Name>" "<one-liner>"`. It scaffolds the docs + automation, parameterizes placeholders, and prints the maturity-ladder enable steps.
-2. **Existing project:** copy the relevant `templates/` files in, fill placeholders, and adopt incrementally (start with `VISION.md` + `AGENTS.md`, add CI + hooks when it can break).
-3. **Evolving the standard:** SmartSport is the proving ground. When a practice proves out there, generalize it back into these templates + this doctrine. Update `PLAYBOOK.md` first, then the templates.
+2. **Existing project:** copy the relevant `templates/` files in, fill placeholders, and adopt incrementally (start with `VISION.md` + `AGENTS.md`, add CI + hooks when it can break). `./sync.sh <repo>` refreshes the ritual layer later.
+3. **Going live:** switch to continuous mode — set up the tracker and the coordinator per `templates/SETUP.md`, and flip the landing pad to point at the tracker.
+4. **Evolving the standard:** SmartSport is the proving ground. When a practice proves out there, generalize it back into these templates + this doctrine. Update `PLAYBOOK.md` first, then the templates.

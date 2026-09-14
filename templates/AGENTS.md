@@ -18,10 +18,12 @@
 ## 📍 Landing pad — where am I / what next
 
 - **Product:** {{ONE_LINER}} (see `VISION.md`).
-- **Current phase:** <phase + one-line focus>. Plan: `plans/<phase>/`.
-- **Next actionable unit:** <unit> → `plans/<phase>/<unit>.md`.
+- **Mode:** phase *(pre-v1)* | continuous *(live — tracker owns what's next)*. <pick one>
+- **Current phase:** <phase + one-line focus>. Plan: `plans/<phase>/`. *(phase mode)*
+- **Tracker:** <Linear team/project link>. *(continuous mode — engineering status lives there, not here)*
+- **Next actionable unit:** <unit> → `plans/<phase>/<unit>.md` or `plans/features/<issue-id>-<slug>.md`.
 - **Working rhythm:** one plan unit → verify its gate → update `docs/status.md` + this landing pad → branch + PR → merge → next.
-- **Active background work:** none currently.
+- **Active background work:** none currently. *(coordinator / automations, if any: see `docs/coordinator.md`)*
 
 ---
 
@@ -68,12 +70,13 @@ Active-phase detail + gates: `plans/`. History: `docs/status.md`.
 ## Working with multiple AI agents
 
 - **Single source of truth for conventions:** this file. **Thesis:** `VISION.md`. **How it works:** `docs/architecture.md`.
-- **Git workflow is non-negotiable:** never commit to `main`. Every unit goes on a branch `<phase>/<unit>` → commits → push → PR → CI green → review → merge. Full model: `docs/git-workflow.md`.
+- **Git workflow is non-negotiable:** never commit to `main`. Every unit goes on a branch (`<phase>/<unit>`, or `<issue-id>-<slug>` for tracker-driven units) → commits → push → PR → CI green → review → merge. Full model: `docs/git-workflow.md`.
+- **Coordinators (Cursor Projects) and supervisors obey this file too.** They plan, delegate, verify evidence, and report; they never write code or merge. Their brief: `docs/coordinator.md`.
 - **When you change a convention/architecture:** update `AGENTS.md` first, log it in `DECISIONS.md`, then update the relevant `.cursor/rules/*.mdc`.
 - **When you finish a unit:** verify its gate, update `docs/status.md` + the landing pad, push the branch and open the PR (don't merge — that's the human gate).
 - **Plans are in-repo** (`plans/`), not machine-local. Tool plan modes are ephemeral scratch.
 - **One fact, one home.** Link to paths + line numbers; never paste full files into prompts.
-- **Automation:** model/tool policy in `.cursor/rules/model-policy.mdc`; rituals in `.agents/skills/`; guard via `.githooks/pre-commit` (enable with `git config core.hooksPath .githooks`) + `.cursor/hooks.json`; subagents in `.claude/agents/`.
+- **Automation:** model/tool policy in `.cursor/rules/model-policy.mdc`; rituals in `.agents/skills/` (`/plan-phase`, `/plan-feature`, `/start-unit`, `/close-unit`, `/context-sync`); guard via `.githooks/pre-commit` (enable with `git config core.hooksPath .githooks`) + `.cursor/hooks.json`; subagents in `.claude/agents/`; unattended jobs' prompts in `.cursor/automations/`.
 
 ## Quick reference
 
@@ -82,6 +85,8 @@ Active-phase detail + gates: `plans/`. History: `docs/status.md`.
 | Product thesis | `VISION.md` |
 | How it works | `docs/architecture.md` |
 | Active plan + gates | `plans/` |
+| What's next (continuous mode) | the tracker — link in the landing pad |
+| Coordinator brief | `docs/coordinator.md` |
 | Git / CI / review workflow | `docs/git-workflow.md` |
 | What shipped | `docs/status.md` |
 | Decisions expensive to reverse | `DECISIONS.md` |
