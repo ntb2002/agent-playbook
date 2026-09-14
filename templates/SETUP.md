@@ -7,7 +7,7 @@ Run through this once when a project graduates to "can break." Skip layers a pro
 A venture is more than its repo. Every venture in the portfolio gets the same small set of homes, so adding venture N never means rebuilding the operating system. One authoritative source per kind of fact — no duplicates.
 
 - [ ] **Repo(s)** — scaffolded by `bootstrap.sh`; `AGENTS.md` owns conventions, `plans/` owns gated specs.
-- [ ] **Knowledge hub page** (Notion or equivalent) — thesis, decisions-and-why, thinking docs. Holds *strategy*, never engineering status; it points at the tracker for that.
+- [ ] **Knowledge hub page** (Notion or equivalent) — thesis, decisions-and-why, thinking docs. Holds *strategy*, never engineering status; it points at the tracker for that. **Coding agents don't read it** — its ideas reach code only as acceptance criteria you write into the tracker and the one-page `VISION.md` you curate.
 - [ ] **Status row** in the portfolio status database — current state / next action / blockers / last-updated. This is what a daily pull or staleness check reads.
 - [ ] **Tracker team** (Linear) — what's next and who's on it. Set up when the product goes live or when anyone other than you needs to file work (a co-founder, a trial engineer). See *Going live* below.
 - [ ] **Slack channel** — `#<venture>-dev` (PRs, CI, automation summaries). Subscribe the repo; start with just this one channel.

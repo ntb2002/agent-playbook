@@ -105,12 +105,23 @@ The playbook's original `plans/phase-N/` layout encodes a **launch model**: work
 
 Treat phase mode as a *special case* of continuous mode for genuinely large subsystems, not as a predecessor era — the two rituals are siblings selected by size. A live product can still run a phase for a big build (e.g. a proactive-scheduling subsystem) while the tracker handles everything else.
 
+**Three layers, one human seam:**
+
+| Layer | Answers | Lives in | Who reads it |
+|---|---|---|---|
+| **Thinking** | What should exist, and why? | Knowledge layer: Notion hubs, Claude projects, chats | Humans only. **No coding agent reads this layer.** |
+| **Seam** | What do we build next, and how do we know it's done? | The tracker (Linear): issues with acceptance criteria | Humans write; humans and agents read |
+| **Code** | How does it work, and how is each unit proven? | The repo: `VISION.md`, `AGENTS.md`, `plans/`, gates | Agents and humans |
+
+The thinking layer is deliberately sprawling — half-formed ideas, archived reasoning, business context. That's what makes it useless as agent input: an agent reading a hub page treats six months of prose as spec. The only channel from thinking to code is **a human writing acceptance criteria into the tracker**. That translation is the highest-leverage act in the loop; don't automate it and don't skip it. The one deliberate crossing is `VISION.md`: a one-page, code-facing distillation of the thesis that a human curates. If agents need more "why" than that page holds, the issue's acceptance criteria carry it.
+
 **Tracker rules (seam rot prevention):**
 
-- The tracker owns *what's next and who's on it*. The repo owns *how it works, conventions, plans, gates*. Strategy and decisions-and-why live in the knowledge layer (Notion). One fact, one home — a venture hub page must **not** duplicate engineering status; it points at the tracker.
+- The tracker owns *what's next and who's on it*. The repo owns *how it works, conventions, plans, gates*. The knowledge layer owns *strategy and decisions-and-why*. One fact, one home — a venture hub page must **not** duplicate engineering status; it points at the tracker.
 - Capture is cheap: any idea goes into tracker triage as one line, from anyone (including non-technical co-founders writing plain English). Filtering against `VISION.md`'s scope fence happens at prioritization, not at capture.
-- Only big or ambiguous issues get a thinking doc (Notion). Most skip straight to acceptance criteria → `/plan-feature` → gated unit.
-- Spec direction is one-way: decided in the knowledge layer → briefed into the tracker with acceptance criteria → expanded in-repo → implemented. If implementation starts driving product definition, the seam has rotted.
+- Only big or ambiguous issues get a thinking doc. Most skip straight to acceptance criteria → `/plan-feature` → gated unit.
+- **Coordinators never resolve product questions.** An ambiguous issue gets a question back to the human, not the coordinator's own judgment about what the product should do. Feasibility questions may flow the other way (ask the coordinator read-only, carry the answer back to the thinking layer). If implementation starts driving product definition, the seam has rotted.
+- **Gates are written against the code, not against the idea.** A checklist drafted in the knowledge layer without reading the codebase is a proposal, not a gate. The gate is what an agent with the repo open turns it into — grounded in what the code does today and sized to the actual release (a one-user shakeout needs a different bar than a cohort launch).
 
 ---
 
@@ -141,23 +152,26 @@ Rule of thumb: if you'd repeat an instruction in every prompt, make it a **rule*
 ## Orchestration model (laptop + phone)
 
 ```
-   (knowledge layer)        (tracker)              (coordinator)            (execution agents)
-   Notion: thesis,   ──►  Linear: what's   ──►  Cursor Project: pulls  ──►  cloud agent builds one
-   decisions-and-why      next, acceptance       issue, /plan-feature,      gated unit on a branch,
-                          criteria, triage        dispatches, watches PR     pushes, opens PR
-                               ▲                        │                          │
-                               │                        │              CI runs (+ hook ran in cloud)
-                        issue closes on merge           │                          │
-                               ▲                        ▼                          ▼
-   (you, on a phone)  ◄─ merge ◄─ review evidence ◄─ Automation reviews PR ◄─ PR open ◄─┘
-                                        ▲
-                          supervisor (Grok Bot / you) checks [ARTIFACT] is real, pings you
+   thinking layer (Notion, Claude projects) ── you write acceptance criteria ──┐   (humans only; off the loop)
+                                                                              ▼
+        (tracker)                 (coordinator)                  (execution agents)
+   Linear: what's next,   ──►  Cursor Project: pulls    ──►  cloud agent builds one gated
+   acceptance criteria,        issue, /plan-feature,          unit on a branch, pushes,
+   triage (anyone files)       dispatches, watches PR         opens PR
+        ▲                              │                              │
+        │                              │                  CI runs (+ hook ran in cloud)
+   issue closes on merge               │                              │
+        ▲                              ▼                              ▼
+   (you, on a phone) ◄─ merge ◄─ review evidence ◄─ Automation reviews PR ◄─ PR open ◄─┘
+                                    ▲
+                      supervisor (Grok Bot / you) checks [ARTIFACT] is real, pings you
 ```
 
-Pre-v1 projects run the same loop without the tracker/coordinator columns: you pick the unit, an agent builds it, you review on your phone.
+The thinking layer is above the loop, not in it: coding agents never read it, and the arrow out of it is a human. Pre-v1 projects run the same loop without the tracker/coordinator columns: you pick the unit, an agent builds it, you review on your phone.
 
+- **Thinking layer (Notion, Claude projects, chats)** — product and business thinking, feature brainstorming, decisions-and-why, the non-code pillars. Off the loop by design. Its outputs reach code only as human-written acceptance criteria in the tracker and the hand-curated `VISION.md`.
 - **Linear** — the backlog and the delegation surface. Assigning an issue to Cursor spins up a cloud agent that returns a PR; `@Cursor` in a comment adds instructions. Issue status flows from PR state via the GitHub integration.
-- **Cursor Project (one per venture repo)** — the coordinator. Holds context across months, delegates to subagents on isolated VMs, subscribes to its own PRs (fixes CI, addresses bot comments), can watch a Slack channel or run on a schedule. Never writes code, never merges.
+- **Cursor Project (one per venture repo)** — the coordinator. Holds context across months, delegates to subagents on isolated VMs, subscribes to its own PRs (fixes CI, addresses bot comments), can watch a Slack channel or run on a schedule. Never writes code, never merges, never decides what the product should do — "should we build X?" belongs in the thinking layer; "is X feasible in the current code?" is a fair read-only question to ask it.
 - **Cursor Automations** — unattended PR review, CI-failure triage, autofix of review comments, staleness checks. Starter prompts in `templates/.cursor/automations/`.
 - **Cursor iOS app** — launch and steer cloud agents, review diffs and artifacts, merge PRs. Remote Control hands a laptop agent off to your phone.
 - **Slack** — notifications (PR opened, CI pass/fail, automation summaries) + launching cloud agents by message.

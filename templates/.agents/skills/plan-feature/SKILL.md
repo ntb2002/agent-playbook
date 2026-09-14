@@ -10,7 +10,7 @@ Expand the tracker issue `$ARGUMENTS` (e.g. `SS-42`) into one reviewable, sessio
 
 This is the continuous-mode sibling of `/plan-phase`: same doctrine, one issue instead of one phase.
 
-1. Read the issue — title, description, acceptance criteria, comments, linked docs. If a Linear MCP is available, fetch it; otherwise the issue text is pasted or linked in the prompt. If acceptance criteria are missing or ambiguous, **stop and say what's missing** — do not invent product intent.
+1. Read the issue — title, description, acceptance criteria, comments. If a Linear MCP is available, fetch it; otherwise the issue text is pasted or linked in the prompt. If acceptance criteria are missing or ambiguous, **stop and say what's missing** — do not invent product intent, and do not go read strategy docs or knowledge-layer pages to infer it; the issue and `VISION.md` are the whole spec.
 2. Read `VISION.md` (scope fence), `AGENTS.md`, `docs/architecture.md` for the area, `DECISIONS.md`. If the issue violates the scope fence ("what we're explicitly NOT building"), stop and flag it.
 3. Decide size. If this issue is genuinely a subsystem (several PRs, several sessions), say so and recommend `/plan-phase` instead — do not cram it into one unit.
 4. Write `plans/features/<issue-id>-<slug>.md` with:
