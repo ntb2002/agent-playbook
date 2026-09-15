@@ -28,6 +28,10 @@ Before tagging `[ARTIFACT]`, confirm a tool can actually produce that evidence �
 
 A unit is done only when every gate item is checked with evidence on the PR.
 
+## What stays in the repo, and what doesn't
+
+The tracker owns the roadmap, backlog, briefs, and status. The repo owns what an agent needs *with the code open*: `AGENTS.md`, `VISION.md`, `DECISIONS.md`, `docs/architecture.md`, `docs/status.md` (the changelog), and the **open** plan units under `plans/features/`. A plan unit is the execution spec for one issue — file paths, approach, gate — and it lives here because cloud agents, the coordinator, and PR reviewers read the repo, not the tracker. It is deleted by `/close-unit` in the same PR that ships it; the PR body carries the full plan. Result: `plans/features/` never holds more than the units currently in flight, and the repo does not accumulate markdown.
+
 ## Active plans
 
 - <link to active phase folder, or the tracker view for continuous mode>
