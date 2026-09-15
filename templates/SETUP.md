@@ -48,7 +48,7 @@ Do this when the product has real users or when someone other than you needs to 
 - [ ] Connect Linear MCP in Cursor/Claude Code so `/plan-feature` fetches the issue itself and agents can file follow-ups and bugs found mid-unit without a human relaying them.
 - [ ] Flip the `AGENTS.md` landing pad: *next actionable* points at the tracker view, not a phase file. Remove any engineering status from the venture's knowledge hub page — it points at Linear now.
 
-**Delegating from Linear:** assign an issue to **Cursor** (assignee menu) or `@Cursor <instructions>` in a comment → a cloud agent works the repo and returns a PR, with progress posted back on the issue. Good for small, well-specified issues. Cross-cutting or safety-critical work: drive it yourself with the strongest model.
+**Delegating from Linear:** assign an issue to **Cursor** (assignee menu) or `@Cursor <instructions>` in a comment → a cloud agent works the repo and returns a PR, with progress posted back on the issue. Point it at the plan unit and carry the model tier explicitly: `@Cursor build this per plans/features/SS-42-<slug>.md [model=<id>]`. The plan's **Model:** line says which tier; the dashboard default is a fallback, not the mechanism. Good for small, well-specified issues. Cross-cutting or safety-critical work: drive it yourself with the strongest model, or let the coordinator dispatch it with the strong tier.
 
 **Cursor Project — the coordinator (one per repo):**
 
@@ -83,8 +83,8 @@ Once per machine:
 - [ ] Export Apple's seven agent skills and install them where both tools read them:
 
   ```bash
-  xcrun agent skills export --output-dir ~/xcode-skills   # absolute path required
-  cp -R ~/xcode-skills/* ~/.claude/skills/                # Claude Code native; Cursor reads it for compatibility
+  xcrun agent skills export --output-dir ~/.agents/skills --replace-existing   # absolute path; Cursor reads ~/.agents/skills
+  for s in ~/.agents/skills/*/; do n=$(basename "$s"); [ -e ~/.claude/skills/$n ] || ln -s "$s" ~/.claude/skills/$n; done   # Claude Code
   ```
 
   On Xcode 26.x the equivalent command (`xcrun mcpbridge run-agent skills export`) exists but reports "No skills available to export" — the bundles ship with 27.
@@ -102,11 +102,11 @@ Per iOS repo (new repos: `bootstrap.sh <dir> "<Name>" "<one-liner>" --ios` does 
 
 - [ ] Add the iOS agent conventions to `AGENTS.md` (verify via Xcode MCP before claiming done; preview snapshots as `[ARTIFACT]`) — see `overlays/ios/AGENTS-ios.md` in the playbook.
 
-- [ ] Know the constraints: **Xcode must be running with the project open** for `mcpbridge` to connect, and it's **local-only** — cloud agents can't use it, so it backs `[ARTIFACT]` evidence, not `[CI]`. (Cursor's *self-hosted machines* can register a Mac as a cloud-agent worker; that's the path to cloud agents producing iOS build/test/preview evidence — worth it once a Mac is always on.)
-- [ ] Know what the tools actually cover: build, run tests, search Apple docs, and `RenderPreview` (renders a specific `#Preview` block to a real image, with dark-mode / orientation / type-size variants). **No live-simulator interaction and no LLDB/debugger tool** — tap-through flows and arbitrary in-app state stay `[MANUAL]`.
-- [ ] Upgrade gates accordingly: build/test results and preview-renderable UI become `[ARTIFACT]` (agent-attached); leave genuinely interactive verification as `[MANUAL]`.
-- [ ] Portability rule for Apple's skills: the five knowledge skills (`swiftui-specialist`, `swiftui-whats-new-27`, `test-modernizer`, `uikit-app-modernization`, `c-bounds-safety`) work in any tool; `device-interaction` and `audit-xcode-security-settings` need Xcode's own tools — use those from inside Xcode's agent.
-- [ ] Use Xcode's native agent as the specialist surface: SwiftUI preview verification, simulator interaction, and the crash-report-from-Organizer → fix flow. Cursor/Claude Code remain the daily drivers.
+- [ ] Know the constraints: the tools are **local-only** — cloud agents can't reach them, so they back `[ARTIFACT]` evidence, not `[CI]`. They need either Xcode open on the project, or **headless mode** (Xcode 27+, preview): `sudo xcrun mcp-server enable`, then `sudo xcrun mcp-server allow-folder <repo> --always`. Headless is what lets a Cursor *Remote Control* session on an always-on Mac (clamshell laptop counts) build, test, and drive the simulator from your phone. Never use `--unsafe-always-allow-all-agents`.
+- [ ] Know what the tools cover — **verify with `tools/list`, the surface changed a lot between versions.** Xcode 26.x: 21 tools — build, tests, `RenderPreview`, snippets, docs. Xcode 27: 53 tools — adds `RunProject`/`StopProject`/`GetConsoleOutput`, `InvokeDebuggerCommand` (LLDB), `DeviceInteraction*` (boot simulator, install, synthesize taps, screenshot), `GetTopCrashIssues`/`GetCrashIssueLogs`, scheme/destination switching, build settings and entitlements editing, String Catalog tools.
+- [ ] Upgrade gates accordingly. On 27+: build/test, preview renders, **and simulator tap-through flows with screenshots** are `[ARTIFACT]` (agent-attached). `[MANUAL]` shrinks to physical-device-only behavior, real payments/push, and subjective feel.
+- [ ] Apple's skills (10 on Xcode 27: `swiftui-specialist`, `swiftui-whats-new-27`, `modernize-tests`, `uikit-app-modernization`, `adopt-c-bounds-safety`, `building-document-based-swiftui-applications`, `app-intents-specialist`, `app-intents-whats-new-27`, `device-interaction`, `audit-xcode-security-settings`). The knowledge skills work in any tool; `device-interaction` and `audit-xcode-security-settings` call Xcode MCP tools, so they work from Cursor/Claude Code **only when the Xcode MCP is connected**. Re-export with `--replace-existing` after each Xcode update.
+- [ ] Xcode's own agent (plan mode, approve-before-build, ACP so Claude Code can run inside it, plugins that carry skills) is a specialist surface, not the daily driver: reach for it on pure-Swift UI units where you want the native plan/preview canvas. Cursor and Claude Code stay primary so every venture runs the same loop.
 
 ## Graduate when ready
 

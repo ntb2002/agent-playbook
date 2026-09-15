@@ -61,8 +61,8 @@ The full template ships everything; you enable layers as the project earns them.
 Every plan unit ends with a gate. Each gate item is tagged by evidence tier so review is fast and confident, not a deep read:
 
 - **`[CI]`** — a green check proves it (lint, tests, build). Best tier; aim for this. Only tag `[CI]` if the check actually exists.
-- **`[ARTIFACT]`** — a screenshot, recording, log, or curl output attached to the PR proves it. Includes agent-captured evidence — build/test output or preview renders via local tools (e.g. Xcode MCP). Only tag `[ARTIFACT]` if a tool can actually produce that evidence.
-- **`[MANUAL]`** — hands-on verification an agent genuinely can't do (physical device, real payments/push, interactive tap-through flows, subjective feel); spell out the exact steps + expected result.
+- **`[ARTIFACT]`** — a screenshot, recording, log, or curl output attached to the PR proves it. Includes agent-captured evidence — build/test output, preview renders, simulator screenshots from a driven flow, console/debugger output via local tools (e.g. Xcode 27 MCP). Only tag `[ARTIFACT]` if a tool the agent actually has can produce that evidence — check, don't assume; tool surfaces change between versions.
+- **`[MANUAL]`** — hands-on verification an agent genuinely can't do (physical-device-only behavior, real payments/push, subjective feel); spell out the exact steps + expected result.
 
 A unit is done only when every gate item is checked with evidence attached to the PR.
 
@@ -181,7 +181,8 @@ The thinking layer is above the loop, not in it: execution agents never read it.
 - **Grok Bot** — supervisor and ops agent, not a coder. Acts in tools with no API; can read cloud-agent transcripts and artifacts and push back when evidence doesn't match the claim. Its state is tied to the account — durable facts still go to the repo and the knowledge layer.
 - **Laptop / Cursor** — interactive work; ambiguous or cross-cutting units you drive yourself with the strongest model.
 - **Claude Code** — same git flow; `CLAUDE.md` imports `AGENTS.md` via `@AGENTS.md`. Best surface for messy, high-context debugging.
-- **Xcode (iOS projects)** — specialist surface: native agent for SwiftUI previews, simulator work, and crash-report-driven fixes; its MCP server (`xcrun mcpbridge`) gives Cursor/Claude Code a real build-test-preview loop. Local-only today; a self-hosted Mac worker would let cloud agents produce iOS `[ARTIFACT]` evidence. Setup in `templates/SETUP.md`.
+- **Xcode (iOS projects)** — its MCP server (`xcrun mcpbridge`) gives Cursor/Claude Code the full loop on Xcode 27: build, test, preview render, run with console, LLDB, drive the simulator and screenshot it, read field crashes. Local-only, so it backs `[ARTIFACT]`, never `[CI]`. Headless mode plus a Cursor Remote Control session on an always-on Mac is how iOS evidence gets produced from a phone. Xcode's native agent is a specialist surface, not the daily driver. Setup in `templates/SETUP.md`.
+- **Remote Control (Cursor)** — a local agent on your own Mac, steered from the phone/web; tool calls run against local files with local tools (Xcode, simulators, project MCPs, secrets). Same tokens as any agent; the win is capability, not cost. Requires an awake, logged-in, Git-backed Mac. The *local lane* for units whose gate needs local evidence; the *cloud lane* (Linear → cloud agent) for everything CI can prove.
 
 Per-project setup checklist (including the *venture cell* — everything a new venture needs beyond the repo) lives in `templates/SETUP.md`.
 

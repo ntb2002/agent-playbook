@@ -21,8 +21,8 @@ Two layouts, one doctrine (`PLAYBOOK.md` → *Phase mode and continuous mode*):
 Tag each gate item by evidence tier:
 
 - **[CI]** — a green check proves it. Best tier. Only tag `[CI]` if the check actually exists.
-- **[ARTIFACT]** — screenshot / recording / log / curl output attached to the PR. Includes agent-captured evidence: build/test output or preview renders via local tools (e.g. Xcode MCP).
-- **[MANUAL]** — hands-on verification an agent genuinely can't do (physical device, real payments/push, interactive tap-through flows, subjective feel). Spell out exact steps + expected result.
+- **[ARTIFACT]** — screenshot / recording / log / curl output attached to the PR. Includes agent-captured evidence: build/test output, preview renders, simulator screenshots from a driven flow, console/debugger output via local tools (e.g. Xcode 27 MCP). Only if the agent actually has the tool.
+- **[MANUAL]** — hands-on verification an agent genuinely can't do (physical-device-only behavior, real payments/push, subjective feel). Spell out exact steps + expected result.
 
 Before tagging `[ARTIFACT]`, confirm a tool can actually produce that evidence — a gate item is worthless if it silently invites the agent to overclaim.
 

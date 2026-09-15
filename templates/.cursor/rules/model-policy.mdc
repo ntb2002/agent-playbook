@@ -20,6 +20,16 @@ A small, reusable policy so model/tool choice is a default, not a per-task impro
 
 The spec quality sets the model floor: a tight unit spec with a clear gate makes cheap execution safe; an underdetermined unit means decisions get made during execution, so use the strong model even though it's "just execution." If the reverse cost is high (a `DECISIONS.md`-worthy call), the model cost is noise.
 
+## Where the choice gets made in continuous mode
+
+The tier is decided when the unit is planned, not when it's dispatched. `/plan-feature` ends the plan with a **Model:** line (`fast`, `mid`, or `strong`, with one clause of reasoning) using the table above; the human sees it at approval. Whoever dispatches honors it:
+
+- **Linear → Cursor cloud agent:** put `[model=<id>]` in the delegation comment (`@Cursor build this per plans/features/SS-42-*.md [model=…]`). Set a sensible dashboard default too, but don't rely on it — Linear-triggered agents have been observed ignoring it.
+- **Coordinator (Cursor Project):** picks the model per subagent from the plan's tier.
+- **You, driving directly:** Auto is fine for `fast`/`mid`; pick the strongest model explicitly for `strong`.
+
+Default tier for a well-specified unit is `mid`. Anything touching prompts that ship to users, safety behavior, schema, auth, or a `DECISIONS.md` call is `strong` regardless of size.
+
 ## Escalate on first failure
 
 If a fast/mid model whiffs a unit once, hand it to the strongest model — don't re-prompt the same tier. The second cheap attempt has worse odds than the first (it's now working around its own mess, or the spec was underdetermined), and two failed cheap runs plus review time cost more than one strong run.

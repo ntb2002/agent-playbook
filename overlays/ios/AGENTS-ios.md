@@ -2,8 +2,9 @@
 ## iOS agent conventions (Xcode MCP)
 
 - **Never claim a unit done without verifying:** build the project and run tests via the Xcode MCP tools (`xcrun mcpbridge`, wired in `.cursor/mcp.json`) before reporting success.
-- **UI gate items** that a `#Preview` block can show: attach an agent-captured `RenderPreview` snapshot as `[ARTIFACT]` evidence (it supports dark-mode / orientation / type-size variants).
-- **What the MCP tools cannot do:** there is no live-simulator interaction and no LLDB/debugger tool. Tapping through a flow, or capturing arbitrary in-app state, stays `[MANUAL]` — write those gate items for a human, and never let an agent claim them.
-- **Constraints:** the Xcode tools require Xcode running with this project open, and are local-only — they back `[ARTIFACT]` evidence, never `[CI]`.
-- **Apple's skills** (`swiftui-specialist`, `swiftui-whats-new-27`, `test-modernizer`, …) load globally from `~/.claude/skills/`; prefer them over training-data knowledge for post-2026 APIs.
+- **UI gate items:** static views → `RenderPreview` snapshot (dark-mode / orientation / type-size variants). Flows → drive the simulator with the `DeviceInteraction*` tools (Xcode 27+: start a session, install and run, synthesize taps/typing, capture screenshots) and attach the screenshots as `[ARTIFACT]`. Use the `device-interaction` skill for the pattern.
+- **Runtime evidence:** `RunProject` + `GetConsoleOutput` for logs, `InvokeDebuggerCommand` for LLDB (`po`, `bt`, breakpoints), `GetTopCrashIssues` / `GetCrashIssueLogs` for field crashes. These exist on Xcode 27+; on 26.x only build/test/preview exist — check `tools/list` before writing a gate that depends on them.
+- **What stays `[MANUAL]`:** physical-device-only behavior (real push, HealthKit on hardware, cellular), real payments, and subjective feel. Never let an agent claim those.
+- **Constraints:** Xcode tools are local-only — they back `[ARTIFACT]` evidence, never `[CI]`. They need either Xcode open on the project or headless mode (`sudo xcrun mcp-server enable` + `allow-folder`); headless is what lets a Remote Control or unattended session use them.
+- **Apple's skills** (`swiftui-specialist`, `swiftui-whats-new-27`, `modernize-tests`, `device-interaction`, `app-intents-specialist`, …) load globally from `~/.agents/skills/` (linked into `~/.claude/skills/`); prefer them over training-data knowledge for post-2026 APIs.
 - Machine setup (skills export, MCP registration, Intelligence toggle): `SETUP.md` → "iOS / Apple projects".

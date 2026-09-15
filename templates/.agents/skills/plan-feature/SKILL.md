@@ -19,6 +19,7 @@ This is the continuous-mode sibling of `/plan-phase`: same doctrine, one issue i
    - **The concrete work:** files/areas to touch, the approach, what NOT to touch.
    - **Verification gate:** every acceptance criterion becomes at least one gate item tagged `[CI]` / `[ARTIFACT]` / `[MANUAL]`, phone-checkable. Only tag `[CI]` if the check exists; only tag `[ARTIFACT]` if a tool can actually produce that evidence.
    - **Branch:** `<issue-id>-<slug>` so the tracker auto-links the PR and closes the issue on merge.
+   - **Model:** `fast` / `mid` / `strong` per `.cursor/rules/model-policy.mdc`, with one clause of reasoning. Prompts, safety, schema, auth, or a `DECISIONS.md` call → `strong`. This line is what the dispatcher turns into `[model=…]` or a subagent model choice.
 5. Log expensive-to-reverse decisions in `DECISIONS.md`.
 6. Update the `AGENTS.md` landing pad's *next actionable unit* to this file if it is now the top of the queue.
 
