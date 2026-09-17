@@ -61,7 +61,7 @@ The full template ships everything; you enable layers as the project earns them.
 Every plan unit ends with a gate. Each gate item is tagged by evidence tier so review is fast and confident, not a deep read:
 
 - **`[CI]`** — a green check proves it (lint, tests, build). Best tier; aim for this. Only tag `[CI]` if the check actually exists.
-- **`[ARTIFACT]`** — a screenshot, recording, log, or curl output attached to the PR proves it. Includes agent-captured evidence — build/test output, preview renders, simulator screenshots from a driven flow, console/debugger output via local tools (e.g. Xcode 27 MCP). Only tag `[ARTIFACT]` if a tool the agent actually has can produce that evidence — check, don't assume; tool surfaces change between versions.
+- **`[ARTIFACT]`** — a screenshot, recording, log, or curl output the reviewer can open from the PR or tracker issue proves it. Includes agent-captured evidence — build/test output, preview renders, simulator screenshots from a driven flow, console/debugger output via local tools (e.g. Xcode 27 MCP), browser recordings from a cloud agent's VM. Only tag `[ARTIFACT]` if a tool the agent actually has can produce that evidence — check, don't assume; tool surfaces change between versions. Placement matters as much as capture: on a private repo, images embedded in a PR body from the repo don't render; local-lane evidence is committed and *linked*, cloud-lane evidence rides Cursor's artifact pipeline. `templates/plans/README.md` has the table.
 - **`[MANUAL]`** — hands-on verification an agent genuinely can't do (physical-device-only behavior, real payments/push, subjective feel); spell out the exact steps + expected result.
 
 A unit is done only when every gate item is checked with evidence attached to the PR.

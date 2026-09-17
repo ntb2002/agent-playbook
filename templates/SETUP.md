@@ -32,6 +32,7 @@ A venture is more than its repo. Every venture in the portfolio gets the same sm
 - [ ] `.cursor/environment.json` runs `git config core.hooksPath .githooks` on install — fresh VMs enable the hook automatically. Add stack-specific install steps there as the project matures: the `install` step is what Cursor's *Builds* pre-bake, so anything preparable ahead of time (dependency install, hook enable) belongs in `install`, and only things that must be fresh per session belong in `start`. Enable Builds in Dashboard → Cloud Agents → the environment → Builds tab.
 - [ ] Confirm the agent can `gh pr create` (auth available in the environment).
 - [ ] `.cursor/hooks.json` fires in cloud agents too — confirm the commit guard blocks a `git commit` on `main` from a cloud run once.
+- [ ] **Artifacts in PRs:** Dashboard → Cloud Agents → *Allow posting artifacts to GitHub*. On, the agent's screenshots/recordings embed in the PR description via long unguessable **public** URLs (GitHub's image proxy can't read private repos; this is the only way they render inline). Decide per venture: fine for a training app's UI; think twice where screenshots could show a customer's data (e.g. an architect's drawings) — off means you review artifacts in the Cursor agent view instead. Only applies to PRs the cloud agent opened; local-lane evidence follows `plans/README.md` (commit + link + tracker attachment).
 
 ## Going live: tracker + coordinator + automations (continuous mode)
 

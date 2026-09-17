@@ -21,12 +21,23 @@ Two layouts, one doctrine (`PLAYBOOK.md` → *Phase mode and continuous mode*):
 Tag each gate item by evidence tier:
 
 - **[CI]** — a green check proves it. Best tier. Only tag `[CI]` if the check actually exists.
-- **[ARTIFACT]** — screenshot / recording / log / curl output attached to the PR. Includes agent-captured evidence: build/test output, preview renders, simulator screenshots from a driven flow, console/debugger output via local tools (e.g. Xcode 27 MCP). Only if the agent actually has the tool.
+- **[ARTIFACT]** — screenshot / recording / log / curl output the reviewer can actually open from the PR or the tracker issue. Includes agent-captured evidence: build/test output, preview renders, simulator screenshots from a driven flow, console/debugger output via local tools (e.g. Xcode 27 MCP), browser screenshots/recordings from a cloud agent's VM. Only if the agent actually has the tool — and only if the evidence is placed where it renders (see below).
 - **[MANUAL]** — hands-on verification an agent genuinely can't do (physical-device-only behavior, real payments/push, subjective feel). Spell out exact steps + expected result.
 
 Before tagging `[ARTIFACT]`, confirm a tool can actually produce that evidence — a gate item is worthless if it silently invites the agent to overclaim.
 
 A unit is done only when every gate item is checked with evidence on the PR.
+
+### Where evidence lives (and why images break)
+
+PR bodies and tracker issues are comments, not repo files, so relative image paths 404. On a **private** repo GitHub's image proxy can't fetch repo images either, so `raw`/`blob?raw=true` embeds break too, and there is no API to upload to GitHub's drag-and-drop attachment host. Hence two lanes, chosen by where the agent ran:
+
+| Lane | Who produces it | Where it goes | Where you look |
+|---|---|---|---|
+| **Local** (laptop, Remote Control; Xcode MCP, local browser) | agent on your Mac | PNG committed under `plans/artifacts/<issue-id>-<what>.png`; **linked** (not embedded) in the PR body by SHA-pinned blob URL; same file attached natively to the tracker issue | GitHub web/mobile while signed in; inline on the Linear issue (phone) |
+| **Cloud** (Cursor cloud agent VM; web apps, browser flows) | agent on a Cursor VM | `/opt/cursor/artifacts/` → attached to the agent run; embedded in the PR description if *Allow posting artifacts to GitHub* is on (public unguessable URLs) | Cursor agent view (desktop/iOS), and the PR body |
+
+Recordings (video) never go in git — cloud lane attaches them to the run/PR; local lane attaches them to the tracker issue. Keep committed PNGs small; if `plans/artifacts/` grows past a few tens of MB, sweep artifacts of long-shipped units (SHA-pinned links in old PRs keep working).
 
 ## What stays in the repo, and what doesn't
 

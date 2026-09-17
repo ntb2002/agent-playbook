@@ -12,7 +12,7 @@ Decision log touched (DECISIONS.md):  <!-- entry # or "none" -->
 
 ## Verification gate
 
-> Check every box and attach evidence. **[CI]** = a green check proves it · **[ARTIFACT]** = screenshot/recording/log/curl attached below · **[MANUAL]** = exact steps + expected result stated.
+> Check every box and attach evidence. **[CI]** = a green check proves it · **[ARTIFACT]** = screenshot/recording/log/curl the reviewer can open (private repo: **link** the SHA-pinned blob, don't `![]` embed; see `plans/README.md`) · **[MANUAL]** = exact steps + expected result stated.
 
 - [ ] **[CI]** Lint + tests green.
 - [ ] **[ARTIFACT]** / **[MANUAL]** Each gate item from the plan unit is satisfied (paste the unit's gate checklist with evidence).
@@ -21,7 +21,10 @@ Decision log touched (DECISIONS.md):  <!-- entry # or "none" -->
 
 ## Evidence
 
-<!-- Screenshots / recordings / curl output / CI summary. -->
+<!-- Screenshots / recordings / curl output / CI summary.
+     Local-lane images: [name](https://github.com/<owner>/<repo>/blob/<sha>/plans/artifacts/<file>.png) + attached on the tracker issue.
+     Cloud-lane images: leave to Cursor's artifact pipeline. -->
+
 
 ## Notes for reviewer
 
