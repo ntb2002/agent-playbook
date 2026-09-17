@@ -22,6 +22,7 @@ A venture is more than its repo. Every venture in the portfolio gets the same sm
 ## GitHub (once per repo)
 
 - [ ] Push the repo to GitHub; confirm CI runs on the first PR.
+- [ ] **Settings → General → Pull Requests:** enable *Automatically delete head branches*. Linear (and GitHub mobile) have no delete-branch control after merge; this is the one click that keeps the remote clean without opening GitHub. Already on for SmartSport.
 - [ ] **Settings → Branches → Add ruleset** for `main`: require a PR, require the CI status check, require up-to-date branches.
   - ⚠️ **Free + private repo:** GitHub won't *enforce* rulesets (wants Team/Pro). Not a blocker — CI still runs and shows on every PR; you keep the branch→PR→merge discipline, you just lose the hard block. For free hard enforcement, **make the repo public** (also good for a portfolio); or **GitHub Pro** (~$4/mo) protects private branches. Defer until others can merge or real users exist.
 - [ ] **Settings → Code security:** enable Secret scanning + Push protection.
