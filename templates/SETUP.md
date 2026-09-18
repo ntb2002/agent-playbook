@@ -76,7 +76,7 @@ Do this when the product has real users or when someone other than you needs to 
 
 - [ ] Install the **GitHub app for Slack**; subscribe a channel to the repo: `/github subscribe <owner>/<repo> pulls checks`.
 - [ ] Install **GitHub mobile**; turn on notifications for review requests + CI.
-- [ ] Install **Cursor for iOS** (paid plan): launch cloud agents, watch them, review diffs/artifacts, merge. Turn on notifications so "ready for review" reaches your lock screen. For a laptop agent you want to keep steering from your phone: Settings → Agents → Remote Control, then `/remote-control` in that agent.
+- [ ] Install **Cursor for iOS** (paid plan): launch cloud agents, watch them, review diffs/artifacts, merge. Turn on notifications so "ready for review" reaches your lock screen. For a laptop agent you want to keep steering from your phone: open the **venture repo** chat (not the playbook), Settings → Agents → Remote Control, then `/remote-control` in that agent. Remote Control does not add tools a cloud worker lacks; it reuses whatever MCP that workspace already has.
 - [ ] (If using Cursor cloud agents from Slack) connect the Cursor Slack integration so you can launch agents by message.
 - [ ] Sanity check the loop: launch a trivial agent task → PR opens → Slack pings → review + merge from phone.
 
@@ -99,15 +99,17 @@ Once per machine:
 
 Per iOS repo (new repos: `bootstrap.sh <dir> "<Name>" "<one-liner>" --ios` does the first two automatically):
 
-- [ ] Commit a project-scoped `.cursor/mcp.json` so Cursor gets the same tools:
+- [ ] Commit a **project-scoped** `.cursor/mcp.json` so Cursor gets the same tools **in this repo's chats**:
 
   ```json
   { "mcpServers": { "xcode": { "command": "xcrun", "args": ["mcpbridge"] } } }
   ```
 
+  Keep it project-scoped on purpose. Putting Xcode in `~/.cursor/mcp.json` would attach it to every local chat (playbook, NOVA, …). You do not want that. Every Remote Control session that needs simulator taps must be started from **this** repo's chat, with Xcode open on the project (or headless `allow-folder` for this repo). Opening Xcode while you Remote Control a different workspace does not leak the tools across.
+
 - [ ] Add the iOS agent conventions to `AGENTS.md` (verify via Xcode MCP before claiming done; preview snapshots as `[ARTIFACT]`) — see `overlays/ios/AGENTS-ios.md` in the playbook.
 
-- [ ] Know the constraints: the tools are **local-only** — cloud agents can't reach them, so they back `[ARTIFACT]` evidence, not `[CI]`. They need either Xcode open on the project, or **headless mode** (Xcode 27+, preview): `sudo xcrun mcp-server enable`, then `sudo xcrun mcp-server allow-folder <repo> --always`. Headless is what lets a Cursor *Remote Control* session on an always-on Mac (clamshell laptop counts) build, test, and drive the simulator from your phone. Never use `--unsafe-always-allow-all-agents`.
+- [ ] Know the constraints: the tools are **local-only** — cloud agents (`@Cursor` from Linear, Slack, or the iOS app's cloud lane) can't reach them, so they back `[ARTIFACT]` evidence, not `[CI]`. They need either Xcode open on the project **in this chat** (confirm `DeviceInteraction*` in the live tool catalog; on-disk descriptors are not enough), or **headless mode** (Xcode 27+, preview): `sudo xcrun mcp-server enable`, then `sudo xcrun mcp-server allow-folder <repo> --always`. Headless + Cursor *Remote Control* is how iOS evidence gets produced from a phone. **Clamshell only works with WindowServer awake:** power + external display (classic clamshell). Lid shut and no display = GUI asleep = simulator/Device Interaction will hang or never attach, even if the agent process is still running. Never use `--unsafe-always-allow-all-agents`.
 - [ ] Know what the tools cover — **verify with `tools/list`, the surface changed a lot between versions.** Xcode 26.x: 21 tools — build, tests, `RenderPreview`, snippets, docs. Xcode 27: 53 tools — adds `RunProject`/`StopProject`/`GetConsoleOutput`, `InvokeDebuggerCommand` (LLDB), `DeviceInteraction*` (boot simulator, install, synthesize taps, screenshot), `GetTopCrashIssues`/`GetCrashIssueLogs`, scheme/destination switching, build settings and entitlements editing, String Catalog tools.
 - [ ] Upgrade gates accordingly. On 27+: build/test, preview renders, **and simulator tap-through flows with screenshots** are `[ARTIFACT]` (agent-attached). `[MANUAL]` shrinks to physical-device-only behavior, real payments/push, and subjective feel.
 - [ ] Apple's skills (10 on Xcode 27: `swiftui-specialist`, `swiftui-whats-new-27`, `modernize-tests`, `uikit-app-modernization`, `adopt-c-bounds-safety`, `building-document-based-swiftui-applications`, `app-intents-specialist`, `app-intents-whats-new-27`, `device-interaction`, `audit-xcode-security-settings`). The knowledge skills work in any tool; `device-interaction` and `audit-xcode-security-settings` call Xcode MCP tools, so they work from Cursor/Claude Code **only when the Xcode MCP is connected**. Re-export with `--replace-existing` after each Xcode update.

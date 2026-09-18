@@ -20,8 +20,8 @@
 - **Product:** {{ONE_LINER}} (see `VISION.md`).
 - **Mode:** phase *(pre-v1)* | continuous *(live — tracker owns what's next)*. <pick one>
 - **Current phase:** <phase + one-line focus>. Plan: `plans/<phase>/`. *(phase mode)*
-- **Tracker:** <Linear team/project link>. *(continuous mode — engineering status lives there, not here)*
-- **Next actionable unit:** <unit> → `plans/<phase>/<unit>.md` or `plans/features/<issue-id>-<slug>.md`.
+- **Tracker:** <Linear team/project link>. *(continuous mode — engineering status lives there, not here. Work items are Linear issues. GitHub Issues are not used.)*
+- **Next actionable unit:** <Linear issue id> → `plans/features/<issue-id>-<slug>.md` after `/plan-feature`. *(phase mode: `plans/<phase>/<unit>.md`)*
 - **Working rhythm:** one plan unit → verify its gate → update `docs/status.md` + this landing pad → branch + PR → merge → next.
 - **Active background work:** none currently. *(coordinator / automations, if any: see `docs/coordinator.md`)*
 
@@ -85,7 +85,7 @@ Active-phase detail + gates: `plans/`. History: `docs/status.md`.
 | Product thesis | `VISION.md` |
 | How it works | `docs/architecture.md` |
 | Active plan + gates | `plans/` |
-| What's next (continuous mode) | the tracker — link in the landing pad |
+| What's next (continuous mode) | Linear — link in the landing pad. Not GitHub Issues. |
 | Coordinator brief | `docs/coordinator.md` |
 | Git / CI / review workflow | `docs/git-workflow.md` |
 | What shipped | `docs/status.md` |
