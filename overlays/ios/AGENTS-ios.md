@@ -1,7 +1,7 @@
 
 ## iOS agent conventions (Xcode MCP)
 
-- **Never claim a unit done without verifying:** build the project and run tests via the Xcode MCP tools (`xcrun mcpbridge`, wired in `.cursor/mcp.json`) before reporting success.
+- **Never claim a unit done without verifying:** build the project and run tests via the Xcode MCP tools (`xcrun mcpbridge`, wired in `.cursor/mcp.json` for Cursor and `.mcp.json` for Claude Code) before reporting success.
 - **UI gate items:** static views → `RenderPreview` snapshot (dark-mode / orientation / type-size variants). Flows → drive the simulator with the `DeviceInteraction*` tools (Xcode 27+: start a session, install and run, synthesize taps/typing, capture screenshots) and attach the screenshots as `[ARTIFACT]`. Use the `device-interaction` skill for the pattern.
 - **Runtime evidence:** `RunProject` + `GetConsoleOutput` for logs, `InvokeDebuggerCommand` for LLDB (`po`, `bt`, breakpoints), `GetTopCrashIssues` / `GetCrashIssueLogs` for field crashes. These exist on Xcode 27+; on 26.x only build/test/preview exist — check `tools/list` before writing a gate that depends on them.
 - **What stays `[MANUAL]`:** physical-device-only behavior (real push, HealthKit on hardware, cellular), real payments, and subjective feel. Never let an agent claim those.

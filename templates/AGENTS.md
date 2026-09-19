@@ -72,6 +72,7 @@ Active-phase detail + gates: `plans/`. History: `docs/status.md`.
 - **Single source of truth for conventions:** this file. **Thesis:** `VISION.md`. **How it works:** `docs/architecture.md`.
 - **Git workflow is non-negotiable:** never commit to `main`. Every unit goes on a branch (`<phase>/<unit>`, or `<issue-id>-<slug>` for tracker-driven units) → commits → push → PR → CI green → review → merge. Full model: `docs/git-workflow.md`.
 - **Coordinators (Cursor Projects) and supervisors obey this file too.** They plan, delegate, verify evidence, and report; they never write code or merge. Their brief: `docs/coordinator.md`.
+- **Scoped rules are Cursor-native but bind every agent.** Cursor auto-loads `.cursor/rules/*.mdc` by glob; Claude Code and Codex do not — before editing a file, read the `.mdc` whose `globs` match it.
 - **When you change a convention/architecture:** update `AGENTS.md` first, log it in `DECISIONS.md`, then update the relevant `.cursor/rules/*.mdc`.
 - **When you finish a unit:** verify its gate, update `docs/status.md` + the landing pad, push the branch and open the PR (don't merge — that's the human gate).
 - **Plans are in-repo** (`plans/`), not machine-local. Tool plan modes are ephemeral scratch.

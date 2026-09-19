@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Scaffold a new project from the agent-playbook templates.
 # Usage: ./bootstrap.sh <target-dir> "<Project Name>" "<one-liner>" [--ios]
-#   --ios  also layer the iOS overlay (.cursor/mcp.json for Xcode MCP,
+#   --ios  also layer the iOS overlay (.cursor/mcp.json + .mcp.json for Xcode MCP,
 #          iOS agent conventions appended to AGENTS.md)
 set -euo pipefail
 
@@ -23,6 +23,7 @@ mv "$TARGET/gitignore" "$TARGET/.gitignore"
 
 if [ "$IOS" -eq 1 ]; then
   cp "$PLAYBOOK_DIR/overlays/ios/.cursor/mcp.json" "$TARGET/.cursor/mcp.json"
+  cp "$PLAYBOOK_DIR/overlays/ios/.mcp.json" "$TARGET/.mcp.json"   # Claude Code project scope
   cat "$PLAYBOOK_DIR/overlays/ios/AGENTS-ios.md" >> "$TARGET/AGENTS.md"
 fi
 
@@ -51,7 +52,7 @@ Next steps:
   3. Work the maturity ladder — see SETUP.md (venture cell, branch protection, phone orchestration, cloud agents).
   4. The pre-commit hook is already enabled (core.hooksPath = .githooks).
   5. When the product goes live: SETUP.md → "Going live" (Linear team, Cursor Project pointed at docs/coordinator.md, pr-review automation).
-$( [ "$IOS" -eq 1 ] && echo "  6. iOS overlay applied: .cursor/mcp.json + AGENTS.md conventions. Do the per-machine Xcode setup in SETUP.md → 'iOS / Apple projects'." )
+$( [ "$IOS" -eq 1 ] && echo "  6. iOS overlay applied: .cursor/mcp.json + .mcp.json + AGENTS.md conventions. Do the per-machine Xcode setup in SETUP.md → 'iOS / Apple projects'." )
 
 Match ceremony to maturity: an idea-stage project may only need VISION.md + a rough phase sketch.
 EOF
