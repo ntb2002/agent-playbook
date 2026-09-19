@@ -20,8 +20,8 @@
 - **Product:** {{ONE_LINER}} (see `VISION.md`).
 - **Mode:** phase *(pre-v1)* | continuous *(live — tracker owns what's next)*. <pick one>
 - **Current phase:** <phase + one-line focus>. Plan: `plans/<phase>/`. *(phase mode)*
-- **Tracker:** <Linear team/project link>. *(continuous mode — engineering status lives there, not here)*
-- **Next actionable unit:** <unit> → `plans/<phase>/<unit>.md` or `plans/features/<issue-id>-<slug>.md`.
+- **Tracker:** <Linear team/project link>. *(continuous mode — engineering status lives there, not here. Work items are Linear issues. GitHub Issues are not used.)*
+- **Next actionable unit:** <Linear issue id> → `plans/features/<issue-id>-<slug>.md` after `/plan-feature`. *(phase mode: `plans/<phase>/<unit>.md`)*
 - **Working rhythm:** one plan unit → verify its gate → update `docs/status.md` + this landing pad → branch + PR → merge → next.
 - **Active background work:** none currently. *(coordinator / automations, if any: see `docs/coordinator.md`)*
 
@@ -72,6 +72,7 @@ Active-phase detail + gates: `plans/`. History: `docs/status.md`.
 - **Single source of truth for conventions:** this file. **Thesis:** `VISION.md`. **How it works:** `docs/architecture.md`.
 - **Git workflow is non-negotiable:** never commit to `main`. Every unit goes on a branch (`<phase>/<unit>`, or `<issue-id>-<slug>` for tracker-driven units) → commits → push → PR → CI green → review → merge. Full model: `docs/git-workflow.md`.
 - **Coordinators (Cursor Projects) and supervisors obey this file too.** They plan, delegate, verify evidence, and report; they never write code or merge. Their brief: `docs/coordinator.md`.
+- **Scoped rules are Cursor-native but bind every agent.** Cursor auto-loads `.cursor/rules/*.mdc` by glob; Claude Code and Codex do not — before editing a file, read the `.mdc` whose `globs` match it.
 - **When you change a convention/architecture:** update `AGENTS.md` first, log it in `DECISIONS.md`, then update the relevant `.cursor/rules/*.mdc`.
 - **When you finish a unit:** verify its gate, update `docs/status.md` + the landing pad, push the branch and open the PR (don't merge — that's the human gate).
 - **Plans are in-repo** (`plans/`), not machine-local. Tool plan modes are ephemeral scratch.
@@ -85,7 +86,7 @@ Active-phase detail + gates: `plans/`. History: `docs/status.md`.
 | Product thesis | `VISION.md` |
 | How it works | `docs/architecture.md` |
 | Active plan + gates | `plans/` |
-| What's next (continuous mode) | the tracker — link in the landing pad |
+| What's next (continuous mode) | Linear — link in the landing pad. Not GitHub Issues. |
 | Coordinator brief | `docs/coordinator.md` |
 | Git / CI / review workflow | `docs/git-workflow.md` |
 | What shipped | `docs/status.md` |
