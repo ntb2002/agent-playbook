@@ -22,7 +22,7 @@
 - **Current phase:** <phase + one-line focus>. Plan: `plans/<phase>/`. *(phase mode)*
 - **Tracker:** <Linear team/project link>. *(continuous mode — engineering status lives there, not here. Work items are Linear issues. GitHub Issues are not used.)*
 - **Next actionable unit:** <Linear issue id> → `plans/features/<issue-id>-<slug>.md` after `/plan-feature`. *(phase mode: `plans/<phase>/<unit>.md`)*
-- **Working rhythm:** one plan unit → verify its gate → update `docs/status.md` + this landing pad → branch + PR → merge → next.
+- **Working rhythm:** pick the lane by risk (`PLAYBOOK.md` → *Proportional rigor*): **fast** (human "go" in chat → issue as record → fix + evidence → PR), **standard** (Todo issue → `/start-unit` → `/close-unit`), **deep** (`/plan-feature` → human review → `/start-unit` → `/close-unit`). Every lane: Linear issue, branch, PR, gate evidence.
 - **Active background work:** none currently. *(coordinator / automations, if any: see `docs/coordinator.md`)*
 
 ---
