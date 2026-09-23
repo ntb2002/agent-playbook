@@ -11,7 +11,7 @@ A small, reusable policy so model/tool choice is a default, not a per-task impro
 
 | Work type | Model | Reasoning |
 |---|---|---|
-| Planning, architecture, decomposing a project into issues (`/plan-phase`), Deep-lane specs, design trade-offs | strongest available | medium, raised only if it visibly falls short |
+| Planning, architecture, decomposing a project into issues (`/plan <project>`), Deep-lane specs, design trade-offs | strongest available | medium, raised only if it visibly falls short |
 | Executing an ambiguous or cross-cutting unit (schema, auth, multi-system refactor) | strongest available | high |
 | Debugging anything gnarly (cheap-model attempts have failed or the bug spans systems) | strongest available | high |
 | Executing a well-specified plan unit | fast/mid model | medium |
@@ -34,7 +34,7 @@ Planning tokens are the expensive ones. Do planning where the budget resets ofte
 
 ## Where the choice gets made
 
-The tier is decided when the issue is specified, not when it's dispatched. `/plan-phase` and `/plan-feature` end each spec with a **Model:** line (`fast`, `mid`, or `strong`, with one clause of reasoning) using the table above; the human sees it at approval. Whoever dispatches honors it:
+The tier is decided when the issue is specified, not when it's dispatched. `/plan` ends each spec with a **Model:** line (`fast`, `mid`, or `strong`, with one clause of reasoning) using the table above; the human sees it at approval. Whoever dispatches honors it:
 
 - **Linear → Cursor cloud agent:** put `[model=<id>]` in the delegation comment (`@Cursor build SS-42 [model=…]`, pointing at the plan file if Deep lane). Set a sensible dashboard default too, but don't rely on it — Linear-triggered agents have been observed ignoring it.
 - **Coordinator (Cursor Project):** picks the model per subagent from the issue's tier.
@@ -50,7 +50,7 @@ If a fast/mid model whiffs a unit once, hand it to the strongest model — don't
 
 ## Planning is a reviewed deliverable, not a side effect
 
-When decomposing a project (`/plan-phase`): file the issues into the tracker — the first one or two fully specified with entry deps + verification gates, the rest thin — **and stop**. Never move status. When specifying a Deep-lane issue (`/plan-feature`): write `plans/features/<issue-id>-<slug>.md` **and stop**. A human accepts, promotes, and approves before any execution agent builds. Don't let a planning run drift into implementation.
+When decomposing a project (`/plan <project>`): file the issues into the tracker — the first one or two fully specified with entry deps + verification gates, the rest thin — **and stop**. Never move status. When specifying a Deep-lane issue (`/plan <issue-id>`): write `plans/features/<issue-id>-<slug>.md` **and stop**. A human accepts, promotes, and approves before any execution agent builds. Don't let a planning run drift into implementation.
 
 ## Parallelism
 

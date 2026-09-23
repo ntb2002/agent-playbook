@@ -50,7 +50,9 @@ if [ ! -f "$TARGET/docs/coordinator.md" ]; then
 fi
 
 # Drop legacy copies of the rituals from the pre-skills era (now in .agents/skills/).
-for cmd in plan-phase start-unit close-unit context-sync; do
+# Note: .agents/skills/plan-phase and plan-feature are one-line deprecation stubs
+# pointing at /plan; they ship for one sync cycle and are then removed from templates.
+for cmd in plan-phase plan-feature start-unit close-unit context-sync; do
   rm -f "$TARGET/.claude/commands/$cmd.md"
 done
 rmdir "$TARGET/.claude/commands" 2>/dev/null || true

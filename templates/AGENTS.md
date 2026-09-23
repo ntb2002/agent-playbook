@@ -20,8 +20,8 @@
 - **Product:** {{ONE_LINER}} (see `VISION.md`).
 - **Tracker:** **{{TRACKER}}** — <team/project link, or `gh issue list` for this repo>. Issues live here and nowhere else: `/start-unit <id>` fetches from this tracker (Linear MCP, or `gh issue view`) and stops if it can't. Delivery status lives there, not here.
 - **Active project:** <tracker project + one-line outcome>. Optional design notes: `plans/<project>/README.md`.
-- **Next unit:** <issue id> — the Todo issue you're about to build. Deep lane only: `plans/features/<issue-id>-<slug>.md` after `/plan-feature`.
-- **Working rhythm:** pick the lane by risk (`PLAYBOOK.md` → *Proportional rigor*): **fast** (human "go" in chat → issue as record → fix + evidence → PR), **standard** (Todo issue → `/start-unit` → `/close-unit`; the issue is the spec), **deep** (`/plan-feature` → human review → `/start-unit` → `/close-unit`). Every lane: tracker issue, branch `<issue-id>-<slug>`, PR, gate evidence.
+- **Next unit:** <issue id> — the Todo issue you're about to build. Deep lane only: `plans/features/<issue-id>-<slug>.md` after `/plan <issue-id>`.
+- **Working rhythm:** pick the lane by risk (`PLAYBOOK.md` → *Proportional rigor*): **fast** (human "go" in chat → issue as record → fix + evidence → PR), **standard** (Todo issue → `/start-unit` → `/close-unit`; the issue is the spec), **deep** (`/plan <issue-id>` → human review → `/start-unit` → `/close-unit`). Every lane: tracker issue, branch `<issue-id>-<slug>`, PR, gate evidence.
 - **WIP limit:** one issue being built in this repo at a time (+ at most one read-only investigation). Open PRs awaiting review don't count. An issue is a **session-sized** unit: in-scope tweaks are commits in its PR, out-of-scope finds are a new issue.
 - **Active background work:** none currently. *(coordinator / automations are off by default — see `docs/coordinator.md` for the trigger)*
 
@@ -73,7 +73,7 @@ The tracker owns it — projects, milestones, and issues live in **{{TRACKER}}**
 - **When you finish a unit:** verify its gate, update `docs/status.md` + the landing pad, push the branch and open the PR (don't merge — that's the human gate).
 - **The issue is the spec.** Deep-lane units also get an in-repo plan file (`plans/features/`), not a machine-local one. Tool plan modes are ephemeral scratch. `plans/` is never where you look for work.
 - **One fact, one home.** Link to paths + line numbers; never paste full files into prompts.
-- **Automation:** model/tool policy in `.cursor/rules/model-policy.mdc`; rituals in `.agents/skills/` (`/plan-phase`, `/plan-feature`, `/start-unit`, `/close-unit`, `/context-sync`); guard via `.githooks/pre-commit` (enable with `git config core.hooksPath .githooks`) + `.cursor/hooks.json`; subagents in `.claude/agents/`; unattended jobs' prompts in `.cursor/automations/`.
+- **Automation:** model/tool policy in `.cursor/rules/model-policy.mdc`; rituals in `.agents/skills/` (`/plan`, `/start-unit`, `/close-unit`, `/context-sync`); guard via `.githooks/pre-commit` (enable with `git config core.hooksPath .githooks`) + `.cursor/hooks.json`; subagents in `.claude/agents/`; unattended jobs' prompts in `.cursor/automations/`.
 
 ## Quick reference
 
