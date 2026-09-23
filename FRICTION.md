@@ -1,6 +1,6 @@
 # Friction log
 
-> Append-only. What was clunky, wrong, or missing when the playbook met reality. Anyone — a Cursor thread, a venture agent, a human — appends here; **only the steward edits doctrine.** Reviewed with the Chief of Staff every two weeks; the steward proposes changes from it, Nathan decides. When an entry is resolved, add a `→ resolved:` line pointing at the PR; don't delete it.
+> Append-only. What was clunky, wrong, or missing when the playbook met reality. Anyone — a Cursor thread, a venture agent, a human — appends here; **the steward edits doctrine** (Cursor threads may PR verified Cursor-mechanics corrections directly). Reviewed with the Chief of Staff every two weeks; the steward proposes changes from it, Nathan decides. When an entry is resolved, add a `→ resolved:` line pointing at the PR; don't delete it.
 >
 > Entry format: `### YYYY-MM-DD · <repo> · <one-line summary>` then: what happened, which doctrine section it touches, the exact correction if you know it.
 

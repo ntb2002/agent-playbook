@@ -12,7 +12,7 @@
 | **Executor — cloud lane** | Cursor cloud agents (from Linear `@Cursor`, Slack, GitHub `@cursoragent`, the iOS app, or chat) · Claude Code cloud sessions | Never has local-only tools. |
 | **Coordinator** *(earned)* | Cursor Project | One per repo. Off by default. |
 | **Reviewer** | `code-review` subagent (always) · Cursor Bugbot / CodeRabbit *(earned)* · `pr-review` Automation *(earned)* | |
-| **Supervisor** *(optional)* | Grok Bot · you | Account-bound memory; durable facts go to the repo. |
+| **Supervisor** *(optional)* | Grok Bot · you | In this role it verifies and escalates; account-bound memory, durable facts go to the repo. |
 | **Thinking layer / thinking agent** | Notion · Claude projects · Linear Agent · Grok Bot | Off the code loop. |
 | **Model routing** | `fast`/`mid` → Cursor · `strong` → Claude Code (Opus 5.5, medium effort) · overflow → Codex | `templates/.cursor/rules/model-policy.mdc` has the table. |
 
@@ -85,6 +85,6 @@
 ## Slack · Grok Bot · Notion · Railway
 
 - **Slack:** `#<venture>-dev` per venture; GitHub app subscribed to `pulls checks`; launch Cursor cloud agents by message; `@Cursor worker=<name>` targets your machine.
-- **Grok Bot:** supervisor and ops agent, not a coder. Acts in tools with no API; can read cloud-agent transcripts and artifacts and push back. Memory is account-bound — durable facts go to the repo or the knowledge hub. Files tracker issues; never dispatches coding agents at a repo that has a coordinator.
+- **Grok Bot:** supervisor and ops agent. Acts in tools with no API; can read cloud-agent transcripts and artifacts and push back. Memory is account-bound — durable facts go to the repo or the knowledge hub. Files tracker issues; never dispatches coding agents at a repo that has a coordinator.
 - **Notion:** the thinking layer. A venture hub links the active tracker project and never restates delivery status. Execution agents don't read it.
 - **Railway** (SmartSport backend, Hobby plan): the CLI's built-in MCP proxy (`railway mcp`, stdio, in `~/.cursor/mcp.json`) works after `railway login`. The Cursor Railway *plugin*'s HTTP OAuth to `mcp.railway.com` hangs on the localhost callback on this machine *(observed)* — use the CLI proxy. `railway login --browserless` is the fallback when the browser flow stalls. Never print secret values; list key names only.

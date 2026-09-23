@@ -1,12 +1,12 @@
 # agent-playbook
 
-The operating standard for building software with AI coding agents across Nathan's ventures and tools. One loop, applied the same way in every repo, designed for a founder who orchestrates several agents and reviews from a phone.
+The operating standard for building software with AI coding agents across Nathan's ventures and tools. One loop, applied the same way in every repo, designed for a founder who orchestrates several agents and needs to be able to review from anywhere, phone included.
 
 If you are new here — human or agent — read this file, then [`PLAYBOOK.md`](PLAYBOOK.md), then [`FRICTION.md`](FRICTION.md). That is the whole onboarding.
 
 ## The idea in one paragraph
 
-Work is **issues** in a **tracker** (Linear for ventures, GitHub Issues for solo tools). An issue is a **session-sized** unit with acceptance criteria and an evidence-tagged **gate**. A human approves what enters the build queue; an agent builds exactly one issue on a branch named for it, gathers evidence, and opens a PR; the human reviews the evidence and merges from a phone; the tracker closes the issue. Ceremony scales with risk (**Fast / Standard / Deep** lanes) but the proof never shrinks. Heavy machinery — a coordinator, automations, a bot reviewer — stays off until a trigger says you need it. The repo holds *how it works*; the tracker holds *what's next*; the thinking layer (Notion) holds *why*, and execution agents never read it.
+Work is **issues** in a **tracker** (Linear for ventures, GitHub Issues for solo tools). An issue is a **session-sized** unit with acceptance criteria and an evidence-tagged **gate**. A human approves what enters the build queue; an agent builds exactly one issue on a branch named for it, gathers evidence, and opens a PR; the human reviews the evidence and merges (laptop or phone); the tracker closes the issue. Ceremony scales with risk (**Fast / Standard / Deep** lanes) but the proof never shrinks. Heavy machinery — a coordinator, automations, a bot reviewer — stays off until a trigger says you need it. The repo holds *how it works*; the tracker holds *what's next*; the thinking layer (Notion) holds *why*, and execution agents never read it.
 
 ## What's in this repo
 
@@ -64,17 +64,17 @@ Agent Skills in `.agents/skills/<name>/SKILL.md` (Claude Code follows the `.clau
 
 - A tracker issue as the record. Issues live in the declared tracker and nowhere else.
 - One issue = one branch `<issue-id>-<slug>` = one PR. `main` is sacred.
-- Gate evidence on the PR, tiered `[CI]` / `[ARTIFACT]` / `[MANUAL]`, judgeable from a phone. Only tag what a tool the agent actually has can produce.
+- Gate evidence on the PR, tiered `[CI]` / `[ARTIFACT]` / `[MANUAL]`, judgeable in ~30 seconds on a small screen (so it's fast on a laptop too). Only tag what a tool the agent actually has can produce.
 - Agents never move issue status by hand (undoing their own mistake and the Fast lane excepted). Humans click.
 - One issue being built per repo at a time. Open PRs awaiting review don't count.
 - Execution agents never read the thinking layer.
 
 ## Reference implementation and sandbox
 
-**NOVA** is the reference implementation once it has code. **SmartSport** (`~/Developer/smartSportApp`) is paused and is the **sandbox**: workflow experiments run there first, and they test workflow, never features.
+**NOVA** is the reference implementation once it has code. **SmartSport** (`~/Developer/smartSportApp`) is the **sandbox**: workflow experiments run there first, and they test workflow, never features. SmartSport's own feature work is a portfolio call, not a doctrine one.
 
 ## How this repo changes
 
-One **steward** — a Claude Code agent (strong tier) launched in this repo — is the only writer of doctrine and templates. Direction comes from Nathan and the Chief of Staff; the steward turns decisions into text, keeps `FRICTION.md` and `CHANGELOG.md`, and pushes back when a decision has an implementation problem. Everyone else who hits friction — a Cursor thread, a venture agent, a human — appends to `FRICTION.md` with the exact correction if they know it. Friction is reviewed every two weeks; the steward proposes, Nathan decides, the change ships as a PR that Nathan merges. Doctrine first (`PLAYBOOK.md`), then templates, then `sync.sh` into a venture as a separate reviewed step. Doctrine PRs never sync into a venture.
+One **steward** — a Claude Code agent (strong tier) launched in this repo — owns doctrine and templates. The one exception: a Cursor thread that has verified how a Cursor feature actually behaves may open a narrow PR fixing that fact. Direction comes from Nathan and the Chief of Staff; the steward turns decisions into text, keeps `FRICTION.md` and `CHANGELOG.md`, and pushes back when a decision has an implementation problem. Everyone else who hits friction — a Cursor thread, a venture agent, a human — appends to `FRICTION.md` with the exact correction if they know it. Friction is reviewed every two weeks; the steward proposes, Nathan decides, the change ships as a PR that Nathan merges. Doctrine first (`PLAYBOOK.md`), then templates, then `sync.sh` into a venture as a separate reviewed step. Doctrine PRs never sync into a venture.
 
 Doctrine is written in **roles** (tracker, coordinator, executor, reviewer, supervisor). Product names live in `docs/surfaces.md` so a vendor shipping a feature changes one dated file, not the rules.

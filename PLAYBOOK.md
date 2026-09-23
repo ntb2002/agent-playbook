@@ -1,8 +1,8 @@
 # The Agent Playbook
 
-> A portfolio-wide standard for building software with AI coding agents (Cursor, Claude Code, their cloud agents, and the coordinators that run them) — designed for a founder who orchestrates multiple agents across multiple ventures and reviews from a phone.
+> A portfolio-wide standard for building software with AI coding agents (Cursor, Claude Code, their cloud agents, and the coordinators that run them) — designed for a founder who orchestrates multiple agents across multiple ventures and must be able to review from anywhere, phone included.
 >
-> This is the **doctrine**. The [`templates/`](templates/) are the copy-ready files; [`bootstrap.sh`](bootstrap.sh) scaffolds a new project from them. NOVA is the reference implementation once it has code; SmartSport (`~/Developer/smartSportApp`, paused) is the sandbox where workflow experiments run first. Rationale for every doctrine change is in [`CHANGELOG.md`](CHANGELOG.md); open problems are in [`FRICTION.md`](FRICTION.md).
+> This is the **doctrine**. The [`templates/`](templates/) are the copy-ready files; [`bootstrap.sh`](bootstrap.sh) scaffolds a new project from them. NOVA is the reference implementation once it has code; SmartSport (`~/Developer/smartSportApp`) is the sandbox where workflow experiments run first. Rationale for every doctrine change is in [`CHANGELOG.md`](CHANGELOG.md); open problems are in [`FRICTION.md`](FRICTION.md).
 
 ---
 
@@ -235,21 +235,21 @@ The loop is described in **roles**. Which product fills a role this quarter is i
         │                          │                 CI runs (+ hook ran)
    issue closes on merge           │                          │
         ▲                          ▼                          ▼
-   (human, on a phone) ◄─ merge ◄─ review evidence ◄─ reviewer ◄─ PR open ◄─┘
+   (human) ◄─ merge ◄─ review evidence ◄─ reviewer ◄─ PR open ◄─┘
                                        ▲
                           supervisor checks [ARTIFACT] is real, pings the human
 ```
 
-The thinking layer is above the loop, not in it: execution agents never read it. Issues can be drafted from it by anyone — you, a co-founder, a thinking agent — but the arrow into the build queue is a human approval. Before the coordinator trigger fires, the middle column is you: you pick the Todo issue, an agent builds it, you review on your phone. The tracker column is there from the first commit.
+The thinking layer is above the loop, not in it: execution agents never read it. Issues can be drafted from it by anyone — you, a co-founder, a thinking agent — but the arrow into the build queue is a human approval. Before the coordinator trigger fires, the middle column is you: you pick the Todo issue, an agent builds it, you review the PR. The tracker column is there from the first commit.
 
 | Role | Does | Never does | Owes |
 |---|---|---|---|
 | **Tracker** | Holds what's next and who's on it: Triage → Backlog → Todo → In Progress → Done. Where issues are drafted, shaped, approved, and delegated from. | Hold *how it works* (repo) or *why* (thinking layer). | One issue per unit of work; status moved only by human click or PR automation. |
-| **Human** | Accepts and promotes issues; approves Deep-lane plans; reviews evidence; merges. Answers `## Needs human`. | Hand-type code from a phone; rewrite issues by hand; resolve product questions inside an agent's plan. | Two clicks per issue, one merge per PR, answers as comments. |
+| **Human** | Accepts and promotes issues; approves Deep-lane plans; reviews evidence; merges — from a laptop or a phone, whichever is at hand. Answers `## Needs human`. | Rewrite issues by hand; resolve product questions inside an agent's plan. | Two clicks per issue, one merge per PR, answers as comments. |
 | **Coordinator** *(earned)* | Pulls the next Todo issue, runs `/plan` when the lane needs it, dispatches one executor per issue, watches the PR to green, verifies the gate, reports. One per repo. | Write code. Merge. Resolve product questions. Pull from Triage or Backlog. Change status. | A PR link plus the gate checklist with evidence, or a clear "blocked on X." |
 | **Executor** | Builds exactly one issue on its branch `<issue-id>-<slug>`; gathers evidence per gate item as it goes; opens the PR; stops. | Widen scope silently; touch `main`; claim `[ARTIFACT]` or `[MANUAL]` it didn't produce; read the knowledge layer. | Evidence on the PR for every gate item, or an honest gap. |
 | **Reviewer** *(bot reviewer earned; `code-review` subagent always available)* | Reads the diff against `AGENTS.md`, the gate against the PR's evidence, and scope against the issue. Posts one verdict. | Edit, push, approve, or merge. Comment on style the linter enforces. | `BLOCK` / `APPROVE-WITH-FIXES` / `APPROVE` with file:line findings, readable on a phone. |
-| **Supervisor** *(optional)* | Watches PRs and agent runs; confirms every `[ARTIFACT]` has a real attachment; nudges stalled work; escalates to the human. | Write code. Dispatch coding agents at a repo that has a coordinator (files a tracker issue instead). | A ping when a PR is ready or when the evidence doesn't match the claim. |
+| **Supervisor** *(optional)* | Watches PRs and agent runs; confirms every `[ARTIFACT]` has a real attachment; nudges stalled work; escalates to the human. | Merge. Change issue status. Dispatch coding agents at a repo that has a coordinator (files a tracker issue instead). The agent filling this role may well code elsewhere; *in this role* it verifies. | A ping when a PR is ready or when the evidence doesn't match the claim. |
 | **Thinking agent** | Drafts issues from strategy, shapes the product side (impact, criteria, `## Needs human`), dedupes and labels Triage. | Touch code. Guess root causes. Change status. | Issues a human can accept in one read. |
 
 **Two evidence lanes, chosen by where the executor runs:**
@@ -259,7 +259,7 @@ The thinking layer is above the loop, not in it: execution agents never read it.
 
 Which lane a unit takes is decided when its gate is written: a gate item that needs a local-only tool puts the whole unit in the local lane. Only tag `[ARTIFACT]` for evidence a tool **in the executor's live catalog** can produce — descriptors cached on disk from another session do not count, and an agent working in one repo's workspace does not acquire another repo's tools by hopping workspaces. A playbook or ops agent stays in its own repo.
 
-**Phone review is the design constraint.** Every role's output must be judgeable in ~30 seconds on a phone: a gate checklist with evidence, a verdict line, a ping with a link. That is why gates are tiered, why titles name the work, and why evidence has placement rules (`templates/plans/README.md`).
+**Reviewable from a phone is the design bar, not a rule about where you sit.** Every role's output must be judgeable in ~30 seconds on a small screen: a gate checklist with evidence, a verdict line, a ping with a link. Meeting that bar is what makes review fast everywhere — laptop included, which is where much of it happens. It is why gates are tiered, why titles name the work, and why evidence has placement rules (`templates/plans/README.md`).
 
 Per-project setup checklist (including the *venture cell* — everything a new venture needs beyond the repo) lives in `templates/SETUP.md`.
 
@@ -270,11 +270,11 @@ Per-project setup checklist (including the *venture cell* — everything a new v
 1. **New project:** run `./bootstrap.sh <path> "<Project Name>" "<one-liner>" [--tracker linear|github] [--ios]`. It scaffolds the docs + automation, parameterizes placeholders, and prints the human steps for the chosen tracker. The tracker is set up at bootstrap, not later.
 2. **Existing project:** copy the relevant `templates/` files in, fill placeholders, declare the tracker in the landing pad, and adopt incrementally (add CI + branch protection when it can break). `./sync.sh <repo>` refreshes the ritual layer later.
 3. **Earning the machinery:** turn on the coordinator, automations, and bot reviewer one at a time, each when its trigger fires (*Earned machinery*). `templates/SETUP.md` has the steps; they are optional sections, not a launch checklist.
-4. **Evolving the standard.** **NOVA is the reference implementation** once it has code — the trial for this doctrine. **SmartSport is paused** (Sept 2026, until the NOVA MVP ships) and is the **sandbox**: workflow experiments run there before they reach NOVA. Experiments test workflow, never features; if the output of an experiment is a SmartSport feature, it wasn't an experiment. When a practice proves out, generalize it into this doctrine first, then the templates.
+4. **Evolving the standard.** **NOVA is the reference implementation** once it has code — the trial for this doctrine. **SmartSport is the sandbox**: workflow experiments run there before they reach NOVA, and experiments test workflow, never features — if the output of an experiment is a SmartSport feature, it wasn't an experiment. Whether SmartSport's own feature work continues alongside is a portfolio call made in the thinking layer, not doctrine; the sandbox role holds either way. When a practice proves out, generalize it into this doctrine first, then the templates.
 
 ### The playbook steward
 
-- **One writer.** A single Claude Code agent (strong tier), launched inside this repo, is the steward and the only writer of doctrine and templates. Cursor threads and venture agents that hit playbook friction — including a Cursor-specific fact in the doctrine that turns out to be wrong — log the exact correction in `FRICTION.md`; they do not edit doctrine. The steward verifies and writes it. One writer, no exceptions.
+- **One owner, one exception.** A single Claude Code agent (strong tier), launched inside this repo, is the steward and owns doctrine and templates. Venture agents that hit playbook friction log it in `FRICTION.md`; they do not edit doctrine. The one exception is **Cursor mechanics**: a Cursor thread that verifies how a Cursor feature actually behaves (Remote Control, Projects, Automations, MCP loading, the IDE) may open a narrow PR fixing that fact in `docs/surfaces.md` or the sentence in doctrine that depends on it — Nathan reviews it like any other PR. Everything else a Cursor thread notices goes to `FRICTION.md`.
 - **Direction comes from Nathan + Chief of Staff.** The steward turns decisions into doctrine text and templates, maintains the friction log, and pushes back when a decision has an implementation problem. It does not set strategy.
 - **Memory lives in the repo, not in chat.** Doctrine in `PLAYBOOK.md`; rationale in `CHANGELOG.md` (date + decision + why, one entry per merged doctrine change); open problems in `FRICTION.md` (append-only; reviewed with the Chief of Staff every two weeks; the steward proposes, Nathan decides).
 - **Doctrine changes are PRs.** Branch, PR, Nathan merges. Doctrine PRs never sync into a venture; `sync.sh` is a separate, reviewed step in the venture's own repo.
