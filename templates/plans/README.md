@@ -4,8 +4,8 @@
 
 ## What lives here
 
-- **`plans/features/<issue-id>-<slug>.md`** — one file per **Deep-lane** issue currently in flight. `/plan-feature <issue-id>` writes it; `/close-unit` deletes it in the PR that ships the unit (the PR body carries the full plan). Standard- and Fast-lane issues have no plan file: the issue is the spec.
-- **`plans/<project>/README.md`** *(optional)* — phase-level design that doesn't fit an issue: an architecture sketch, sequencing rationale. `/plan-phase` may write it. Not a unit list; the units are issues in the tracker project.
+- **`plans/features/<issue-id>-<slug>.md`** — one file per **Deep-lane** issue currently in flight. `/plan <issue-id>` writes it; `/close-unit` deletes it in the PR that ships the unit (the PR body carries the full plan). Standard- and Fast-lane issues have no plan file: the issue is the spec.
+- **`plans/<project>/README.md`** *(optional)* — phase-level design that doesn't fit an issue: an architecture sketch, sequencing rationale. `/plan <project>` may write it. Not a unit list; the units are issues in the tracker project.
 - **`plans/artifacts/`** — committed local-lane evidence (small PNGs), linked by SHA from PR bodies.
 
 1. **The roadmap is in the tracker.** `AGENTS.md`'s landing pad points at the active project and the next Todo issue; nothing here is a roadmap.

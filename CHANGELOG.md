@@ -2,6 +2,10 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-22 — One planning ritual: `/plan` (PR #4)
+
+`/plan-phase` and `/plan-feature` were the same act at two sizes; the split existed because the phase folder predated the tracker. Merged into `/plan <arg>`: an issue id → issue mode (Deep-lane spec into `plans/features/`), anything else → project mode (decompose into thin issues in the tracker). Done now rather than later because the blast radius was near zero — SmartSport paused, NOVA not yet bootstrapped — and it never gets cheaper. The old names ship as one-line deprecation stubs for one sync cycle so muscle memory doesn't fail silently, then get deleted from templates.
+
 ## 2026-09-22 — One mode, per-repo tracker, organizing work, WIP limit, earned machinery (PR #3)
 
 **Decided by:** Nathan + Chief of Staff (Renaissance HQ), Sept 19–22; reviewed and executed by the Cursor playbook thread as its last doctrine change before the steward took over.
