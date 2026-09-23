@@ -1,20 +1,18 @@
 # Plans
 
-> The durable home for active work plans. **In-repo on purpose** so plans travel with every clone, device, and cloud agent. Cursor's `.plan.md` and Claude Code's todo list are ephemeral scratch — when a plan matters, it gets written here and committed.
+> Deep-lane execution specs and optional project design notes. **In-repo on purpose** so they travel with every clone, device, and cloud agent. Cursor's `.plan.md` and Claude Code's todo list are ephemeral scratch — when a plan matters, it gets written here and committed. **This folder is never a work queue.** What's next lives in the tracker named in `AGENTS.md`.
 
-## How plans work
+## What lives here
 
-Two layouts, one doctrine (`PLAYBOOK.md` → *Phase mode and continuous mode*):
+- **`plans/features/<issue-id>-<slug>.md`** — one file per **Deep-lane** issue currently in flight. `/plan-feature <issue-id>` writes it; `/close-unit` deletes it in the PR that ships the unit (the PR body carries the full plan). Standard- and Fast-lane issues have no plan file: the issue is the spec.
+- **`plans/<project>/README.md`** *(optional)* — phase-level design that doesn't fit an issue: an architecture sketch, sequencing rationale. `/plan-phase` may write it. Not a unit list; the units are issues in the tracker project.
+- **`plans/artifacts/`** — committed local-lane evidence (small PNGs), linked by SHA from PR bodies.
 
-- **Phase mode (pre-v1):** `plans/<phase>/README.md` + one file per unit. `/plan-phase <phase>` writes it.
-- **Continuous mode (live product):** `plans/features/<issue-id>-<slug>.md`, one file per tracker issue. `/plan-feature <issue-id>` writes it. The tracker (Linear) owns *what's next*; this folder owns *how each unit is done and proven*.
-
-1. **Roadmap lives in `AGENTS.md`** as a terse phase table (phase mode) or as a pointer to the tracker (continuous mode); the landing pad points at the next unit here.
-2. **When work becomes active**, a strong model expands it into a gated unit. The planning agent **writes the plan and stops**; a human reviews/approves before any execution.
-3. **Match ceremony to maturity:** fully expand only the *next* unit; keep later units as roadmap bullets (or as un-expanded tracker issues).
-4. **Each unit has an entry dependency + a verification gate.** Execute one at a time: build → verify gate → update `docs/status.md` + landing pad → PR → next.
+1. **The roadmap is in the tracker.** `AGENTS.md`'s landing pad points at the active project and the next Todo issue; nothing here is a roadmap.
+2. **Deep-lane work gets a plan first.** A strong model expands the approved issue into a gated unit here, **writes the plan and stops**; a human reviews before any execution.
+3. **Fully specify only the next unit or two.** Later issues stay thin in the tracker until they approach Todo.
+4. **Each unit has an entry dependency + a verification gate.** Execute one at a time (WIP limit in `AGENTS.md`): build → verify gate → update `docs/status.md` + landing pad → PR → next.
 5. **Expensive-to-reverse decisions** get logged in `DECISIONS.md`.
-6. **Merged feature units** may be deleted from `plans/features/` once `docs/status.md` records them — the PR is the permanent record. Phase folders stay until the phase closes.
 
 ## Verification gates (phone-checkable)
 
@@ -41,9 +39,9 @@ Recordings (video) never go in git — cloud lane attaches them to the run/PR; l
 
 ## What stays in the repo, and what doesn't
 
-The tracker owns the roadmap, backlog, briefs, and status. The repo owns what an agent needs *with the code open*: `AGENTS.md`, `VISION.md`, `DECISIONS.md`, `docs/architecture.md`, `docs/status.md` (the changelog), and the **open** plan units under `plans/features/`. A plan unit is the execution spec for one issue — file paths, approach, gate — and it lives here because cloud agents, the coordinator, and PR reviewers read the repo, not the tracker. It is deleted by `/close-unit` in the same PR that ships it; the PR body carries the full plan. Result: `plans/features/` never holds more than the units currently in flight, and the repo does not accumulate markdown.
+The tracker owns the roadmap, backlog, briefs, and delivery status. The repo owns what an agent needs *with the code open*: `AGENTS.md`, `VISION.md`, `DECISIONS.md`, `docs/architecture.md`, `docs/status.md` (code-side history), and the **open** Deep-lane units under `plans/features/`. A plan unit is the execution spec for one issue — file paths, approach, gate — and it lives here because cloud agents, the coordinator, and PR reviewers read the repo, not the tracker. It is deleted by `/close-unit` in the same PR that ships it; the PR body carries the full plan. Result: `plans/features/` never holds more than the units currently in flight, and the repo does not accumulate markdown.
 
-## Active plans
+## In flight
 
-- <link to active phase folder, or the tracker view for continuous mode>
-- `features/` — issue-sized units (continuous mode)
+- `features/` — Deep-lane units currently being built (should match the tracker's In Progress, minus Standard/Fast-lane issues)
+- <optional: `<project>/README.md` design notes for the active project>

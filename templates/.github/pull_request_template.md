@@ -5,9 +5,10 @@
 
 ## What & why
 
-<!-- 1–3 sentences. Link the plan unit, e.g. plans/<phase>/<unit>.md -->
+<!-- 1–3 sentences. Link the tracker issue (the id is already in the title/branch). GitHub tier: add "Closes #n". -->
 
-Plan unit:
+Issue:
+Lane: <!-- fast / standard / deep. Deep: paste the full plan unit below; the file is deleted in this PR. -->
 Decision log touched (DECISIONS.md):  <!-- entry # or "none" -->
 
 ## Verification gate
@@ -15,7 +16,7 @@ Decision log touched (DECISIONS.md):  <!-- entry # or "none" -->
 > Check every box and attach evidence. **[CI]** = a green check proves it · **[ARTIFACT]** = screenshot/recording/log/curl the reviewer can open (private repo: **link** the SHA-pinned blob, don't `![]` embed; see `plans/README.md`) · **[MANUAL]** = exact steps + expected result stated.
 
 - [ ] **[CI]** Lint + tests green.
-- [ ] **[ARTIFACT]** / **[MANUAL]** Each gate item from the plan unit is satisfied (paste the unit's gate checklist with evidence).
+- [ ] **[ARTIFACT]** / **[MANUAL]** Each gate item from the issue (or Deep-lane plan) is satisfied (paste the gate checklist with evidence).
 - [ ] No secrets added. Secret-scan passed.
 - [ ] Docs updated: `docs/status.md` + `AGENTS.md` landing pad reflect this change.
 

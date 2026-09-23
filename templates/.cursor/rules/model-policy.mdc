@@ -11,7 +11,7 @@ A small, reusable policy so model/tool choice is a default, not a per-task impro
 
 | Work type | Model | Reasoning |
 |---|---|---|
-| Planning, architecture, expanding a phase into gated units, design trade-offs | strongest available | high |
+| Planning, architecture, decomposing a project into issues (`/plan-phase`), Deep-lane specs, design trade-offs | strongest available | medium, raised only if it visibly falls short |
 | Executing an ambiguous or cross-cutting unit (schema, auth, multi-system refactor) | strongest available | high |
 | Debugging anything gnarly (cheap-model attempts have failed or the bug spans systems) | strongest available | high |
 | Executing a well-specified plan unit | fast/mid model | medium |
@@ -20,15 +20,27 @@ A small, reusable policy so model/tool choice is a default, not a per-task impro
 
 The spec quality sets the model floor: a tight unit spec with a clear gate makes cheap execution safe; an underdetermined unit means decisions get made during execution, so use the strong model even though it's "just execution." If the reverse cost is high (a `DECISIONS.md`-worthy call), the model cost is noise.
 
-## Where the choice gets made in continuous mode
+## Route by tier, not by tool loyalty
 
-The tier is decided when the unit is planned, not when it's dispatched. `/plan-feature` ends the plan with a **Model:** line (`fast`, `mid`, or `strong`, with one clause of reasoning) using the table above; the human sees it at approval. Whoever dispatches honors it:
+Cursor and Claude Code are both primary drivers; the tier picks the surface. As of Sep 2026:
 
-- **Linear → Cursor cloud agent:** put `[model=<id>]` in the delegation comment (`@Cursor build this per plans/features/SS-42-*.md [model=…]`). Set a sensible dashboard default too, but don't rely on it — Linear-triggered agents have been observed ignoring it.
-- **Coordinator (Cursor Project):** picks the model per subagent from the plan's tier.
+| Tier | Surface | Model |
+|---|---|---|
+| `fast` / `mid` | **Cursor** — execution, phone Remote Control, tracker → cloud-agent delegation | Composer 2 / Grok 4.7 (or Auto) |
+| `strong` | **Claude Code** — planning, architecture, Deep-lane specs, gnarly debugging | Opus 5.5 at **medium** effort; go `high`/`xhigh` only when medium visibly falls short (5.5 thinks longer per turn than 5 at the same label) |
+| overflow | **Codex** — spare execution capacity and second-opinion PR review only | not structural; don't build workflow on it |
+
+Planning tokens are the expensive ones. Do planning where the budget resets often (Claude Code session limits), not on monthly-capped credits.
+
+## Where the choice gets made
+
+The tier is decided when the issue is specified, not when it's dispatched. `/plan-phase` and `/plan-feature` end each spec with a **Model:** line (`fast`, `mid`, or `strong`, with one clause of reasoning) using the table above; the human sees it at approval. Whoever dispatches honors it:
+
+- **Linear → Cursor cloud agent:** put `[model=<id>]` in the delegation comment (`@Cursor build SS-42 [model=…]`, pointing at the plan file if Deep lane). Set a sensible dashboard default too, but don't rely on it — Linear-triggered agents have been observed ignoring it.
+- **Coordinator (Cursor Project):** picks the model per subagent from the issue's tier.
 - **You, driving directly:** Auto is fine for `fast`/`mid`; pick the strongest model explicitly for `strong`.
-- **Claude Code:** set the session model (desktop model picker or `/model`) from the tier — `fast` → Haiku, `mid` → Sonnet, `strong` → Opus (current generation; as of Sep 2026: Haiku 4.5 / Sonnet 5 / Opus 5). Raise effort for `strong`. Subagents take a `model:` in their frontmatter the same way.
-- **Tracker labels:** keep the tier as a Linear label group (`model` → `fast` / `mid` / `strong`) so exactly one applies per issue.
+- **Claude Code:** set the session model (desktop model picker or `/model`) from the tier — `fast` → Haiku, `mid` → Sonnet, `strong` → Opus (current generation; as of Sep 2026: Haiku 4.5 / Sonnet 5 / Opus 5.5). Subagents take a `model:` in their frontmatter the same way.
+- **Tracker labels:** keep the tier as a label group (`model` → `fast` / `mid` / `strong`) so exactly one applies per issue.
 
 Default tier for a well-specified unit is `mid`. Anything touching prompts that ship to users, safety behavior, schema, auth, or a `DECISIONS.md` call is `strong` regardless of size.
 
@@ -38,11 +50,12 @@ If a fast/mid model whiffs a unit once, hand it to the strongest model — don't
 
 ## Planning is a reviewed deliverable, not a side effect
 
-When expanding a phase: write the plan into `plans/<phase>/` with entry deps + verification gates **and stop**. A human reviews/approves before any execution agent builds. Don't let a planning run drift into implementation.
+When decomposing a project (`/plan-phase`): file the issues into the tracker — the first one or two fully specified with entry deps + verification gates, the rest thin — **and stop**. Never move status. When specifying a Deep-lane issue (`/plan-feature`): write `plans/features/<issue-id>-<slug>.md` **and stop**. A human accepts, promotes, and approves before any execution agent builds. Don't let a planning run drift into implementation.
 
 ## Parallelism
 
-- Parallelize **only independent** units (neither's entry dependency includes the other).
+- The WIP limit comes first: one issue being built per repo unless a coordinator exists to own parallel cloud-delegated units (`AGENTS.md` landing pad).
+- Within that, parallelize **only independent** units (neither's entry dependency includes the other).
 - Anything with a chain dependency runs **serially**: build → verify gate → update `docs/status.md` + landing pad → PR → next.
 - Prefer one deliberate action + verification over speculative parallel edits to the same files.
 
@@ -54,4 +67,4 @@ When expanding a phase: write the plan into `plans/<phase>/` with entry deps + v
 
 ## Gates must be phone-checkable
 
-Every plan unit's gate item is tagged `[CI]` / `[ARTIFACT]` / `[MANUAL]`. Favor `[CI]`. See `plans/README.md`.
+Every issue's gate item is tagged `[CI]` / `[ARTIFACT]` / `[MANUAL]`. Favor `[CI]`. See `plans/README.md`.

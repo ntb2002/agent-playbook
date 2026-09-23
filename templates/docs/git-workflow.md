@@ -11,9 +11,9 @@ Working Directory  →  Staging Area  →  Local commits  →  Remote (GitHub)
 
 A **commit** is a named snapshot. A **branch** is an independent line of commits. A **PR** proposes merging one branch into another (`your-branch → main`) with a diff, review, and CI.
 
-## The unit of work: one plan unit = one branch = one PR
+## The unit of work: one issue = one branch = one PR
 
-1. **Branch** off `main`: `git checkout -b <phase>/<unit>`.
+1. **Branch** off `main`: `git checkout -b <issue-id>-<slug>` (e.g. `SS-42-onboarding-copy`, or `42-onboarding-copy` on the GitHub tier). The id in the branch is what lets the tracker link the PR and close the issue on merge.
 2. **Commit** as you go (the pre-commit hook runs if `core.hooksPath` is enabled).
 3. **Push:** `git push -u origin HEAD`.
 4. **Open a PR** with `gh pr create` using `.github/pull_request_template.md`; fill the gate checklist with evidence.
@@ -22,7 +22,7 @@ A **commit** is a named snapshot. A **branch** is an independent line of commits
 
 > A PR doesn't create the branch — the branch must exist and be pushed first. Tooling just runs branch→commit→push→PR in one motion.
 
-**Never commit to `main`** — it deploys, and CI only runs on PRs/pushes. The PR is the airlock and the audit trail, even for your own local work.
+**Never commit to `main`** — it deploys, and CI only runs on PRs/pushes. The PR is the airlock and the audit trail, even for your own local work. **No meaningful change merges without an issue**; a typo fix that gets a PR gets a Fast-lane issue too.
 
 ## Two layers of automated gates
 
@@ -57,9 +57,11 @@ You review and decide, you don't hand-type code from your phone. Gates are tagge
 
 ## Graduate when ready (match ceremony to maturity)
 
-| Stage | Add |
+| Tier | Git gets |
 |---|---|
-| Idea / prototype | repo, `VISION.md`, rough phases. Maybe direct commits to `main`. |
-| Codebase that can break | branch + PR, pre-commit hook, **CI**, branch protection. |
-| Real users / prod deploys | **bot reviewer** (Bugbot / CodeRabbit), dedicated **secret scanning** (gitleaks / push protection). |
-| Scale / higher stakes | **staging environment** (`main` → staging, `release` → prod); platform-specific CI (e.g. macOS runners for iOS); stacked PRs for serial dependent units. |
+| Below the line (throwaway) | A repo and `AGENTS.md`. Commits to `main` are fine — there is no loop to protect. |
+| On the playbook | branch → PR from the first commit, pre-commit hook, issue id in every branch name. |
+| Codebase that can break | + **CI**, branch protection, push protection. |
+| Real users / prod deploys | + dedicated **secret scanning** in CI (gitleaks), **staging environment** (`main` → staging, `release` → prod), platform-specific CI (e.g. macOS runners for iOS). |
+
+A **bot reviewer** (Bugbot / CodeRabbit) is not a stage — turn it on when PR volume means you're skimming reviews instead of reading them (`PLAYBOOK.md` → *Earned machinery*).
