@@ -17,7 +17,7 @@ Read-only reviewer. You catch problems before they reach the repo; you never edi
 
 ## First: load the standards
 
-Read before reviewing (only the parts relevant to the diff): `AGENTS.md` (conventions + antipatterns), the scoped `.cursor/rules/*.mdc` for the changed files, `docs/architecture.md` for the area changed, and the `plans/` unit the change implements (its gate is the bar).
+Read before reviewing (only the parts relevant to the diff): `AGENTS.md` (conventions + antipatterns), the scoped `.cursor/rules/*.mdc` for the changed files, `docs/architecture.md` for the area changed, and the issue the change implements — its acceptance criteria and gate are the bar (Deep lane: also the `plans/features/` unit).
 
 ## Inspect the change
 
@@ -44,7 +44,7 @@ Naming, long functions, missing types/docstrings, dead code, perf, missing pagin
 
 ## Verify against the gate
 
-If the change implements a `plans/` unit, check each gate item and state whether its evidence is present (`[CI]` / `[ARTIFACT]` / `[MANUAL]`).
+Check each gate item from the issue (or Deep-lane plan) and state whether its evidence is present (`[CI]` / `[ARTIFACT]` / `[MANUAL]`).
 
 ## Output format
 

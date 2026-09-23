@@ -9,8 +9,8 @@
 > | **`AGENTS.md`** (this file) | conventions, antipatterns, landing pad, roadmap index | slowly |
 > | `docs/architecture.md` | feature specs, data flows | slowly |
 > | `docs/git-workflow.md` | git / CI / review process | rarely |
-> | `plans/` | active roadmap + per-unit specs with gates | per active phase |
-> | `docs/status.md` | changelog | every session |
+> | `plans/` | Deep-lane unit specs (open only) + optional project design notes | per Deep-lane unit |
+> | `docs/status.md` | changelog, open technical threads | every session |
 > | `DECISIONS.md` | decisions expensive to reverse | when one is made |
 
 ---
@@ -18,12 +18,12 @@
 ## 📍 Landing pad — where am I / what next
 
 - **Product:** {{ONE_LINER}} (see `VISION.md`).
-- **Mode:** phase *(pre-v1)* | continuous *(live — tracker owns what's next)*. <pick one>
-- **Current phase:** <phase + one-line focus>. Plan: `plans/<phase>/`. *(phase mode)*
-- **Tracker:** <Linear team/project link>. *(continuous mode — engineering status lives there, not here. Work items are Linear issues. GitHub Issues are not used.)*
-- **Next actionable unit:** <Linear issue id> → `plans/features/<issue-id>-<slug>.md` after `/plan-feature`. *(phase mode: `plans/<phase>/<unit>.md`)*
-- **Working rhythm:** pick the lane by risk (`PLAYBOOK.md` → *Proportional rigor*): **fast** (human "go" in chat → issue as record → fix + evidence → PR), **standard** (Todo issue → `/start-unit` → `/close-unit`), **deep** (`/plan-feature` → human review → `/start-unit` → `/close-unit`). Every lane: Linear issue, branch, PR, gate evidence.
-- **Active background work:** none currently. *(coordinator / automations, if any: see `docs/coordinator.md`)*
+- **Tracker:** **{{TRACKER}}** — <team/project link, or `gh issue list` for this repo>. Issues live here and nowhere else: `/start-unit <id>` fetches from this tracker (Linear MCP, or `gh issue view`) and stops if it can't. Delivery status lives there, not here.
+- **Active project:** <tracker project + one-line outcome>. Optional design notes: `plans/<project>/README.md`.
+- **Next unit:** <issue id> — the Todo issue you're about to build. Deep lane only: `plans/features/<issue-id>-<slug>.md` after `/plan-feature`.
+- **Working rhythm:** pick the lane by risk (`PLAYBOOK.md` → *Proportional rigor*): **fast** (human "go" in chat → issue as record → fix + evidence → PR), **standard** (Todo issue → `/start-unit` → `/close-unit`; the issue is the spec), **deep** (`/plan-feature` → human review → `/start-unit` → `/close-unit`). Every lane: tracker issue, branch `<issue-id>-<slug>`, PR, gate evidence.
+- **WIP limit:** one issue being built in this repo at a time (+ at most one read-only investigation). Open PRs awaiting review don't count. An issue is a **session-sized** unit: in-scope tweaks are commits in its PR, out-of-scope finds are a new issue.
+- **Active background work:** none currently. *(coordinator / automations are off by default — see `docs/coordinator.md` for the trigger)*
 
 ---
 
@@ -31,13 +31,9 @@
 
 <2–4 sentences. Full thesis in `VISION.md`; feature specs in `docs/architecture.md`.>
 
-## Phase roadmap
+## Roadmap
 
-| Phase | Status | Focus |
-|------|--------|-------|
-| 1 | ⬜ | <focus> |
-
-Active-phase detail + gates: `plans/`. History: `docs/status.md`.
+The tracker owns it — projects, milestones, and issues live in **{{TRACKER}}** (link in the landing pad). This file only says where the code is. History of what shipped: `docs/status.md`.
 
 ## Stack (locked in)
 
@@ -70,12 +66,12 @@ Active-phase detail + gates: `plans/`. History: `docs/status.md`.
 ## Working with multiple AI agents
 
 - **Single source of truth for conventions:** this file. **Thesis:** `VISION.md`. **How it works:** `docs/architecture.md`.
-- **Git workflow is non-negotiable:** never commit to `main`. Every unit goes on a branch (`<phase>/<unit>`, or `<issue-id>-<slug>` for tracker-driven units) → commits → push → PR → CI green → review → merge. Full model: `docs/git-workflow.md`.
+- **Git workflow is non-negotiable:** never commit to `main`. Every issue goes on a branch `<issue-id>-<slug>` (the tracker auto-links the PR) → commits → push → PR → CI green → review → merge. No meaningful change merges without an issue. Full model: `docs/git-workflow.md`.
 - **Coordinators (Cursor Projects) and supervisors obey this file too.** They plan, delegate, verify evidence, and report; they never write code or merge. Their brief: `docs/coordinator.md`.
 - **Scoped rules are Cursor-native but bind every agent.** Cursor auto-loads `.cursor/rules/*.mdc` by glob; Claude Code and Codex do not — before editing a file, read the `.mdc` whose `globs` match it.
 - **When you change a convention/architecture:** update `AGENTS.md` first, log it in `DECISIONS.md`, then update the relevant `.cursor/rules/*.mdc`.
 - **When you finish a unit:** verify its gate, update `docs/status.md` + the landing pad, push the branch and open the PR (don't merge — that's the human gate).
-- **Plans are in-repo** (`plans/`), not machine-local. Tool plan modes are ephemeral scratch.
+- **The issue is the spec.** Deep-lane units also get an in-repo plan file (`plans/features/`), not a machine-local one. Tool plan modes are ephemeral scratch. `plans/` is never where you look for work.
 - **One fact, one home.** Link to paths + line numbers; never paste full files into prompts.
 - **Automation:** model/tool policy in `.cursor/rules/model-policy.mdc`; rituals in `.agents/skills/` (`/plan-phase`, `/plan-feature`, `/start-unit`, `/close-unit`, `/context-sync`); guard via `.githooks/pre-commit` (enable with `git config core.hooksPath .githooks`) + `.cursor/hooks.json`; subagents in `.claude/agents/`; unattended jobs' prompts in `.cursor/automations/`.
 
@@ -85,8 +81,8 @@ Active-phase detail + gates: `plans/`. History: `docs/status.md`.
 |---|---|
 | Product thesis | `VISION.md` |
 | How it works | `docs/architecture.md` |
-| Active plan + gates | `plans/` |
-| What's next (continuous mode) | Linear — link in the landing pad. Not GitHub Issues. |
+| What's next | {{TRACKER}} — link in the landing pad. Nowhere else. |
+| Deep-lane specs + gates | `plans/features/` (open units only) |
 | Coordinator brief | `docs/coordinator.md` |
 | Git / CI / review workflow | `docs/git-workflow.md` |
 | What shipped | `docs/status.md` |
