@@ -18,7 +18,7 @@ With Linear/GitHub Issues owning what's next / in progress / done, `docs/status.
 
 ### 2026-09-22 · agent-playbook · Two planning skills for one act
 
-`/plan-phase` and `/plan-feature` are the same act at different sizes; the split exists because the phase folder existed first. Touches: *Automation primitives → Skills*. → resolved: `/plan` merge PR.
+`/plan-phase` and `/plan-feature` are the same act at different sizes; the split exists because the phase folder existed first. Touches: *Automation primitives → Skills*. → resolved: PR #4 (`/plan`).
 
 ### 2026-09-22 · agent-playbook · Orchestration section is written in product names
 

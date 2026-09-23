@@ -88,6 +88,6 @@ EOF
 [ "$IOS" -eq 1 ] && echo "  6. iOS overlay applied: .cursor/mcp.json + .mcp.json + AGENTS.md conventions. Do the per-machine Xcode setup in SETUP.md → 'iOS / Apple projects'."
 cat <<EOF
 
-First body of work: create a tracker project, then run /plan-phase <project> — it files session-sized issues (first one or two fully
+First body of work: create a tracker project, then run /plan <project> — it files session-sized issues (first one or two fully
 specified, the rest thin) into Triage. You accept and promote. Then /start-unit <issue-id>.
 EOF

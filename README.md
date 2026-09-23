@@ -45,8 +45,7 @@ The rituals are **Agent Skills** — `SKILL.md` files in `.agents/skills/<name>/
 
 | Skill                     | When                | What it does                                                                                                                                                             |
 | ------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/plan-phase <project>`   | A body of work (a tracker project) goes active | Strong model decomposes the project into session-sized issues filed into the tracker — the first one or two fully specified, the rest thin — and **stops**. Never moves status. You accept and promote. |
-| `/plan-feature <issue>`   | A Deep-lane issue is next | Expands one issue into a single gated unit at `plans/features/<issue-id>-<slug>.md` and **stops**. Refuses to invent missing acceptance criteria. Standard-lane issues skip this: the issue is the spec. |
+| `/plan <project \| issue>` | A tracker project goes active, or a Deep-lane issue is next | **Project mode:** strong model decomposes the project into session-sized issues filed into the tracker — the first one or two fully specified, the rest thin — and **stops**. Never moves status; you accept and promote. **Issue mode:** expands one Deep-lane issue into a single gated unit at `plans/features/<issue-id>-<slug>.md` and **stops**. Refuses to invent missing acceptance criteria. Standard-lane issues skip this: the issue is the spec. |
 | `/start-unit <issue-id>`  | Begin one unit      | Fetches the issue from the declared tracker, loads conventions, restates the gate as "definition of done," branches `<issue-id>-<slug>`, implements only that unit. No commit yet. |
 | `/close-unit <issue-id>`  | Unit's gate is met  | Verifies each gate item with evidence, updates `docs/status.md` + AGENTS landing pad, deletes the plan file if there was one, then commits → pushes → opens the PR. Stops at the open PR (you merge). |
 | `/context-sync`           | After any session   | Reconciles the docs with what actually changed (status, landing pad, conventions, decisions). No feature code.                                                           |
@@ -54,9 +53,9 @@ The rituals are **Agent Skills** — `SKILL.md` files in `.agents/skills/<name>/
 
 **Subagent:** `.claude/agents/code-review.md` — a read-only reviewer (Sonnet) that checks a diff against the project's actual conventions and the unit's gate, then returns BLOCK / APPROVE-WITH-FIXES / APPROVE. Never edits or commits. Invoke before opening a PR (Claude Code subagent, or Cursor's `code-review` Task). The same review, run unattended on every PR, is the `pr-review` automation in `templates/.cursor/automations/`.
 
-**Coordinator:** `templates/docs/coordinator.md` — the one-page brief you point a Cursor Project at, **off by default** until its trigger fires. It pulls the next Todo issue, runs `/plan-feature` for Deep-lane issues, dispatches an execution agent, watches the PR to green, verifies the gate evidence, and reports. Never writes code, never merges.
+**Coordinator:** `templates/docs/coordinator.md` — the one-page brief you point a Cursor Project at, **off by default** until its trigger fires. It pulls the next Todo issue, runs `/plan <issue-id>` for Deep-lane issues, dispatches an execution agent, watches the PR to green, verifies the gate evidence, and reports. Never writes code, never merges.
 
-The loop, at any stage: tracker issue in Todo → `/start-unit` (Deep lane: `/plan-feature` → you approve → `/start-unit`) → `code-review` → `/close-unit` → (you merge on phone; the tracker closes the issue) → `/context-sync`. Before a coordinator exists, you are the middle column — pick the issue, review the PR. Once one exists, it pulls and dispatches and you review.
+The loop, at any stage: tracker issue in Todo → `/start-unit` (Deep lane: `/plan <issue-id>` → you approve → `/start-unit`) → `code-review` → `/close-unit` → (you merge on phone; the tracker closes the issue) → `/context-sync`. Before a coordinator exists, you are the middle column — pick the issue, review the PR. Once one exists, it pulls and dispatches and you review.
 
 ## Reference implementation and sandbox
 
