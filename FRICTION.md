@@ -23,3 +23,8 @@ With Linear/GitHub Issues owning what's next / in progress / done, `docs/status.
 ### 2026-09-22 · agent-playbook · Orchestration section is written in product names
 
 Cursor Projects, Automations, Remote Control, Grok Bot, Claude Code desktop are woven into doctrine, so every product change creates a doctrine error (see the Remote Control entry). Should be roles (tracker / coordinator / executor / reviewer / supervisor) plus a dated, perishable surface map. Touches: *Orchestration model*. → resolved: PR #5.
+
+### 2026-09-22 · agent-playbook · Stacked PRs merged into each other, not `main`
+
+#4 and #5 were based on the branch below them. After #3 merged, their bases were not retargeted, so merging them landed doctrine on dead branches while GitHub showed them as MERGED. Cause: `delete_branch_on_merge` is off here, though `templates/SETUP.md` tells ventures to turn it on. Correction: turn on "Automatically delete head branches" for this repo (Nathan — settings), and before merging any stacked PR confirm its base is `main`. Touches: *principle 6*, steward workflow. → resolved: content restored by the stack-restore PR; setting change pending.
+

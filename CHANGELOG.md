@@ -2,6 +2,12 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-22 — Stacked doctrine restored to `main`; steward handoff
+
+PRs #3, #4 and #5 were stacked. #3 merged to `main`; #4 then merged into #3's branch and #5 into #4's, so `main` never received `/plan` or the roles/surfaces rewrite, and the CHANGELOG entries below for #4 and #5 were not on `main` either. Nothing retargeted them because `delete_branch_on_merge` is off in this repo — with it on, GitHub retargets a stacked PR to `main` when its base branch is deleted on merge. SmartSport's sync (smartSportApp#30) was taken from the top of the stack, so for a while the sandbox carried doctrine the playbook's own `main` did not. This PR carries #4 and #5's content to `main` unchanged. No doctrine was rewritten in the process.
+
+Also: the stewardship moved from the Cursor playbook thread to a Claude Code agent. The one addition made on handoff: a Cursor-mechanics PR adds its own `CHANGELOG.md` entry, and the steward never reverts one without asking Nathan.
+
 ## 2026-09-22 — Roles, not products (PR #5)
 
 The orchestration section named Cursor Projects, Automations, Remote Control, the Cursor iOS app, Grok Bot, and Claude Code desktop inside doctrine, so every vendor change produced a doctrine error. Case in point: the doctrine claimed a Cursor Remote Control session inherits the chat's project-scoped `.cursor/mcp.json`; Cursor's docs say the worker's MCP comes from the Cloud Agents configuration routed by transport (stdio on the Mac, HTTP on Cursor's backend), and that a named `worker=` machine can be targeted from Linear/Slack/GitHub. Rewrote the section as roles (tracker / human / coordinator / executor / reviewer / supervisor / thinking agent) with does / never does / owes, plus two evidence lanes chosen by where the executor runs. Product facts moved to a new, dated `docs/surfaces.md`, including the Remote Control correction, the Claude Code desktop simulator pane's Xcode 26.x requirement, and the Codex line (overflow + review only; repo is source of truth; confirm hooks fire before trusting a commit). `README.md` rewritten as the onboarding doc for the steward and anyone else landing here — no history of the old system except in this file.
