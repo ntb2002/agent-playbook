@@ -219,39 +219,47 @@ Until then: tracker + rituals + you. That is the whole system for most of a proj
 
 ---
 
-## Orchestration model (laptop + phone)
+## Orchestration model — roles, not products
+
+The loop is described in **roles**. Which product fills a role this quarter is in [`docs/surfaces.md`](docs/surfaces.md), which is dated and expected to rot; this section is not. When a product changes, the surface map changes and the doctrine doesn't.
 
 ```
-   thinking layer (Notion, Claude projects, Grok Bot) ── issues drafted by anyone ──┐   (execution agents never read it)
-                                                          human approves ──────────┤
-                                                                                   ▼
-        (tracker)                 (coordinator)                  (execution agents)
-   Linear: what's next,   ──►  Cursor Project: pulls    ──►  cloud agent builds one gated
-   acceptance criteria,        issue, /plan <issue>,        unit on a branch, pushes,
-   triage (anyone files)       dispatches, watches PR         opens PR
-        ▲                              │                              │
-        │                              │                  CI runs (+ hook ran in cloud)
-   issue closes on merge               │                              │
-        ▲                              ▼                              ▼
-   (you, on a phone) ◄─ merge ◄─ review evidence ◄─ Automation reviews PR ◄─ PR open ◄─┘
-                                    ▲
-                      supervisor (Grok Bot / you) checks [ARTIFACT] is real, pings you
+   thinking layer ──── issues drafted by anyone ────┐   (execution agents never read it)
+                                  human approves ───┤
+                                                    ▼
+      (tracker)              (coordinator)              (executor)
+   what's next,        ──►  pulls a Todo issue,   ──►  builds one issue on a
+   acceptance criteria,     /plan if Deep lane,        branch, gathers evidence,
+   triage (anyone files)    dispatches, watches PR     opens PR
+        ▲                          │                          │
+        │                          │                 CI runs (+ hook ran)
+   issue closes on merge           │                          │
+        ▲                          ▼                          ▼
+   (human, on a phone) ◄─ merge ◄─ review evidence ◄─ reviewer ◄─ PR open ◄─┘
+                                       ▲
+                          supervisor checks [ARTIFACT] is real, pings the human
 ```
 
-The thinking layer is above the loop, not in it: execution agents never read it. Issues can be drafted from it by anyone — you, a co-founder, a Claude project, Grok Bot — but the arrow into the build queue is a human approval. Before the coordinator trigger fires, the middle column is you: you pick the Todo issue, an agent builds it, you review on your phone. The tracker column is there from the first commit.
+The thinking layer is above the loop, not in it: execution agents never read it. Issues can be drafted from it by anyone — you, a co-founder, a thinking agent — but the arrow into the build queue is a human approval. Before the coordinator trigger fires, the middle column is you: you pick the Todo issue, an agent builds it, you review on your phone. The tracker column is there from the first commit.
 
-- **Thinking layer (Notion, Claude projects, chats)** — product and business thinking, feature brainstorming, decisions-and-why, the non-code pillars. Off the loop by design. Its outputs reach code as tracker issues (drafted by humans or agents, approved by a human) and the hand-curated `VISION.md`.
-- **The tracker** — the backlog and, on Linear, the delegation surface. Assigning a Linear issue to Cursor spins up a cloud agent that returns a PR; `@Cursor` in a comment adds instructions. Issue status flows from PR state via the GitHub integration (Linear) or `Closes #n` (GitHub Issues).
-- **Cursor Project (one per venture repo)** — the coordinator. Holds context across months, delegates to subagents on isolated VMs, subscribes to its own PRs (fixes CI, addresses bot comments), can watch a Slack channel or run on a schedule. Never writes code, never merges, never decides what the product should do — "should we build X?" belongs in the thinking layer; "is X feasible in the current code?" is a fair read-only question to ask it.
-- **Cursor Automations** — unattended PR review, CI-failure triage, autofix of review comments, staleness checks. Starter prompts in `templates/.cursor/automations/`.
-- **Cursor iOS app** — launch and steer cloud agents, review diffs and artifacts, merge PRs. Remote Control hands a laptop agent off to your phone.
-- **Slack** — notifications (PR opened, CI pass/fail, automation summaries) + launching cloud agents by message.
-- **GitHub mobile** — the review surface: diff, CI check, gate checklist, merge.
-- **Grok Bot** — supervisor and ops agent, not a coder. Acts in tools with no API; can read cloud-agent transcripts and artifacts and push back when evidence doesn't match the claim. Its state is tied to the account — durable facts still go to the repo and the knowledge layer.
-- **Laptop / Cursor** — interactive work; ambiguous or cross-cutting units you drive yourself with the strongest model.
-- **Claude Code (CLI + desktop app)** — same git flow and rituals: `CLAUDE.md` imports `AGENTS.md` via `@AGENTS.md`, `.claude/skills` symlinks the shared skills, `.mcp.json` carries project MCP servers (iOS overlay: Xcode). Best surface for messy, high-context work — debugging, prompt/product-quality passes, strong-tier units. The desktop app adds things Cursor lacks: an embedded **iOS Simulator panel** (live view you can watch and touch, plus headless screenshot/tap/inspect for the agent — a second `[ARTIFACT]` path beside Xcode MCP `DeviceInteraction*`), a built-in browser pane, and its own Remote Control / cloud sessions for steering a local session from the phone.
-- **Xcode (iOS projects)** — its MCP server (`xcrun mcpbridge`) gives Cursor/Claude Code the full loop on Xcode 27: build, test, preview render, run with console, LLDB, drive the simulator and screenshot it, read field crashes. Local-only, so it backs `[ARTIFACT]`, never `[CI]`. The tools count only if they appear in **this chat's** live catalog — descriptors cached on disk from a previous Xcode session do not attach to a cloud worker or to a Remote Control worker that never inherited the server. Headless mode plus a Cursor Remote Control session on an always-on Mac is how iOS evidence gets produced from a phone. Xcode's native agent is a specialist surface, not the daily driver. Setup in `templates/SETUP.md`.
-- **Remote Control (Cursor; Claude Code desktop has the equivalent)** — a local agent on your own Mac, steered from the phone/web; tool calls run against local files with local tools (Xcode, simulators, project MCPs, secrets). Same tokens as any agent; the win is capability, not cost. This is **not** a Linear `@Cursor` cloud agent (that worker has no Xcode MCP, ever). **It inherits the chat you started `/remote-control` in** — workspace root, project-scoped `.cursor/mcp.json`, secrets, everything. A playbook or ops chat will not grow Xcode tools because Xcode is sitting open; those tools live on the iOS repo's MCP. Start Remote Control from the venture chat when the gate needs simulator taps. Requires an awake, logged-in, Git-backed Mac whose **WindowServer is up** — lid closed with an external display and power (true clamshell) is fine; lid closed with no display sleeps the GUI and Device Interaction will not attach. The *local lane* for units whose gate needs local evidence; the *cloud lane* (Linear → cloud agent) for everything CI can prove. A playbook agent stays in the playbook repo; it does not hop the Cursor workspace into a venture to "just finish the unit."
+| Role | Does | Never does | Owes |
+|---|---|---|---|
+| **Tracker** | Holds what's next and who's on it: Triage → Backlog → Todo → In Progress → Done. Where issues are drafted, shaped, approved, and delegated from. | Hold *how it works* (repo) or *why* (thinking layer). | One issue per unit of work; status moved only by human click or PR automation. |
+| **Human** | Accepts and promotes issues; approves Deep-lane plans; reviews evidence; merges. Answers `## Needs human`. | Hand-type code from a phone; rewrite issues by hand; resolve product questions inside an agent's plan. | Two clicks per issue, one merge per PR, answers as comments. |
+| **Coordinator** *(earned)* | Pulls the next Todo issue, runs `/plan` when the lane needs it, dispatches one executor per issue, watches the PR to green, verifies the gate, reports. One per repo. | Write code. Merge. Resolve product questions. Pull from Triage or Backlog. Change status. | A PR link plus the gate checklist with evidence, or a clear "blocked on X." |
+| **Executor** | Builds exactly one issue on its branch `<issue-id>-<slug>`; gathers evidence per gate item as it goes; opens the PR; stops. | Widen scope silently; touch `main`; claim `[ARTIFACT]` or `[MANUAL]` it didn't produce; read the knowledge layer. | Evidence on the PR for every gate item, or an honest gap. |
+| **Reviewer** *(bot reviewer earned; `code-review` subagent always available)* | Reads the diff against `AGENTS.md`, the gate against the PR's evidence, and scope against the issue. Posts one verdict. | Edit, push, approve, or merge. Comment on style the linter enforces. | `BLOCK` / `APPROVE-WITH-FIXES` / `APPROVE` with file:line findings, readable on a phone. |
+| **Supervisor** *(optional)* | Watches PRs and agent runs; confirms every `[ARTIFACT]` has a real attachment; nudges stalled work; escalates to the human. | Write code. Dispatch coding agents at a repo that has a coordinator (files a tracker issue instead). | A ping when a PR is ready or when the evidence doesn't match the claim. |
+| **Thinking agent** | Drafts issues from strategy, shapes the product side (impact, criteria, `## Needs human`), dedupes and labels Triage. | Touch code. Guess root causes. Change status. | Issues a human can accept in one read. |
+
+**Two evidence lanes, chosen by where the executor runs:**
+
+- **Local lane** — the executor runs on your own machine (laptop session, or a phone-steered session whose tool calls run on your Mac). It has local tools: simulators, Xcode MCP, project MCPs, secrets. Use it for units whose gate needs local evidence (simulator taps, device runs). Evidence is committed under `plans/artifacts/` and *linked* from the PR by SHA-pinned URL, plus attached to the tracker issue.
+- **Cloud lane** — the executor runs on a hosted VM (tracker → cloud agent, chat-launched cloud agent). It has whatever the cloud environment and cloud MCP configuration provide — never local-only tools. Use it for everything CI can prove. Evidence rides the cloud agent's artifact pipeline.
+
+Which lane a unit takes is decided when its gate is written: a gate item that needs a local-only tool puts the whole unit in the local lane. Only tag `[ARTIFACT]` for evidence a tool **in the executor's live catalog** can produce — descriptors cached on disk from another session do not count, and an agent working in one repo's workspace does not acquire another repo's tools by hopping workspaces. A playbook or ops agent stays in its own repo.
+
+**Phone review is the design constraint.** Every role's output must be judgeable in ~30 seconds on a phone: a gate checklist with evidence, a verdict line, a ping with a link. That is why gates are tiered, why titles name the work, and why evidence has placement rules (`templates/plans/README.md`).
 
 Per-project setup checklist (including the *venture cell* — everything a new venture needs beyond the repo) lives in `templates/SETUP.md`.
 

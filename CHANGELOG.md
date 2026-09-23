@@ -2,6 +2,10 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-22 — Roles, not products (PR #5)
+
+The orchestration section named Cursor Projects, Automations, Remote Control, the Cursor iOS app, Grok Bot, and Claude Code desktop inside doctrine, so every vendor change produced a doctrine error. Case in point: the doctrine claimed a Cursor Remote Control session inherits the chat's project-scoped `.cursor/mcp.json`; Cursor's docs say the worker's MCP comes from the Cloud Agents configuration routed by transport (stdio on the Mac, HTTP on Cursor's backend), and that a named `worker=` machine can be targeted from Linear/Slack/GitHub. Rewrote the section as roles (tracker / human / coordinator / executor / reviewer / supervisor / thinking agent) with does / never does / owes, plus two evidence lanes chosen by where the executor runs. Product facts moved to a new, dated `docs/surfaces.md`, including the Remote Control correction, the Claude Code desktop simulator pane's Xcode 26.x requirement, and the Codex line (overflow + review only; repo is source of truth; confirm hooks fire before trusting a commit). `README.md` rewritten as the onboarding doc for the steward and anyone else landing here — no history of the old system except in this file.
+
 ## 2026-09-22 — One planning ritual: `/plan` (PR #4)
 
 `/plan-phase` and `/plan-feature` were the same act at two sizes; the split existed because the phase folder predated the tracker. Merged into `/plan <arg>`: an issue id → issue mode (Deep-lane spec into `plans/features/`), anything else → project mode (decompose into thin issues in the tracker). Done now rather than later because the blast radius was near zero — SmartSport paused, NOVA not yet bootstrapped — and it never gets cheaper. The old names ship as one-line deprecation stubs for one sync cycle so muscle memory doesn't fail silently, then get deleted from templates.
