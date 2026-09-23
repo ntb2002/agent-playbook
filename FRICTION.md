@@ -1,6 +1,6 @@
 # Friction log
 
-> Append-only. What was clunky, wrong, or missing when the playbook met reality. Anyone — a Cursor thread, a venture agent, a human — appends here; **only the steward edits doctrine.** Reviewed with the Chief of Staff every two weeks; the steward proposes changes from it, Nathan decides. When an entry is resolved, add a `→ resolved:` line pointing at the PR; don't delete it.
+> Append-only. What was clunky, wrong, or missing when the playbook met reality. Anyone — a Cursor thread, a venture agent, a human — appends here; **the steward edits doctrine** (Cursor threads may PR verified Cursor-mechanics corrections directly). Reviewed with the Chief of Staff every two weeks; the steward proposes changes from it, Nathan decides. When an entry is resolved, add a `→ resolved:` line pointing at the PR; don't delete it.
 >
 > Entry format: `### YYYY-MM-DD · <repo> · <one-line summary>` then: what happened, which doctrine section it touches, the exact correction if you know it.
 
@@ -10,7 +10,7 @@
 
 ### 2026-09-21 · agent-playbook · Remote Control MCP claim was wrong
 
-`PLAYBOOK.md` (*Orchestration model → Remote Control*) and `templates/SETUP.md` (*iOS → project-scoped `.cursor/mcp.json`*) said a Cursor Remote Control session inherits the chat's project-scoped `.cursor/mcp.json`. Cursor's docs say Remote Control uses the Cloud Agents MCP set chosen at launch; stdio servers (e.g. `xcrun mcpbridge`) can be added there and run on the Mac, but a new run is required. Exact correction: replace "inherits the chat you started `/remote-control` in — workspace root, project-scoped `.cursor/mcp.json`" with the Cloud-Agents-MCP-set statement, and stop telling people to start Remote Control from the venture chat *for MCP reasons* (still start it there for the workspace root). Touches: *Orchestration model*, SETUP *iOS*. → resolved: roles-not-products PR (surface map).
+`PLAYBOOK.md` (*Orchestration model → Remote Control*) and `templates/SETUP.md` (*iOS → project-scoped `.cursor/mcp.json`*) said a Cursor Remote Control session inherits the chat's project-scoped `.cursor/mcp.json`. Cursor's docs say Remote Control uses the Cloud Agents MCP set chosen at launch; stdio servers (e.g. `xcrun mcpbridge`) can be added there and run on the Mac, but a new run is required. Exact correction: replace "inherits the chat you started `/remote-control` in — workspace root, project-scoped `.cursor/mcp.json`" with the Cloud-Agents-MCP-set statement, and stop telling people to start Remote Control from the venture chat *for MCP reasons* (still start it there for the workspace root). Touches: *Orchestration model*, SETUP *iOS*. → resolved: PR #5 (`docs/surfaces.md`).
 
 ### 2026-09-22 · agent-playbook · `docs/status.md` may be redundant once the tracker owns delivery state
 
@@ -22,4 +22,4 @@ With Linear/GitHub Issues owning what's next / in progress / done, `docs/status.
 
 ### 2026-09-22 · agent-playbook · Orchestration section is written in product names
 
-Cursor Projects, Automations, Remote Control, Grok Bot, Claude Code desktop are woven into doctrine, so every product change creates a doctrine error (see the Remote Control entry). Should be roles (tracker / coordinator / executor / reviewer / supervisor) plus a dated, perishable surface map. Touches: *Orchestration model*. → resolved: roles-not-products PR.
+Cursor Projects, Automations, Remote Control, Grok Bot, Claude Code desktop are woven into doctrine, so every product change creates a doctrine error (see the Remote Control entry). Should be roles (tracker / coordinator / executor / reviewer / supervisor) plus a dated, perishable surface map. Touches: *Orchestration model*. → resolved: PR #5.
