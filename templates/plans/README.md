@@ -55,7 +55,7 @@ Stop when:    <target reached | budget spent | N trials without improvement>
 Escalate:     loop bounds in AGENTS.md
 ```
 
-- **Entry dependency: the protected verifier is already merged.** Build the scorer and fixtures in an earlier, ordinary issue. A loop issue can't build its own judge.
+- **Entry dependency: the protected verifier is already merged.** Build the scorer and fixtures in an earlier, ordinary issue. A loop issue can't build its own judge. Put them under `evals/` (already on the `.claude/settings.json` deny list). If they live elsewhere, that verifier issue adds its path to `deny`.
 - A kept trial is a commit on the issue branch; a reverted trial is reset away. The log keeps every trial, kept or not.
 - **Gate:** the trial log `[ARTIFACT]`, the final metric vs the stop condition, and a comparison table plus a recommendation. Any decision the loop informs (a library, an architecture) is made by the human in `DECISIONS.md`, not by the loop.
 - Not loopable: taste and design quality. Those stay `[MANUAL]`.
@@ -78,7 +78,7 @@ Stop when:    a candidate clears the thresholds, or the budget is spent
 Escalate:     loop bounds in AGENTS.md
 ```
 
-Output: a comparison table and a recommendation. The kernel choice itself is a human decision in `DECISIONS.md`. The bench under `spike/bench/` ships first, as its own issue. Other loop-shaped candidates: an export round-trip test; an eval pairing fixed design requests with the expected typed operations, where the loop improves the system prompt.
+Output: a comparison table and a recommendation. The kernel choice itself is a human decision in `DECISIONS.md`. The bench under `spike/bench/` ships first, as its own issue, and that issue adds `Edit(/spike/bench/**)` to the `.claude/settings.json` deny list. Other loop-shaped candidates: an export round-trip test; an eval pairing fixed design requests with the expected typed operations, where the loop improves the system prompt.
 
 ## What stays in the repo, and what doesn't
 

@@ -36,3 +36,7 @@ Candidate for later, not adopted. ECC's continuous-learning pattern: sessions ar
 
 *Autonomy inside the box* sets one latitude for every executor. If correction rounds or escalations pile up for a tier, a repo, or a kind of issue, latitude should drop there: tighter loop bounds, Deep lane by default, or a human checkpoint mid-run. No signal yet. Watch NOVA's escalation notes. Touches: *Autonomy inside the box*, *principle 5*.
 
+### 2026-09-28 · agent-playbook · Protected-check deny list is Claude Code only
+
+`.claude/settings.json` gives Claude Code sessions a deny list for protected checks. Cursor's equivalent (the IDE's auto-run allow/deny, `.cursor/cli.json` for the CLI, and what cloud agents honor) was not verified, so Cursor executors rely on the rule in `AGENTS.md` and the reviewer's `BLOCK` alone. Correction wanted from a Cursor thread that verifies it: which repo file, if any, carries a path deny list that Cursor agents and cloud VMs enforce. Touches: *Autonomy inside the box → The box*, `docs/surfaces.md`.
+

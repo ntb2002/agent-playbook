@@ -45,6 +45,7 @@ Doctrine: `PLAYBOOK.md` → *Organizing work*. Declare the choice in the `AGENTS
 
 ## Local (per clone / per machine)
 
+- [ ] `.claude/settings.json` (shipped by bootstrap): add this repo's test/build commands to `allow`, and every protected verifier path outside `evals/` to `deny`. Don't add `defaultMode`.
 - [ ] `git config core.hooksPath .githooks` — enable the pre-commit hook (secret-scan + lint/test). Bootstrap sets this automatically; cloud VMs use `.cursor/environment.json`.
 - [ ] Confirm the hook fires: a commit with a fake `sk-ant-…` or `sk-proj-…` string in a staged file should be blocked. If `gitleaks` is installed locally, the hook uses it automatically.
 

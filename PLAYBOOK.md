@@ -202,7 +202,7 @@ Within an approved issue, on that issue's branch, an agent may, without asking:
 ### The box
 
 - The issue's **acceptance criteria and gate**.
-- **Protected checks.** The agent may not change a check to make itself pass. Protected: the tests that exist when the branch is cut and that the gate names, eval sets, fixtures, scorers, rubrics, and CI config. Tests the agent *adds* are part of its diff and get reviewed like any code, so they are not protected. But the agent may not weaken, skip, or delete an existing test to get to green. Changing a protected check is its own issue. The reviewer `BLOCK`s any other PR that touches one.
+- **Protected checks.** The agent may not change a check to make itself pass. Protected: the tests that exist when the branch is cut and that the gate names, eval sets, fixtures, scorers, rubrics, and CI config. Tests the agent *adds* are part of its diff and get reviewed like any code, so they are not protected. But the agent may not weaken, skip, or delete an existing test to get to green. Changing a protected check is its own issue. The reviewer `BLOCK`s any other PR that touches one. Where the agent's tool supports it, protected paths are also on a **deny list** in agent config: CI config, hooks, `evals/`, plus each verifier path. The deny list is a tripwire, not the gate, because a script the agent runs can still write the file. The reviewer's `BLOCK` is the gate.
 - **One branch per issue**, and the WIP limit.
 - The **loop bounds** below.
 
