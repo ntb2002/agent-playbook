@@ -20,6 +20,7 @@ Tag each gate item by evidence tier:
 
 - **[CI]** — a green check proves it. Best tier. Only tag `[CI]` if the check actually exists.
 - **[ARTIFACT]** — screenshot / recording / log / curl output the reviewer can actually open from the PR or the tracker issue. Includes agent-captured evidence: build/test output, preview renders, simulator screenshots from a driven flow, console/debugger output via local tools (e.g. Xcode 27 MCP), browser screenshots/recordings from a cloud agent's VM. Only if the agent actually has the tool — and only if the evidence is placed where it renders (see below).
+  For browser products, the `evaluator` subagent (`.claude/agents/evaluator.md`) is the default `[ARTIFACT]` path for UI units: it drives the running app against the acceptance criteria and returns `PASS` or the failed criterion with evidence.
 - **[MANUAL]** — hands-on verification an agent genuinely can't do (physical-device-only behavior, real payments/push, subjective feel). Spell out exact steps + expected result.
 
 Before tagging `[ARTIFACT]`, confirm a tool can actually produce that evidence — a gate item is worthless if it silently invites the agent to overclaim.
@@ -36,6 +37,48 @@ PR bodies and tracker issues are comments, not repo files, so relative image pat
 | **Cloud** (Cursor cloud agent VM; web apps, browser flows) | agent on a Cursor VM | `/opt/cursor/artifacts/` → attached to the agent run; embedded in the PR description if *Allow posting artifacts to GitHub* is on (public unguessable URLs) | Cursor agent view (desktop/iOS), and the PR body |
 
 Recordings (video) never go in git — cloud lane attaches them to the run/PR; local lane attaches them to the tracker issue. Keep committed PNGs small; if `plans/artifacts/` grows past a few tens of MB, sweep artifacts of long-shipped units (SHA-pinned links in old PRs keep working).
+
+## Loop issues
+
+When the goal is **improving a number** rather than passing once, the issue is a loop issue. It is modeled on Karpathy's `autoresearch`: a written loop spec plus a cheap verifier the agent cannot edit. Put this in the issue description:
+
+```
+## Loop spec
+Mutable:      <files/dirs the agent may change>
+Protected:    <verifier, eval set, fixtures — never edited>
+Metric:       <single number + direction, e.g. export_fidelity ↑>
+Run command:  <how one trial runs>
+Budget:       <max trials / wall-clock / cost>
+Keep rule:    <keep if metric improves by ≥ X, else revert>
+Log:          <where each trial's result is recorded, e.g. plans/artifacts/<issue-id>-trials.tsv>
+Stop when:    <target reached | budget spent | N trials without improvement>
+Escalate:     loop bounds in AGENTS.md
+```
+
+- **Entry dependency: the protected verifier is already merged.** Build the scorer and fixtures in an earlier, ordinary issue. A loop issue can't build its own judge.
+- A kept trial is a commit on the issue branch; a reverted trial is reset away. The log keeps every trial, kept or not.
+- **Gate:** the trial log `[ARTIFACT]`, the final metric vs the stop condition, and a comparison table plus a recommendation. Any decision the loop informs (a library, an architecture) is made by the human in `DECISIONS.md`, not by the loop.
+- Not loopable: taste and design quality. Those stay `[MANUAL]`.
+
+**Worked example — geometry-kernel spike (NOVA)**
+
+```
+## Loop spec
+Mutable:      spike/kernels/*
+Protected:    spike/bench/ (fixture models + scorer)
+Metric:       composite score ↑ — boolean/sweep success rate on curved fixtures;
+              .3dm round-trip fidelity (layers + materials survive, re-read via rhino3dm);
+              p95 operation latency in the browser
+Candidates:   OpenCascade.js · a Rust→WASM kernel · mesh-only manifold-3d (baseline)
+Run command:  <the bench script in spike/bench/>
+Budget:       30 trials
+Keep rule:    keep a candidate's change if its composite improves; else revert
+Log:          plans/artifacts/<issue-id>-trials.tsv
+Stop when:    a candidate clears the thresholds, or the budget is spent
+Escalate:     loop bounds in AGENTS.md
+```
+
+Output: a comparison table and a recommendation. The kernel choice itself is a human decision in `DECISIONS.md`. The bench under `spike/bench/` ships first, as its own issue. Other loop-shaped candidates: an export round-trip test; an eval pairing fixed design requests with the expected typed operations, where the loop improves the system prompt.
 
 ## What stays in the repo, and what doesn't
 

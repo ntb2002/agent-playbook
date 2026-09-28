@@ -2,6 +2,21 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-28 — Autonomy inside the box: in-task autonomy, loop bounds, loop issues, evaluator
+
+**Decided by:** Nathan + Chief of Staff, Sept 28. **Doctrine-freeze exception:** this is foundational, and NOVA's first issue is days away. Changing it after NOVA has run a dozen units costs more than changing it now.
+
+**Why.** Nathan asked whether "earned machinery" had become too conservative. The two references were Karpathy's `autoresearch` (March 2026) and DHH's Rails World keynote (Sept 23). In `autoresearch`, an agent edits a training script, runs a 5-minute experiment, checks one metric, and keeps or reverts the change. It ran about 700 trials in two days with no human in the loop. That works because of a cheap verifier the agent can't edit, plus a written loop spec (`program.md`). In the keynote, 37signals is "pencils down" on hand-written code: engineers hand an agent an outcome and review what comes back, and hand-writing code is a signal that the agent workflow needs repair. The model the two share: **total autonomy inside a box, with a human who owns the edges of the box.** Neither builds sprawling toolkits, and both give agents far more in-task latitude than the playbook stated. The old "earned machinery" rule mixed two separate things, overhead and autonomy. This change separates them.
+
+**What changed.**
+- New *Autonomy inside the box* section. Inside an approved issue, an agent edits, runs, iterates to a green gate, calls subagents, commits, and opens the PR without asking. The box is the gate, the protected checks, one branch, and the loop bounds. The edges stay human: what's next, merge, anything irreversible or external.
+- **Protected checks:** gate tests existing at branch start, eval sets, fixtures, scorers, rubrics, and CI config. The spec protected "the test files named as the gate," but executors usually *write* the gate's tests. So tests the agent adds are reviewed, not protected. Weakening, skipping, or deleting an existing test is forbidden. The reviewer `BLOCK`s a PR that touches a protected check unless changing that check is the issue's purpose.
+- **Loop bounds** table and a four-part escalation note.
+- **Principle 5 reconciled.** "Escalate on first failure" contradicted "up to 3 correction rounds." A correction round is now normal work inside a run. A *run* fails when it hits a loop bound or its PR is `BLOCK`ed, and the next run goes to the strong tier.
+- **Loop issues** with a `## Loop spec` modeled on `program.md`, plus the NOVA geometry-kernel spike as the worked example. Added requirements: the verifier ships first as its own issue (a loop can't build its own judge), and the loop yields evidence, while the decision it informs goes to `DECISIONS.md`.
+- **Evaluator** role and `templates/.claude/agents/evaluator.md`. A fresh-context agent drives the running app with Playwright against the acceptance criteria, strict by instruction. Pattern from `affaan-m/ecc`'s generator/evaluator pair, taken as reference only; the repo is not a dependency. `sync.sh` now copies every subagent.
+- **Earned machinery unchanged in substance.** It now says outright that the trigger guards against overhead, not risk, and that in-task autonomy is never earned.
+
 ## 2026-09-22 — Stacked doctrine restored to `main`; steward handoff
 
 PRs #3, #4 and #5 were stacked. #3 merged to `main`; #4 then merged into #3's branch and #5 into #4's, so `main` never received `/plan` or the roles/surfaces rewrite, and the CHANGELOG entries below for #4 and #5 were not on `main` either. Nothing retargeted them because `delete_branch_on_merge` is off in this repo — with it on, GitHub retargets a stacked PR to `main` when its base branch is deleted on merge. SmartSport's sync (smartSportApp#30) was taken from the top of the stack, so for a while the sandbox carried doctrine the playbook's own `main` did not. This PR carries #4 and #5's content to `main` unchanged. No doctrine was rewritten in the process.

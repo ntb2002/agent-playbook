@@ -23,7 +23,7 @@ mkdir -p "$TARGET/.agents" "$TARGET/.claude/agents" "$TARGET/.cursor/rules" \
 rm -rf "$TARGET/.agents/skills"
 cp -R "$T/.agents/skills" "$TARGET/.agents/skills"
 ln -sfn ../.agents/skills "$TARGET/.claude/skills"
-cp "$T/.claude/agents/code-review.md" "$TARGET/.claude/agents/"
+cp "$T/.claude/agents/"*.md "$TARGET/.claude/agents/"
 cp "$T/.cursor/rules/model-policy.mdc" "$TARGET/.cursor/rules/"
 cp "$T/.cursor/hooks.json" "$TARGET/.cursor/"
 cp "$T/.cursor/hooks/commit-guard.sh" "$TARGET/.cursor/hooks/"

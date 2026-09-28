@@ -34,6 +34,7 @@ git diff --staged
 - Any **🔴 antipattern from `AGENTS.md`** (e.g. trusting client-supplied identity, bypassing the data/LLM/auth abstractions the project mandates, raw SQL where a builder is required).
 - **Crash risk** (unsafe force-unwraps / unchecked nulls on user/network data).
 - **Edited an applied/immutable migration** (if the project uses forward-only migrations).
+- **Touched a protected check** (`AGENTS.md` → *Autonomy inside the box*): modified, skipped, weakened, or deleted a test that existed at branch start and is named in the gate, or changed an eval set, fixture, scorer, rubric, or CI config, unless changing that check is what the issue is for.
 
 ### ⚠️ HIGH — should fix
 - Convention violations from `AGENTS.md` / scoped rules (logging, error handling, layering, state, naming).

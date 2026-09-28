@@ -44,9 +44,9 @@ The tier is decided when the issue is specified, not when it's dispatched. `/pla
 
 Default tier for a well-specified unit is `mid`. Anything touching prompts that ship to users, safety behavior, schema, auth, or a `DECISIONS.md` call is `strong` regardless of size.
 
-## Escalate on first failure
+## Escalate tiers after a failed run
 
-If a fast/mid model whiffs a unit once, hand it to the strongest model — don't re-prompt the same tier. The second cheap attempt has worse odds than the first (it's now working around its own mess, or the spec was underdetermined), and two failed cheap runs plus review time cost more than one strong run.
+Inside a run, red tests and correction rounds are normal work, bounded by the loop bounds in `AGENTS.md`. A run **fails** when it hits a loop bound and escalates, or when its PR gets a `BLOCK`. Then hand the unit to the strongest model — don't re-run the same cheap tier. A second cheap run has worse odds than the first (it's working around its own mess, or the spec was underdetermined), and two failed cheap runs plus review time cost more than one strong run.
 
 ## Planning is a reviewed deliverable, not a side effect
 
@@ -61,7 +61,7 @@ When decomposing a project (`/plan <project>`): file the issues into the tracker
 
 ## Subagents
 
-- Use a specialized subagent with restricted tools for a scoped job (e.g. read-only `code-review`).
+- Use a specialized subagent with restricted tools for a scoped job (read-only `code-review`, live-app `evaluator`). Executors call them without asking — that's inside the box.
 - Keep subagents aligned with `AGENTS.md`; a stale subagent is worse than none.
 - Give a subagent the full context it needs — it doesn't see the parent conversation.
 

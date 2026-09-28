@@ -75,6 +75,15 @@ The tracker owns it — projects, milestones, and issues live in **{{TRACKER}}**
 - **One fact, one home.** Link to paths + line numbers; never paste full files into prompts.
 - **Automation:** model/tool policy in `.cursor/rules/model-policy.mdc`; rituals in `.agents/skills/` (`/plan`, `/start-unit`, `/close-unit`, `/context-sync`); guard via `.githooks/pre-commit` (enable with `git config core.hooksPath .githooks`) + `.cursor/hooks.json`; subagents in `.claude/agents/`; unattended jobs' prompts in `.cursor/automations/`.
 
+## Autonomy inside the box
+
+Inside an approved issue, on its branch, you don't ask: edit and accept your own edits, run tests / linters / builds / the app, **iterate until the gate passes**, call subagents (`code-review`, `evaluator`, a test writer, a build-error fixer), commit, push, open the PR. The human owns the edges: what gets built next, merging to `main`, and anything irreversible or external (deploys, sends, spend, deleting data, secrets). Full doctrine: `PLAYBOOK.md` → *Autonomy inside the box*.
+
+- **Protected checks — never change a check to make yourself pass.** Protected: tests that existed when the branch was cut and that the gate names, eval sets, fixtures, scorers, rubrics, CI config. Tests you add are reviewed like any code. Never weaken, skip, or delete an existing test to get to green. Changing a protected check is its own issue; the reviewer `BLOCK`s any other PR that touches one.
+- **Loop bounds** (an issue may override): transient tool/network failure → retry twice · bad output format → repair once · gate still failing → up to 3 correction rounds · no progress across two checkpoints, or the same error twice → escalate · ambiguous requirement or conflicting evidence → stop, add `## Needs human` · budget reached → stop · want to change a protected check → stop, propose a separate issue.
+- **Escalate** = stop, push the branch, post on the issue: what you tried, the last failure, your best hypothesis, the smallest decision needed. Never continue silently in a different direction.
+- **Loop issues** (improving a number, not passing once) carry a `## Loop spec`. Run it exactly as written: only the mutable files change, the verifier is protected, and every trial is logged. The template is in `plans/README.md`.
+
 ## Quick reference
 
 | Need | Go to |

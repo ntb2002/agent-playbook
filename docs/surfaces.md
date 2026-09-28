@@ -12,6 +12,7 @@
 | **Executor — cloud lane** | Cursor cloud agents (from Linear `@Cursor`, Slack, GitHub `@cursoragent`, the iOS app, or chat) · Claude Code cloud sessions | Never has local-only tools. |
 | **Coordinator** *(earned)* | Cursor Project | One per repo. Off by default. |
 | **Reviewer** | `code-review` subagent (always) · Cursor Bugbot / CodeRabbit *(earned)* · `pr-review` Automation *(earned)* | |
+| **Evaluator** *(optional)* | `evaluator` subagent driving Playwright (`npx playwright`) against the running app | Local lane: Claude Code / Cursor on the Mac. Cloud lane: a cloud VM that has Playwright's browsers installed via `.cursor/environment.json`. |
 | **Supervisor** *(optional)* | Grok Bot · you | In this role it verifies and escalates; account-bound memory, durable facts go to the repo. |
 | **Thinking layer / thinking agent** | Notion · Claude projects · Linear Agent · Grok Bot | Off the code loop. |
 | **Model routing** | `fast`/`mid` → Cursor · `strong` → Claude Code (Opus 5.5, medium effort) · overflow → Codex | `templates/.cursor/rules/model-policy.mdc` has the table. |
