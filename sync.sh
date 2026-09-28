@@ -49,6 +49,13 @@ if [ ! -f "$TARGET/docs/coordinator.md" ]; then
   echo "NOTE: seeded docs/coordinator.md — replace the {{PLACEHOLDERS}} and point your Cursor Project at it."
 fi
 
+# Claude Code permissions: seed if missing, never overwrite. The deny list
+# grows per repo (verifier paths) and allow carries the repo's own commands.
+if [ ! -f "$TARGET/.claude/settings.json" ]; then
+  cp "$T/.claude/settings.json" "$TARGET/.claude/"
+  echo "NOTE: seeded .claude/settings.json — add this repo's test/build commands to allow and verifier paths to deny."
+fi
+
 # Drop legacy copies of the rituals from the pre-skills era (now in .agents/skills/).
 # Note: .agents/skills/plan-phase and plan-feature are one-line deprecation stubs
 # pointing at /plan; they ship for one sync cycle and are then removed from templates.

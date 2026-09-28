@@ -2,6 +2,17 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-28 — `.claude/settings.json`: deny list for protected checks
+
+Follow-up to PR #7, approved by Nathan: "go on settings.json, with a deny list that includes the verifier and CI paths." The template now ships `.claude/settings.json`.
+- **deny:** CI config, git and Cursor hooks, `evals/`, force-push, pushing to `main`, `--no-verify`, `git config core.hooksPath`, `gh pr merge`.
+- **allow:** routine git/`gh`/project-check/Playwright commands.
+- **Verifier paths:** protected material goes under `evals/` by convention. A verifier elsewhere (e.g. the kernel spike's `spike/bench/`) gets its own deny line, added by the issue that builds it. Because `.claude/` is a protected path, that edit is human-approved.
+
+**Changed from what was proposed in #7.** The proposal said "`acceptEdits` + allow rules." Claude Code's docs now say the built-in starting mode is **auto**, and a project-level `defaultMode` of anything else overrides it. `acceptEdits` would therefore have *reduced* agent latitude, so the template sets no `defaultMode`. Deny rules apply in every mode.
+
+**Stated limit.** Edit-deny covers file tools, `sed`/`tee`, and redirects, but not a script that writes the file itself. The deny list is a tripwire; the reviewer's `BLOCK` stays the gate. `sync.sh` seeds the file if missing and never overwrites it, because each repo's deny list grows over time.
+
 ## 2026-09-28 — Autonomy inside the box: in-task autonomy, loop bounds, loop issues, evaluator
 
 **Decided by:** Nathan + Chief of Staff, Sept 28. **Doctrine-freeze exception:** this is foundational, and NOVA's first issue is days away. Changing it after NOVA has run a dozen units costs more than changing it now.

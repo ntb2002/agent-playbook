@@ -45,6 +45,11 @@
 - **MCP:** project scope `.mcp.json` (iOS overlay ships Xcode), user scope `~/.claude.json` via `claude mcp add`. Linear: `claude mcp add --transport http linear-server https://mcp.linear.app/mcp`, then `/mcp` to authenticate. Day-one floor for any Linear-tracked repo.
 - **Desktop app extras:** an embedded **iOS Simulator pane** (public beta) — a live simulator you can watch and touch, plus headless screenshot/tap/inspect for the agent — a second `[ARTIFACT]` path beside Xcode MCP `DeviceInteraction*`. **Local sessions only. Requires Xcode 26.x selected via `xcode-select`; it does not work with Xcode 27's Device Hub.** *(observed on a Mac with Xcode 27.0.)* Until that changes, the pane is not the UI lane for Xcode 27 repos. Also: a built-in browser pane, and its own Remote Control / cloud sessions for steering a local session from the phone.
 - **Model:** the `strong` surface. Opus 5.5 at medium effort by default; 5.5 thinks longer per turn than 5 at the same label, so raise effort only when medium visibly falls short. Session limits reset every ~5 hours — this is where planning tokens go.
+- **Permissions** *(verified against Claude Code docs, Sept 2026)*:
+  - The built-in starting mode is **auto**: a classifier reviews actions, and deny rules still apply. A project `.claude/settings.json` can't set `defaultMode: "auto"` (it's ignored). Setting any other `defaultMode` there, `acceptEdits` included, *overrides* auto and gives the agent less latitude. So the template sets none.
+  - Rule order is deny → ask → allow, and deny blocks in every mode, `bypassPermissions` included. `Edit(/path)` in project settings anchors at the repo root.
+  - Edit-deny also covers `sed`, `tee`, and `>` redirects in Bash, but **not** a script that opens the file itself (Python, Node). For an OS-level guarantee, use the sandbox.
+  - `.claude/` is a protected path: writes to it are never auto-approved (prompted in manual/`acceptEdits`, classifier-reviewed in auto), and allow rules don't change that. Cloud sessions ignore `bypassPermissions`/`dontAsk` from repo settings.
 - **Steward:** the playbook steward is a Claude Code agent launched inside `agent-playbook`.
 
 ## Codex / ChatGPT
