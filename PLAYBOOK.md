@@ -40,7 +40,7 @@ What's next does not live in the repo at all — it lives in the tracker (see *O
 
 ### 2. Match ceremony to maturity
 
-Never impose the full apparatus on a throwaway. A system that's too heavy won't get used. But the *loop* — issue → branch → PR with evidence → human merge — is not the heavy part; it is the playbook. What gets earned is the repo hardening and the machinery around the loop.
+Never impose the full apparatus on a throwaway. A system that's too heavy won't get used. But the *loop* — issue → branch → PR with evidence → human merge — is not the heavy part; it is the playbook. What gets earned is the repo hardening and the machinery around the loop. **In-task autonomy is not earned at all:** inside an approved issue, agents are autonomous from the first commit (*Autonomy inside the box*).
 
 | Tier | What it gets |
 |---|---|
@@ -77,7 +77,7 @@ This rule binds **every** agent in the system, including coordinators and superv
 - **Executing a well-specified unit** → fast/mid model. The spec quality sets the model floor: a tight issue is what makes cheap execution safe (this is the economic function of `/plan <project>` — one strong-model decomposition amortized across many cheap-model units).
 - **Mechanical edits** → fast model.
 - **Cheap classification / in-session helpers** → smallest model.
-- **Escalate on first failure:** if a cheap model whiffs a unit once, hand it to the strong model — don't re-prompt the same tier. Two failed cheap runs plus review time cost more than one strong run.
+- **Escalate tiers after a failed run, not a failed attempt.** Red tests and correction rounds inside a run are normal work, bounded by *Loop bounds*. A run **fails** when it hits a loop bound and escalates, or when its PR gets a `BLOCK`. The next run on that unit goes to the strong model — don't re-run the same cheap tier. Two failed cheap runs plus review time cost more than one strong run.
 - **Parallelize only independent units** (neither's dependency includes the other), and only within the WIP limit (*Organizing work*). Dependent units run serially: build → verify gate → update status + landing pad → PR → next.
 - **Route by tier, not by tool loyalty.** Cursor and Claude Code are both primary drivers; the tier picks the surface. `fast` / `mid` → Cursor (execution, phone remote, tracker → cloud-agent delegation). `strong` → Claude Code on the strongest Claude model, starting at medium effort and raising it only when medium visibly falls short. Codex → overflow execution and second-opinion review only; not structural. **Planning tokens are the expensive ones** — do planning where the budget resets often (Claude Code session limits) rather than on monthly-capped credits. The concrete model names live in `templates/.cursor/rules/model-policy.mdc`, date-stamped, because they rot.
 
@@ -185,13 +185,73 @@ The thinking layer is deliberately sprawling — half-formed ideas, archived rea
 
 ---
 
+## Autonomy inside the box
+
+Agents get **total autonomy inside a box, and a human owns the edges of the box.** A human decides what "good" means (the acceptance criteria and gate), what ships (the merge), and anything irreversible. Inside that, the agent doesn't ask.
+
+### Inside the box — autonomous by default, from day one
+
+Within an approved issue, on that issue's branch, an agent may, without asking:
+
+- edit files and accept its own edits;
+- run tests, linters, builds, and the app itself;
+- **iterate until the issue's gate passes**, within the loop bounds below;
+- call subagents (reviewer, test writer, build-error fixer, live-app evaluator);
+- commit to the issue branch, push it, and open the PR.
+
+### The box
+
+- The issue's **acceptance criteria and gate**.
+- **Protected checks.** The agent may not change a check to make itself pass. Protected: the tests that exist when the branch is cut and that the gate names, eval sets, fixtures, scorers, rubrics, and CI config. Tests the agent *adds* are part of its diff and get reviewed like any code, so they are not protected. But the agent may not weaken, skip, or delete an existing test to get to green. Changing a protected check is its own issue. The reviewer `BLOCK`s any other PR that touches one.
+- **One branch per issue**, and the WIP limit.
+- The **loop bounds** below.
+
+### The edges — human-owned
+
+- What gets built next: accept out of Triage, promote into Todo.
+- Merging to `main`.
+- Anything irreversible or external: deploys, sends, spend, deleting data, secrets.
+
+Machinery — the coordinator, automations, bot reviewer, and any fleet of agents — is still earned by trigger (*Earned machinery*). That rule is about **overhead, not safety**. For a solo founder with one active repo, orchestration costs more than it returns. One agent looping hard inside a well-drawn box is not machinery.
+
+### Loop bounds
+
+Every in-task loop runs under these defaults. An issue may override any of them explicitly.
+
+| Situation | Rule |
+|---|---|
+| Transient tool or network failure | Retry twice |
+| Output fails schema or format | Repair once |
+| Gate still failing | Up to 3 correction rounds, then escalate |
+| No progress across two consecutive checkpoints | Escalate |
+| Same failure (identical error or stack trace) twice | Escalate |
+| Conflicting evidence or ambiguous requirement | Stop and ask: add `## Needs human` to the issue |
+| Cost or time budget reached | Stop and escalate |
+| Wants to change a protected check | Stop; propose it as a separate issue |
+
+**Escalation** means: stop, push the branch, and post on the issue (1) what was tried, (2) the last failure, (3) the best hypothesis, (4) the smallest decision needed from the human. It never means continuing silently in a different direction. An escalated run counts as a failed run for tier routing (*principle 5*).
+
+### Loop issues
+
+Some work has a machine-checkable score where the goal is to **improve a number**, not to pass once: kernel benchmarks, export fidelity, prompt evals. That work is a **loop issue**. Its description carries a `## Loop spec`: mutable files, protected verifier, one metric with a direction, the run command, a budget, a keep/revert rule, a trial log, and a stop condition. The agent then runs trial → score → keep or revert → repeat, unattended, until the stop condition. The template and a worked example are in `templates/plans/README.md`.
+
+- **The verifier comes first.** The protected scorer and fixtures are built and merged in an earlier, ordinary issue. A loop issue whose verifier doesn't exist yet is not ready for Todo.
+- **The loop produces evidence, not decisions.** Its output is a trial log and a recommendation. A choice that follows from it (a kernel, a dependency, an architecture) is a human call recorded in `DECISIONS.md`.
+- **Not everything is loopable.** Taste, design quality, and "does this feel right" stay `[MANUAL]`.
+
+### Live-app evaluator
+
+For products with a UI that runs in a browser, the builder does not grade its own UI. An **evaluator** does: a separate agent with fresh context that drives the *running* app against the issue's acceptance criteria. It returns `PASS`, or the exact criterion that failed plus the evidence. It is told to be strict, because its default is to be generous. It may produce `[ARTIFACT]` evidence (screenshots, recordings). It never edits product code. It is optional per repo and, where adopted, the default `[ARTIFACT]` path for UI units. Template: `templates/.claude/agents/evaluator.md`.
+
+---
+
 ## Automation primitives (and when to use each)
 
 | Primitive | What it is | Use for |
 |---|---|---|
 | **Rules / memory** | Always-on context (`AGENTS.md`, `.cursor/rules/*.mdc`, `CLAUDE.md` with `@AGENTS.md`) | Conventions every agent must always follow |
 | **Skills** | Parameterized, repeatable prompts (`.agents/skills/*/SKILL.md`) | Rituals: `/plan`, `/start-unit`, `/close-unit`, `/context-sync` |
-| **Subagents** | Specialized workers with restricted tools (`.claude/agents/*`, Cursor Task) | Scoped jobs, e.g. read-only `code-review` |
+| **Subagents** | Specialized workers with restricted tools (`.claude/agents/*`, Cursor Task) | Scoped jobs: read-only `code-review`, live-app `evaluator`. Executors call them without asking (*Autonomy inside the box*). |
 | **Hooks** | Deterministic shell on lifecycle events (`.githooks/`, `.cursor/hooks.json`) | Guarantees: secret-scan, lint/test on commit |
 | **MCP** | Project-scoped tool servers (`.cursor/mcp.json`) | External integrations (DB, deploy, monitoring) — same in-repo, one-source-of-truth principle |
 | **Automations** | Event- or schedule-triggered cloud agents (Cursor Automations; prompts kept in `.cursor/automations/`) | Unattended jobs: PR review on open, CI-failure triage, autofix review comments, staleness checks |
@@ -205,7 +265,7 @@ Rule of thumb: if you'd repeat an instruction in every prompt, make it a **rule*
 1. **One coordinator per repo.** Two agents that both believe they own a repo's backlog is seam rot with extra steps. If a Cursor Project coordinates a venture's engineering, a personal ops agent (Grok Bot) does not dispatch coding agents to that repo directly — it files a tracker issue and the coordinator picks it up. Audit trail stays in one place.
 2. **Coordinators read the playbook; they don't replace it.** Point every coordinator at `AGENTS.md`, this doctrine, and the repo's `docs/coordinator.md` brief on creation. It pulls the next tracker issue, expands it into a gated unit (`/plan <issue-id>`), dispatches an execution agent, watches the PR to green, and reports with evidence. It never merges. Start by reviewing every PR it produces; loosen only as gates hold.
 
-**Earned machinery.** A new project starts with all three of these **off**. Each turns on when its trigger fires — not when the product launches, not because the template ships it:
+**Earned machinery.** A new project starts with all three of these **off**. Each turns on when its trigger fires — not when the product launches, not because the template ships it. The trigger guards against **overhead, not risk**. In-task autonomy (iterating, self-review, subagents) is not machinery and is never earned (*Autonomy inside the box*).
 
 | Machinery | Turn on when |
 |---|---|
@@ -247,8 +307,9 @@ The thinking layer is above the loop, not in it: execution agents never read it.
 | **Tracker** | Holds what's next and who's on it: Triage → Backlog → Todo → In Progress → Done. Where issues are drafted, shaped, approved, and delegated from. | Hold *how it works* (repo) or *why* (thinking layer). | One issue per unit of work; status moved only by human click or PR automation. |
 | **Human** | Accepts and promotes issues; approves Deep-lane plans; reviews evidence; merges — from a laptop or a phone, whichever is at hand. Answers `## Needs human`. | Rewrite issues by hand; resolve product questions inside an agent's plan. | Two clicks per issue, one merge per PR, answers as comments. |
 | **Coordinator** *(earned)* | Pulls the next Todo issue, runs `/plan` when the lane needs it, dispatches one executor per issue, watches the PR to green, verifies the gate, reports. One per repo. | Write code. Merge. Resolve product questions. Pull from Triage or Backlog. Change status. | A PR link plus the gate checklist with evidence, or a clear "blocked on X." |
-| **Executor** | Builds exactly one issue on its branch `<issue-id>-<slug>`; gathers evidence per gate item as it goes; opens the PR; stops. | Widen scope silently; touch `main`; claim `[ARTIFACT]` or `[MANUAL]` it didn't produce; read the knowledge layer. | Evidence on the PR for every gate item, or an honest gap. |
+| **Executor** | **Autonomous inside the box.** Builds exactly one issue on its branch `<issue-id>-<slug>`, iterating until the gate passes within the loop bounds; calls subagents freely; gathers evidence per gate item as it goes; opens the PR; stops. | Widen scope silently; touch `main`; edit a protected check to make itself pass; continue past a loop bound; claim `[ARTIFACT]` or `[MANUAL]` it didn't produce; read the knowledge layer. | Evidence on the PR for every gate item, or an honest gap. On a loop bound, an escalation note on the issue. |
 | **Reviewer** *(bot reviewer earned; `code-review` subagent always available)* | Reads the diff against `AGENTS.md`, the gate against the PR's evidence, and scope against the issue. Posts one verdict. | Edit, push, approve, or merge. Comment on style the linter enforces. | `BLOCK` / `APPROVE-WITH-FIXES` / `APPROVE` with file:line findings, readable on a phone. |
+| **Evaluator** *(optional, browser products)* | Drives the running app against the issue's acceptance criteria with fresh context; strict by instruction. | Edit product code. Grade the diff instead of the running app. Pass a criterion it couldn't exercise. | `PASS`, or the failed criterion plus evidence. |
 | **Supervisor** *(optional)* | Watches PRs and agent runs; confirms every `[ARTIFACT]` has a real attachment; nudges stalled work; escalates to the human. | Merge. Change issue status. Dispatch coding agents at a repo that has a coordinator (files a tracker issue instead). The agent filling this role may well code elsewhere; *in this role* it verifies. | A ping when a PR is ready or when the evidence doesn't match the claim. |
 | **Thinking agent** | Drafts issues from strategy, shapes the product side (impact, criteria, `## Needs human`), dedupes and labels Triage. | Touch code. Guess root causes. Change status. | Issues a human can accept in one read. |
 

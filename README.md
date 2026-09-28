@@ -56,7 +56,7 @@ Agent Skills in `.agents/skills/<name>/SKILL.md` (Claude Code follows the `.clau
 | `/close-unit <issue-id>` | Gate is met | Verifies every gate item has evidence the reviewer can open, updates `docs/status.md` + landing pad, deletes the plan file if any, commits → pushes → opens the PR. Stops there; the human merges. |
 | `/context-sync` | After any session | Reconciles `docs/status.md`, landing pad, conventions, decisions with what actually changed. No feature code. |
 
-**Subagent:** `.claude/agents/code-review.md` — read-only reviewer against the repo's actual conventions and the issue's gate; returns `BLOCK` / `APPROVE-WITH-FIXES` / `APPROVE`. The same review unattended on every PR is the `pr-review` automation (earned).
+**Subagent:** `.claude/agents/code-review.md` — read-only reviewer against the repo's actual conventions and the issue's gate; returns `BLOCK` / `APPROVE-WITH-FIXES` / `APPROVE`. The same review unattended on every PR is the `pr-review` automation (earned). **`.claude/agents/evaluator.md`** *(browser products)* drives the running app against the acceptance criteria and returns `PASS` or the failed criterion with evidence. Executors call both without asking: agents are autonomous inside the box (`PLAYBOOK.md` → *Autonomy inside the box*).
 
 **Coordinator:** `templates/docs/coordinator.md` — the one-page brief for a Cursor Project, off by default. Pulls from Todo, plans Deep-lane issues, dispatches, watches PRs to green, verifies evidence, reports. Never writes code, never merges.
 

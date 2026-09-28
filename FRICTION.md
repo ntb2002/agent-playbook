@@ -28,3 +28,11 @@ Cursor Projects, Automations, Remote Control, Grok Bot, Claude Code desktop are 
 
 #4 and #5 were based on the branch below them. After #3 merged, their bases were not retargeted, so merging them landed doctrine on dead branches while GitHub showed them as MERGED. Cause: `delete_branch_on_merge` is off here, though `templates/SETUP.md` tells ventures to turn it on. Correction: turn on "Automatically delete head branches" for this repo (Nathan — settings), and before merging any stacked PR confirm its base is `main`. Touches: *principle 6*, steward workflow. → resolved: content restored by the stack-restore PR; setting change pending.
 
+### 2026-09-28 · agent-playbook · Watch: automatic session learning
+
+Candidate for later, not adopted. ECC's continuous-learning pattern: sessions are observed, and the steward turns findings into proposals that Nathan approves. It would feed this file automatically instead of relying on agents to remember to append. Revisit once NOVA has produced a few weeks of sessions and we can see whether manual friction capture is actually missing things. Touches: *The playbook steward*.
+
+### 2026-09-28 · agent-playbook · Watch: autonomy should go down as well as up
+
+*Autonomy inside the box* sets one latitude for every executor. If correction rounds or escalations pile up for a tier, a repo, or a kind of issue, latitude should drop there: tighter loop bounds, Deep lane by default, or a human checkpoint mid-run. No signal yet. Watch NOVA's escalation notes. Touches: *Autonomy inside the box*, *principle 5*.
+
