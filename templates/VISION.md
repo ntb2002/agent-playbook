@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} — Product Vision
 
-> The durable product thesis: what we're building, why, and for whom. Changes rarely. This is the handoff artifact from strategic planning into the codebase. Day-to-day "how" lives in `plans/`; conventions live in `AGENTS.md`.
+> The durable product thesis: what we're building, why, and for whom. Changes rarely. This is the handoff artifact from strategic planning into the codebase. What's next lives in {{TRACKER}}; conventions live in `AGENTS.md`; `plans/` holds Deep-lane specs only.
 
 ## The one-liner
 

@@ -2,6 +2,13 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-29 — Bootstrap friction from NOVA: root commit, retired stubs, VISION header
+
+NOVA was bootstrapped on Sept 28–29 and surfaced three small gaps; Nathan decided each.
+- **Root-commit exception** (principle 6, `bootstrap.sh` next steps). "Never commit to `main`" had no answer for a brand-new repo, where there's nothing to branch from. The scaffold's root commit goes on `main`, made by the human or on the human's explicit say-so. Nothing else is exempt.
+- **`/plan-phase` and `/plan-feature` stubs removed from templates.** They were kept for one sync cycle so muscle memory wouldn't fail silently (PR #4). SmartSport has had its cycle, and a new repo has no muscle memory to protect, so shipping them into NOVA was pure noise. `sync.sh` replaces `.agents/skills` wholesale, so they drop out of a venture on its next sync.
+- **`templates/VISION.md` header** said day-to-day "how" lives in `plans/`, which contradicts the one-mode doctrine (PR #3). It now says what's next lives in the declared tracker, and `plans/` holds Deep-lane specs only.
+
 ## 2026-09-28 — `.claude/settings.json`: deny list for protected checks
 
 Follow-up to PR #7, approved by Nathan: "go on settings.json, with a deny list that includes the verifier and CI paths." The template now ships `.claude/settings.json`.
