@@ -40,3 +40,15 @@ Candidate for later, not adopted. ECC's continuous-learning pattern: sessions ar
 
 `.claude/settings.json` gives Claude Code sessions a deny list for protected checks. Cursor's equivalent (the IDE's auto-run allow/deny, `.cursor/cli.json` for the CLI, and what cloud agents honor) was not verified, so Cursor executors rely on the rule in `AGENTS.md` and the reviewer's `BLOCK` alone. Correction wanted from a Cursor thread that verifies it: which repo file, if any, carries a path deny list that Cursor agents and cloud VMs enforce. Touches: *Autonomy inside the box → The box*, `docs/surfaces.md`.
 
+### 2026-09-28 · nova · No rule for a new repo's first commit
+
+`bootstrap.sh` leaves the scaffold uncommitted, and principle 6 says never commit to `main`, but a new repo has nothing to branch from. Touches: *principle 6*, `bootstrap.sh`. → resolved: root-commit exception, bootstrap-friction PR.
+
+### 2026-09-28 · nova · Retired `/plan-phase` and `/plan-feature` stubs shipped into a new repo
+
+The one-sync-cycle deprecation stubs from PR #4 were still in `templates/`, so bootstrap copied them into NOVA, which had no old names to redirect. Touches: `templates/.agents/skills/`. → resolved: stubs removed from templates, bootstrap-friction PR (deleted from NOVA before its root commit).
+
+### 2026-09-28 · nova · `templates/VISION.md` header contradicts one-mode doctrine
+
+Line 3 said day-to-day "how" lives in `plans/`. Since PR #3, what's next lives in the tracker and `plans/` holds Deep-lane specs only. NOVA's copy was fixed by hand before its root commit. Touches: `templates/VISION.md`. → resolved: bootstrap-friction PR.
+

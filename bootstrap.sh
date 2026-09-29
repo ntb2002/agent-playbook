@@ -63,6 +63,8 @@ cat <<EOF
 Scaffolded "$NAME" at $TARGET  (tracker: $TRACKER_LABEL)
 
 Next steps:
+  0. Make the root commit on main (the one exception to "never commit to main": there is nothing to branch from).
+     Every later change is issue -> branch -> PR.
   1. Fill VISION.md, then AGENTS.md (stack + conventions + landing pad). The landing pad already declares the tracker.
   2. Set up the tracker now — it is the day-one floor, not a launch step (SETUP.md → "Tracker"):
 EOF

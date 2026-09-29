@@ -83,7 +83,7 @@ This rule binds **every** agent in the system, including coordinators and superv
 
 ### 6. `main` is sacred; everything flows through a reviewed, CI-green PR
 
-One issue = one branch (`<issue-id>-<slug>`) = one PR. Never commit to `main` (it's what deploys). Two gate layers: a **local pre-commit hook** (fast, bypassable courtesy) and **CI on the PR** (authoritative, server-side, can be *required*). Trust CI, not the hook. Full model in the `docs/git-workflow.md` template.
+One issue = one branch (`<issue-id>-<slug>`) = one PR. Never commit to `main` (it's what deploys). The one exception is a new repo's **root commit**: the bootstrap scaffold goes straight onto `main` because there is nothing to branch from. It's made by the human, or by an agent on the human's explicit say-so, and everything after it is issue → branch → PR. Two gate layers: a **local pre-commit hook** (fast, bypassable courtesy) and **CI on the PR** (authoritative, server-side, can be *required*). Trust CI, not the hook. Full model in the `docs/git-workflow.md` template.
 
 ### 7. One source of truth across tools
 

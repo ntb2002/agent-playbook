@@ -57,8 +57,8 @@ if [ ! -f "$TARGET/.claude/settings.json" ]; then
 fi
 
 # Drop legacy copies of the rituals from the pre-skills era (now in .agents/skills/).
-# Note: .agents/skills/plan-phase and plan-feature are one-line deprecation stubs
-# pointing at /plan; they ship for one sync cycle and are then removed from templates.
+# (.agents/skills is replaced wholesale above, so the retired /plan-phase and
+# /plan-feature stubs disappear from a venture on its next sync.)
 for cmd in plan-phase plan-feature start-unit close-unit context-sync; do
   rm -f "$TARGET/.claude/commands/$cmd.md"
 done
