@@ -14,7 +14,7 @@ T="$PLAYBOOK_DIR/templates"
 
 [ $# -eq 1 ] || { echo "Usage: $0 <venture-repo-path>"; exit 1; }
 TARGET="$1"
-[ -d "$TARGET/.git" ] || { echo "Refusing: $TARGET is not a git repo."; exit 1; }
+git -C "$TARGET" rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "Refusing: $TARGET is not a git repo."; exit 1; }
 
 mkdir -p "$TARGET/.agents" "$TARGET/.claude/agents" "$TARGET/.cursor/rules" \
          "$TARGET/.cursor/hooks" "$TARGET/.cursor/automations" "$TARGET/.githooks" \

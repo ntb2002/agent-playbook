@@ -56,3 +56,11 @@ Line 3 said day-to-day "how" lives in `plans/`. Since PR #3, what's next lives i
 
 NV-1's branch started at the scaffold commit because local `main` hadn't been pulled after nova#1 merged on GitHub. `AGENTS.md` appeared to revert, and the branch would have conflicted with or undone #1. Same failure seen earlier in SmartSport. Touches: `/start-unit`, `/close-unit`, `docs/git-workflow.md`. → resolved: branch-from-`origin/main` PR. NV-1 itself was repaired by hand (`git fetch origin && git merge origin/main`).
 
+### 2026-09-30 · agent-playbook · `sync.sh` refused git worktrees
+
+It checked `[ -d "$TARGET/.git" ]`, but in a worktree `.git` is a file, so a sync couldn't run from a side checkout that leaves a venture's in-progress branch alone. Touches: `sync.sh`. → resolved: now uses `git rev-parse --is-inside-work-tree` (sync-friction PR).
+
+### 2026-09-30 · smartSportApp · Synced skills reference an `AGENTS.md` section `sync.sh` never delivers
+
+`sync.sh` carries skills, subagents, and rules, but not `AGENTS.md`, which is venture-owned. After #7 the skills point at `AGENTS.md` → *Autonomy inside the box*, which only bootstrapped repos (NOVA) had. SmartSport's section was added by hand in smartSportApp#31. Any future generic constitution section will have the same gap. Options: (a) `sync.sh` prints a warning when a template `AGENTS.md` section heading is missing from the venture's file; (b) move generic rules out of `AGENTS.md` into a synced file (e.g. `.cursor/rules/autonomy.mdc`, always-apply) that `AGENTS.md` points to. Leaning (a): keeps one constitution, costs a few lines of shell. Touches: `sync.sh`, principle 7.
+
