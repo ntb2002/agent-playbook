@@ -72,6 +72,7 @@
 ## Linear
 
 - One workspace for the portfolio; one team per venture, **subject to plan limits** (free: 2 teams, 250 non-archived issues; Basic: 5 teams, no cap). SmartSport and NOVA use both free-tier teams; a third venture means upgrading or the GitHub tier.
+- **Labels:** `tier` (fast / mid / strong) is a workspace label group; `lane` (standard / deep) sits beside it. Label names are **unique across the workspace**, so no two groups can share a child name (that's why lane has no `fast`). A label's team can't be changed after creation: moving a team group to workspace level means recreating it and re-tagging. *(observed Sept 30)*
 - Three states used: Triage (inbox, one-key accept/decline/duplicate/snooze), Backlog, Todo. In Progress / Done come from the GitHub integration on PR open / merge.
 - **Docs-only PRs must not put live issue ids in the title** — Linear attaches them and moves them In Progress.
 - **Linear Reviews** = the same GitHub PRs; squash-and-merge there is a GitHub merge.

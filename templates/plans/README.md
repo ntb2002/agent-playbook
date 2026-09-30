@@ -10,7 +10,7 @@
 
 1. **The roadmap is in the tracker.** `AGENTS.md`'s landing pad points at the active project and the next Todo issue; nothing here is a roadmap.
 2. **Deep-lane work gets a plan first.** A strong model expands the approved issue into a gated unit here, **writes the plan and stops**; a human reviews before any execution.
-3. **Fully specify only the next unit or two.** Later issues stay thin in the tracker until they approach Todo.
+3. **Fully specify only the next unit or two.** Later issues stay thin in the tracker (no criteria, no `lane`/`tier` label) until their blockers merge; then `/plan <issue-id>` specs them against the code as it is.
 4. **Each unit has an entry dependency + a verification gate.** Execute one at a time (WIP limit in `AGENTS.md`): build → verify gate → update `docs/status.md` + landing pad → PR → next.
 5. **Expensive-to-reverse decisions** get logged in `DECISIONS.md`.
 
