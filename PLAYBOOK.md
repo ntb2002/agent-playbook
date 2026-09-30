@@ -74,6 +74,7 @@ This rule binds **every** agent in the system, including coordinators and superv
 
 - **Planning / architecture / expensive-to-reverse decisions** → strongest model, high reasoning.
 - **Ambiguous or cross-cutting execution** (schema, auth, multi-system refactors) and **gnarly debugging** → strongest model too — decision quality during execution matters more than spec quality there.
+- **A Deep-lane plan can lower the build's tier.** The plan re-rates the build in its own **Model:** line. If the plan leaves the builder no judgment calls (exact changes, approach decided, gate concrete), the build may be `mid` even for schema or data-model work: the strong model's judgment went into the plan. **Auth, safety behavior, and prompts that ship to users stay `strong`** for the build regardless. A cheap build that escalates goes back to strong, per the next bullet.
 - **Executing a well-specified unit** → fast/mid model. The spec quality sets the model floor: a tight issue is what makes cheap execution safe (this is the economic function of `/plan <project>` — one strong-model decomposition amortized across many cheap-model units).
 - **Mechanical edits** → fast model.
 - **Cheap classification / in-session helpers** → smallest model.
@@ -174,6 +175,8 @@ The thinking layer is deliberately sprawling — half-formed ideas, archived rea
   | **Fast** | Cause already understood, small diff, no schema / auth / user-facing prompts / `DECISIONS.md` call — typically a bug found and diagnosed while pairing with a code agent, and **out of scope** of the issue currently being built (in-scope work is a commit, not an issue) | Human says "go" in chat → agent files the issue (into In Progress, with repro + cause + gate) → branch → fix + test + evidence → PR. No Triage round-trip, no plan file. |
   | **Standard** | A clear, specified issue in Todo | `/build`, or pair: `/start-unit` → refine → `/close-unit`. The issue *is* the spec; no plan file. |
   | **Deep** | Ambiguous, risky, cross-cutting, `strong` tier, or anything touching prompts, safety, schema, or auth | `/plan <issue-id>` → human reviews the plan → `/build` or pair (`/start-unit` → `/close-unit`). |
+
+  **The lane is recorded on the issue**, never inferred: a `Lane:` line in the description plus a `lane` label (`fast` / `standard` / `deep`), set by whoever specifies the issue (`/plan`, or the Fast-lane agent filing it). **Lane and model are separate questions.** The lane asks whether the issue needs a plan before building; the model asks who builds it. They overlap because the same triggers (schema, auth, prompts, safety) raise both, but neither is read off the other.
 
   When unsure, go one lane deeper. If a fast-lane fix grows (the diff spreads, or a product question appears), stop and move it to Standard or Deep.
 - **Who shapes an issue depends on what they can see.** A tracker agent without code access (e.g. Linear Agent) shapes the *product* side — problem, impact, acceptance criteria, `## Needs human` — and never guesses root causes or implementation. A code-aware agent shapes the *technical* side: investigates, posts findings on the issue, and writes the plan when the Deep lane needs one. Two bug intake paths follow from this:

@@ -40,9 +40,11 @@ The tier is decided when the issue is specified, not when it's dispatched. `/pla
 - **Coordinator (Cursor Project):** picks the model per subagent from the issue's tier.
 - **You, driving directly:** Auto is fine for `fast`/`mid`; pick the strongest model explicitly for `strong`.
 - **Claude Code:** set the session model (desktop model picker or `/model`) from the tier — `fast` → Haiku, `mid` → Sonnet, `strong` → Opus (current generation; as of Sep 2026: Haiku 4.5 / Sonnet 5 / Opus 5.5). Subagents take a `model:` in their frontmatter the same way.
-- **Tracker labels:** keep the tier as a label group (`model` → `fast` / `mid` / `strong`) so exactly one applies per issue.
+- **Tracker labels:** keep the tier as a label group (`model` → `fast` / `mid` / `strong`) and the lane as another (`lane` → `fast` / `standard` / `deep`), so exactly one of each applies per issue. Lane asks *does it need a plan first*; model asks *who builds it*. Neither is inferred from the other. After a Deep-lane plan re-rates the build, update the `model` label to match.
 
-Default tier for a well-specified unit is `mid`. Anything touching prompts that ship to users, safety behavior, schema, auth, or a `DECISIONS.md` call is `strong` regardless of size.
+Default tier for a well-specified unit is `mid`. Anything touching prompts that ship to users, safety behavior, schema, auth, or a `DECISIONS.md` call is `strong` regardless of size, for planning and for any build without a plan.
+
+**A Deep-lane plan re-rates its build.** `/plan <issue-id>` writes the plan's own **Model:** line for the builder. If the plan leaves no judgment calls, it may say `mid` even for schema or data-model work, because the strong model's judgment is already in the plan. **Auth, safety behavior, and prompts that ship to users stay `strong`** for the build regardless. If a `mid` build escalates, the rerun goes to `strong` (below).
 
 ## Escalate tiers after a failed run
 

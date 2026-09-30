@@ -71,13 +71,13 @@ EOF
 if [ "$TRACKER" = "linear" ]; then
 cat <<EOF
        - Linear team for this venture (one team per venture, subject to plan limits), project for the first body of work,
-         GitHub integration on, labels: feature/bug/improvement + model: fast/mid/strong.
+         GitHub integration on, labels: feature/bug/improvement + model: fast/mid/strong + lane: fast/standard/deep.
        - Linear MCP on every agent surface (Cursor, Claude Code, Cloud Agents MCP set). The issue is the spec; /start-unit stops without it.
        - Paste the team link into the AGENTS.md landing pad.
 EOF
 else
 cat <<EOF
-       - Enable Issues on the GitHub repo; labels: accepted (=Backlog), ready (=Todo), feature/bug/improvement, model: fast/mid/strong.
+       - Enable Issues on the GitHub repo; labels: accepted (=Backlog), ready (=Todo), feature/bug/improvement, model: fast/mid/strong, lane: fast/standard/deep.
        - Agents read with 'gh issue view <n> --comments'; PRs say 'Closes #n'; branches are <n>-<slug>.
 EOF
 fi
