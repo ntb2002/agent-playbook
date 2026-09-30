@@ -11,7 +11,7 @@ A small, reusable policy so model/tool choice is a default, not a per-task impro
 
 | Work type | Model | Reasoning |
 |---|---|---|
-| Planning, architecture, decomposing a project into issues (`/plan <project>`), Deep-lane specs, design trade-offs | strongest available | medium, raised only if it visibly falls short |
+| Planning, architecture, decomposing a project into issues (`/spec <project>`), Deep-lane specs, design trade-offs | strongest available | medium, raised only if it visibly falls short |
 | Executing an ambiguous or cross-cutting unit (schema, auth, multi-system refactor) | strongest available | high |
 | Debugging anything gnarly (cheap-model attempts have failed or the bug spans systems) | strongest available | high |
 | Executing a well-specified plan unit | fast/mid model | medium |
@@ -34,17 +34,17 @@ Planning tokens are the expensive ones. Do planning where the budget resets ofte
 
 ## Where the choice gets made
 
-The tier is decided when the issue is specified, not when it's dispatched. `/plan` ends each spec with a **Model:** line (`fast`, `mid`, or `strong`, with one clause of reasoning) using the table above; the human sees it at approval. Whoever dispatches honors it:
+The tier is decided when the issue is specified, not when it's dispatched. `/spec` ends each spec with a **Model:** line (`fast`, `mid`, or `strong`, with one clause of reasoning) using the table above; the human sees it at approval. Whoever dispatches honors it:
 
 - **Linear → Cursor cloud agent:** put `[model=<id>]` in the delegation comment (`@Cursor /build SS-42 [model=…]`, pointing at the plan file if Deep lane). Set a sensible dashboard default too, but don't rely on it — Linear-triggered agents have been observed ignoring it.
 - **Coordinator (Cursor Project):** picks the model per subagent from the issue's tier.
 - **You, driving directly:** Auto is fine for `fast`/`mid`; pick the strongest model explicitly for `strong`.
 - **Claude Code:** set the session model (desktop model picker or `/model`) from the tier — `fast` → Haiku, `mid` → Sonnet, `strong` → Opus (current generation; as of Sep 2026: Haiku 4.5 / Sonnet 5 / Opus 5.5). Subagents take a `model:` in their frontmatter the same way.
-- **Tracker labels:** keep the tier as a label group (`tier` → `fast` / `mid` / `strong`) and the lane as another (`lane` → `standard` / `deep`), so exactly one of each applies to every *specified* issue. Thin issues carry neither until `/plan <id>` specs them; Fast-lane issues carry a tier but no lane. Lane asks *does it need a plan first*; model asks *who builds it*. Neither is inferred from the other. After a Deep-lane plan re-rates the build, update the `tier` label to match.
+- **Tracker labels:** keep the tier as a label group (`tier` → `fast` / `mid` / `strong`) and the lane as another (`lane` → `standard` / `deep`), so exactly one of each applies to every *specified* issue. Thin issues carry neither until `/spec <id>` specs them; Fast-lane issues carry a tier but no lane. Lane asks *does it need a plan first*; model asks *who builds it*. Neither is inferred from the other. After a Deep-lane plan re-rates the build, update the `tier` label to match.
 
 Default tier for a well-specified unit is `mid`. Anything touching prompts that ship to users, safety behavior, schema, auth, or a `DECISIONS.md` call is `strong` regardless of size, for planning and for any build without a plan.
 
-**A Deep-lane plan re-rates its build.** `/plan <issue-id>` writes the plan's own **Model:** line for the builder. If the plan leaves no judgment calls, it may say `mid` even for schema or data-model work, because the strong model's judgment is already in the plan. **Auth, safety behavior, and prompts that ship to users stay `strong`** for the build regardless. If a `mid` build escalates, the rerun goes to `strong` (below).
+**A Deep-lane plan re-rates its build.** `/spec <issue-id>` writes the plan's own **Model:** line for the builder. If the plan leaves no judgment calls, it may say `mid` even for schema or data-model work, because the strong model's judgment is already in the plan. **Auth, safety behavior, and prompts that ship to users stay `strong`** for the build regardless. If a `mid` build escalates, the rerun goes to `strong` (below).
 
 ## Escalate tiers after a failed run
 
@@ -52,7 +52,7 @@ Inside a run, red tests and correction rounds are normal work, bounded by the lo
 
 ## Planning is a reviewed deliverable, not a side effect
 
-When decomposing a project (`/plan <project>`): file the issues into the tracker — the first one or two fully specified with entry deps + verification gates, the rest thin — **and stop**. Never move status. When specifying a Deep-lane issue (`/plan <issue-id>`): write `plans/features/<issue-id>-<slug>.md` **and stop**. A human accepts, promotes, and approves before any execution agent builds. Don't let a planning run drift into implementation.
+When decomposing a project (`/spec <project>`): file the issues into the tracker — the first one or two fully specified with entry deps + verification gates, the rest thin — **and stop**. Never move status. When specifying a Deep-lane issue (`/spec <issue-id>`): write `plans/features/<issue-id>-<slug>.md` **and stop**. A human accepts, promotes, and approves before any execution agent builds. Don't let a planning run drift into implementation.
 
 ## Parallelism
 
