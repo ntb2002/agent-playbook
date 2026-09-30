@@ -2,6 +2,17 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-30 — `/build`: build mode beside pair mode
+
+**Decided by:** Nathan, Sept 30.
+
+`/start-unit` and `/close-unit` were split on purpose. On SmartSport, agents that built all the way to a PR produced user-facing work that passed its tests but didn't do what Nathan wanted, and he needed to refine it with the agent before a PR existed. That need is real and stays (**pair mode**). But since *Autonomy inside the box* (#7), most units don't need the pause. Cloud agents, the coordinator, and strongly gated issues should run straight to a PR, and NOVA's browser evaluator will put recordings on UI PRs. So a new **`/build`** runs `/start-unit` then `/close-unit` without stopping (**build mode**); the human iterates by commenting on the PR.
+
+- `/build` holds no steps of its own. It executes the two unit rituals' files, so a fix like #10 reaches all three.
+- It keeps every approval: Todo only, the Deep-lane plan approved first, escalations stop the run, never merges. `[MANUAL]` items go to the PR as unchecked boxes.
+- Considered and rejected: making `/start-unit` auto-close when its gate passes (the steward's first proposal). That removes the pause pair mode exists for.
+- Standard/Deep lanes, `AGENTS.md` rhythm, README, coordinator dispatch, and Linear delegation examples now name `/build`.
+
 ## 2026-09-30 — Branch from `origin/main`, merge it before the PR
 
 NOVA's first unit (NV-1) was cut from a local `main` still at the scaffold commit, after nova#1 had merged on GitHub. The branch missed #1's design notes and landing-pad lines, and its `AGENTS.md` looked like it had reverted. SmartSport had hit the same thing. Cause: `/start-unit` ran `git checkout -b` from whatever was checked out. Merges happen on GitHub's servers (web, mobile, Linear Reviews, `gh pr merge`), so local `main` is almost always behind in this workflow, laptop included.

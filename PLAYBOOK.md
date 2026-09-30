@@ -172,8 +172,8 @@ The thinking layer is deliberately sprawling — half-formed ideas, archived rea
   | Lane | When | Path |
   |---|---|---|
   | **Fast** | Cause already understood, small diff, no schema / auth / user-facing prompts / `DECISIONS.md` call — typically a bug found and diagnosed while pairing with a code agent, and **out of scope** of the issue currently being built (in-scope work is a commit, not an issue) | Human says "go" in chat → agent files the issue (into In Progress, with repro + cause + gate) → branch → fix + test + evidence → PR. No Triage round-trip, no plan file. |
-  | **Standard** | A clear, specified issue in Todo | `/start-unit` → build → `/close-unit`. The issue *is* the spec; no plan file. |
-  | **Deep** | Ambiguous, risky, cross-cutting, `strong` tier, or anything touching prompts, safety, schema, or auth | `/plan <issue-id>` → human reviews the plan → `/start-unit` → `/close-unit`. |
+  | **Standard** | A clear, specified issue in Todo | `/build`, or pair: `/start-unit` → refine → `/close-unit`. The issue *is* the spec; no plan file. |
+  | **Deep** | Ambiguous, risky, cross-cutting, `strong` tier, or anything touching prompts, safety, schema, or auth | `/plan <issue-id>` → human reviews the plan → `/build` or pair (`/start-unit` → `/close-unit`). |
 
   When unsure, go one lane deeper. If a fast-lane fix grows (the diff spreads, or a product question appears), stop and move it to Standard or Deep.
 - **Who shapes an issue depends on what they can see.** A tracker agent without code access (e.g. Linear Agent) shapes the *product* side — problem, impact, acceptance criteria, `## Needs human` — and never guesses root causes or implementation. A code-aware agent shapes the *technical* side: investigates, posts findings on the issue, and writes the plan when the Deep lane needs one. Two bug intake paths follow from this:
@@ -214,6 +214,15 @@ Within an approved issue, on that issue's branch, an agent may, without asking:
 
 Machinery — the coordinator, automations, bot reviewer, and any fleet of agents — is still earned by trigger (*Earned machinery*). That rule is about **overhead, not safety**. For a solo founder with one active repo, orchestration costs more than it returns. One agent looping hard inside a well-drawn box is not machinery.
 
+### Two ways to run a unit: pair mode and build mode
+
+The box is the same in both; what differs is **when the human iterates**.
+
+- **Pair mode:** `/start-unit` → refine together → `/close-unit`. The human iterates *before* the PR, at the laptop, trying the thing as it takes shape. Use it for user-facing work where passing tests and "does what I wanted" can come apart: UI, feel, flows. This is why the unit rituals were split in the first place.
+- **Build mode:** `/build`. The agent runs `/start-unit` and `/close-unit` back to back and delivers an open PR with gate evidence. The human iterates *after* the PR, by commenting on it; the agent fixes on the same branch. It's the default for cloud delegation, the coordinator's dispatch, and any issue whose gate is all `[CI]` / `[ARTIFACT]`, including UI units once a live-app evaluator's recordings land on the PR.
+
+The human picks per issue; neither mode is the rule. Build mode doesn't skip approvals: only a Todo issue, a Deep-lane plan approved first, escalations still stop the run, and nothing merges without the human. `/build` holds no steps of its own. It executes the two unit rituals' files, so a fix to either reaches all three.
+
 ### Loop bounds
 
 Every in-task loop runs under these defaults. An issue may override any of them explicitly.
@@ -250,7 +259,7 @@ For products with a UI that runs in a browser, the builder does not grade its ow
 | Primitive | What it is | Use for |
 |---|---|---|
 | **Rules / memory** | Always-on context (`AGENTS.md`, `.cursor/rules/*.mdc`, `CLAUDE.md` with `@AGENTS.md`) | Conventions every agent must always follow |
-| **Skills** | Parameterized, repeatable prompts (`.agents/skills/*/SKILL.md`) | Rituals: `/plan`, `/start-unit`, `/close-unit`, `/context-sync` |
+| **Skills** | Parameterized, repeatable prompts (`.agents/skills/*/SKILL.md`) | Rituals: `/plan`, `/build`, `/start-unit`, `/close-unit`, `/context-sync` |
 | **Subagents** | Specialized workers with restricted tools (`.claude/agents/*`, Cursor Task) | Scoped jobs: read-only `code-review`, live-app `evaluator`. Executors call them without asking (*Autonomy inside the box*). |
 | **Hooks** | Deterministic shell on lifecycle events (`.githooks/`, `.cursor/hooks.json`) | Guarantees: secret-scan, lint/test on commit |
 | **MCP** | Project-scoped tool servers (`.cursor/mcp.json`) | External integrations (DB, deploy, monitoring) — same in-repo, one-source-of-truth principle |
