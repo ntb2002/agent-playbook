@@ -15,6 +15,7 @@ Begin exactly one issue — no scope creep. `$ARGUMENTS` is an issue id (`SP-7`,
 5. Restate the **verification gate** as your definition of done; keep it visible.
 6. **Branch from GitHub's `main`, never your local copy.** PRs merge on GitHub, so local `main` is usually behind even on a laptop, and a branch cut from it silently misses merged work.
    - `git status` first. If there are uncommitted changes, stop and ask. Don't carry another unit's work onto this branch.
+   - **Move the issue Todo → In Progress** in the tracker (Linear MCP `save_issue`; GitHub tier: nothing to move, since the state mapping has no In Progress label and the PR shows it). This is the one status move you make, and only because the human started this unit. It records their approval; don't move any other issue or state.
    - `git fetch origin`, then `git checkout --no-track -b <issue-id>-<slug> origin/main`. The tracker auto-links the PR from the id.
    - **Resuming** a branch that already exists: check it out and `git merge origin/main`, so it has everything merged since it was cut.
 
