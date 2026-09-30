@@ -35,7 +35,7 @@ Stop. Summarize milestones and sequence, list the issues you filed (ids + titles
 1. Read the issue — title, description, acceptance criteria, comments (Linear MCP `get_issue`, or `gh issue view <n> --comments`). If it still has a `## Needs human` section, or acceptance criteria are missing or ambiguous, **stop and say what's missing**. A comment that answers the questions is not enough until those answers are folded into `## Decided` in the description.
 2. Read `VISION.md` (scope fence), `AGENTS.md`, `docs/architecture.md` for the area, `DECISIONS.md`, and the code the issue touches. If the issue violates the scope fence, stop and flag it.
 3. Decide size. If this is genuinely a subsystem (several PRs, several sessions), say so and recommend converting it to a tracker project and running `/plan <project>` — do not cram it into one unit.
-4. Write `plans/features/<issue-id>-<slug>.md`. Don't restate the issue; link it and add what the code tells you:
+4. **Put the plan on the issue's branch** so every agent (local or cloud) that builds the issue finds it. `git status` must be clean (otherwise stop and ask). `git fetch origin && git checkout --no-track -b <issue-id>-<slug> origin/main`. Then write `plans/features/<issue-id>-<slug>.md`. Don't restate the issue; link it and add what the code tells you:
    - **Issue:** id + link. **Entry dependency:** what must already be true (merged PRs, migrations, config).
    - **Why this now:** one or two lines tying it to the acceptance criteria.
    - **The concrete work:** files/areas to touch, the approach, what NOT to touch.
@@ -46,5 +46,6 @@ Stop. Summarize milestones and sequence, list the issues you filed (ids + titles
    - **Loop spec** *(loop issues only)*: per `plans/README.md`. The verifier must already be merged.
 5. Log expensive-to-reverse decisions in `DECISIONS.md`.
 6. Update the `AGENTS.md` landing pad's *Next unit* line to this issue if it is now the top of the queue.
+7. Commit the plan (and any `DECISIONS.md` / landing-pad edits) on that branch, `git push -u origin HEAD`, and comment on the issue with a link to the plan file on the branch. **Don't open a PR.** The unit's PR opens when it's built, and `/close-unit` deletes the plan file in it.
 
-Stop. Summarize the gate and flag anything the issue left undecided.
+Stop. Summarize the gate and flag anything the issue left undecided. The human reviews the plan from the link. Changes are requested as comments on the issue, and you revise the plan on the same branch. **Approval is the human starting the build:** `/build <issue-id>` or `/start-unit <issue-id>`, or `@Cursor /build <issue-id>` for a cloud agent. It resumes this branch.

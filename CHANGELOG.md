@@ -2,6 +2,13 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-30 — Deep-lane plans live on the issue branch; `/build` un-ignored
+
+Two gaps found while syncing #12 and answering "how does `/build` work with a Deep-lane issue?"
+
+- **Deep-lane plans had no home a builder could reach.** `/plan <issue-id>` wrote `plans/features/…` into the working tree and never said to commit it. Since #10, `/start-unit` refuses a dirty tree and branches from `origin/main`, so a local plan file blocked the build, and a cloud agent could never have seen it. Now `/plan <issue-id>` cuts `<issue-id>-<slug>` from `origin/main`, commits and pushes the plan there (no PR), and links it on the issue. `/start-unit`/`/build` resume that branch, and `/close-unit` deletes the plan in the unit's PR, so it never touches `main`. **Approval is the human starting the build** (`/build`, `/start-unit`, or `@Cursor /build`). Plan revisions are requested as issue comments and made on the same branch.
+- **`templates/gitignore`'s `build/` rule swallowed `.agents/skills/build/`**, so `/build` would never have been committed in any bootstrapped repo. The template gains `!/.agents/skills/build/`. `sync.sh` now warns when any synced file is gitignored in the target. NOVA and SmartSport got the negation by hand in their `/build` sync PRs (nova#5, smartSportApp#32).
+
 ## 2026-09-30 — `/build`: build mode beside pair mode
 
 **Decided by:** Nathan, Sept 30.

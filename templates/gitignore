@@ -24,6 +24,8 @@ __pycache__/
 # Build output
 dist/
 build/
+# ...but the /build skill folder is not build output
+!/.agents/skills/build/
 
 # Claude Code local settings (not shared)
 .claude/settings.local.json
