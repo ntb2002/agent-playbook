@@ -2,6 +2,10 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-30 — Starting a build moves the issue to In Progress
+
+**Decided by:** Nathan, Sept 30. The status rule protects the human's *approvals*: accept out of Triage, promote into Todo. But Linear's GitHub integration moves status only on PR events (verified against Linear's docs), so an issue being built by `/build` read "Todo" until the PR opened. That misstated the work and hid the WIP limit. Now, when a human runs `/build` or `/start-unit` on a Todo issue, the agent moves that issue Todo → In Progress as its first write. This is the third exception, after undoing your own mistake and the Fast lane. Typing the command was the approval; the status move just records it. No agent ever moves an issue into Todo, Backlog, or Done. The steward's own standing rule, "never move a tracker issue's status", is unchanged: the steward doesn't build units.
+
 ## 2026-09-30 — `/build`: build mode beside pair mode
 
 **Decided by:** Nathan, Sept 30.
