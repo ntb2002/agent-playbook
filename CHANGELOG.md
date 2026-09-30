@@ -2,6 +2,14 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-30 — Thin issues stay unlabeled until spec mode; lane labels are standard/deep
+
+**Decided by:** Nathan, Sept 30. The first lane backfill on NOVA marked 18 of 23 issues Deep, almost all of them *provisional* labels on thin issues. "When unsure, go one lane deeper" meets a one-liner and always goes deeper. Lane and tier are judgments about a spec; a thin issue has none. The planning agent had also flagged the deeper gap: the doctrine said thin issues "get their criteria when they approach Todo," but no ritual did it.
+
+- **Thin issues carry no `lane` or `tier` label.** "No lane" is the signal that an issue needs a spec, and a *Backlog with no lane* view is the ready-to-spec list.
+- **`/plan <issue-id>` gains spec mode.** On a thin issue whose blockers have merged, it writes criteria, gate, protected checks, lane and tier against the code as it is then, puts product calls under `## Needs human`, and stops. **Promotion to Todo is the approval**, and Todo now explicitly requires a spec. A `deep` result gets its plan from a second `/plan <id>`. Re-running `/plan <project>` specs the next one or two unblocked thin issues. `/close-unit` names the thin issues each PR unblocks. `/start-unit` refuses an issue with no lane.
+- **Lane labels are `standard` and `deep` only.** Linear label names are workspace-unique, and `fast` already belongs to the tier group. A Fast-lane issue is filed while it's being fixed, so a label that decides "plan first?" has nothing to decide. The doctrine now calls the model group `tier`, matching the workspace.
+
 ## 2026-09-30 — Deep-lane plans live on the issue branch; `/build` un-ignored
 
 Two gaps found while syncing #12 and answering "how does `/build` work with a Deep-lane issue?"

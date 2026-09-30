@@ -1,17 +1,22 @@
 ---
 name: plan
-description: Plan work at either size — decompose a tracker project into session-sized issues, or expand one Deep-lane issue into a gated plan unit. Writes the plan, never builds, never moves status.
+description: Plan work at any size — decompose a project into issues, spec a thin issue, or write a Deep-lane issue's plan. Writes the plan, never builds, never moves status.
 disable-model-invocation: true
 ---
 
 # /plan $ARGUMENTS
 
-One planning ritual, two sizes. The argument decides which:
+One planning ritual. The argument, and the state of the issue, decide what it does:
 
-- **An issue id** (`SS-42`, `NV-7`, `#42`, or a bare `42` on the GitHub tier) → **issue mode**: expand one Deep-lane issue into `plans/features/<issue-id>-<slug>.md`.
-- **Anything else** (a project name, a Linear project URL, a GitHub milestone) → **project mode**: decompose the project into session-sized issues filed into the tracker.
+- **A project** (name, Linear project URL, GitHub milestone):
+  - not yet decomposed → **project mode**: break it into session-sized issues;
+  - already decomposed → **spec the next one or two** thin issues whose `blocked by` issues are all merged (spec mode below, once per issue).
+- **An issue id** (`SS-42`, `NV-7`, `#42`, or a bare `42` on the GitHub tier):
+  - **thin** (no acceptance criteria / gate / lane) → **spec mode**: turn it into a buildable issue;
+  - **specified, `lane: deep`** → **issue mode**: write its plan on the issue branch;
+  - **specified, `lane: standard`** → say "no plan needed; `/build <id>`" and stop.
 
-Both modes share the rules: **your only deliverable is the plan** (issues or a plan file). Do not implement anything. Do not change any issue's status — a human accepts, promotes, and approves. Read the tracker `AGENTS.md` declares (Linear MCP, or `gh`) and no other; if it is unreachable, stop and say so. Never read the knowledge layer (Notion, strategy docs, chat exports) to infer product intent — the tracker and `VISION.md` are the whole spec.
+Every mode shares the rules: **your only deliverable is the plan** (issues, a spec, or a plan file). Do not implement anything. Do not change any issue's status — a human accepts, promotes, and approves. Read the tracker `AGENTS.md` declares (Linear MCP, or `gh`) and no other; if it is unreachable, stop and say so. Never read the knowledge layer (Notion, strategy docs, chat exports) to infer product intent — the tracker and `VISION.md` are the whole spec.
 
 ## Project mode — decompose into issues
 
@@ -19,14 +24,25 @@ The strong-model step whose cost is amortized across many cheap execution units.
 
 1. Read `VISION.md`, `AGENTS.md`, `docs/architecture.md`, `DECISIONS.md`, and the project's description in the tracker. If the outcome is unclear or violates the scope fence in `VISION.md`, stop and say so.
 2. Decompose into **session-sized issues**: each buildable in one agent session and shippable as one PR. Sub-issues only when each child is itself session-sized. Identify **milestones** (user-visible capability checkpoints, not technical layers) and which issues are parallel-safe vs strictly serial.
-3. **Fully specify only the first one or two issues** — the ones a human could promote to Todo today: acceptance criteria, entry dependency, a **verification gate** where every item is tagged `[CI]` / `[ARTIFACT]` / `[MANUAL]` and is phone-checkable (only tag `[CI]` if the check exists; only tag `[ARTIFACT]` if a tool the agent has can produce it), a **Model:** tier line per `.cursor/rules/model-policy.mdc`, and a **Lane:** line (`standard` or `deep`, one clause of reasoning; per `PLAYBOOK.md` → *Proportional rigor*), each mirrored as a `model` / `lane` label. Name the protected checks the gate relies on. If the work is about improving a number rather than passing once, write a `## Loop spec` (template in `plans/README.md`). Its verifier must already exist, or be the issue before it.
-4. **Leave the rest thin**: a title that names the work, one line of intent, milestone, `blocked by` links, and a *provisional* `lane` label (confirmed when the issue's criteria are written). No acceptance criteria yet — an agent writes them against the code as it exists when the issue approaches Todo. A greenfield decomposition is wrong by the fourth unit; don't pretend otherwise.
+3. **Fully specify only the first one or two issues** — the ones a human could promote to Todo today: acceptance criteria, entry dependency, a **verification gate** where every item is tagged `[CI]` / `[ARTIFACT]` / `[MANUAL]` and is phone-checkable (only tag `[CI]` if the check exists; only tag `[ARTIFACT]` if a tool the agent has can produce it), a **Model:** tier line per `.cursor/rules/model-policy.mdc`, and a **Lane:** line (`standard` or `deep`, one clause of reasoning; per `PLAYBOOK.md` → *Proportional rigor*), each mirrored as a `tier` / `lane` label. Name the protected checks the gate relies on. If the work is about improving a number rather than passing once, write a `## Loop spec` (template in `plans/README.md`). Its verifier must already exist, or be the issue before it.
+4. **Leave the rest thin**: a title that names the work, one line of intent, milestone, `blocked by` links. **No acceptance criteria, no `lane` or `tier` label** — those are judgments about a spec, and a thin issue has none yet. Spec mode writes them against the code as it exists once the issue's blockers have merged. A greenfield decomposition is wrong by the fourth unit; don't pretend otherwise.
 5. Open product calls go under `## Needs human` on the issue (numbered, with a recommendation each). Don't resolve them yourself.
 6. File the issues into the project (Linear MCP, or `gh issue create` with the milestone). **Titles name the work** — no ids, codes, or team prefixes in the title.
 7. Phase-level design that fits no issue (architecture sketch, sequencing rationale) → `plans/<project>/README.md`. Short. Design notes, not a unit list.
 8. Log expensive-to-reverse decisions in `DECISIONS.md`. Update the `AGENTS.md` landing pad's *Active project* line.
 
 Stop. Summarize milestones and sequence, list the issues you filed (ids + titles), and name the one you'd promote to Todo first. The human presses the keys.
+
+## Spec mode — turn one thin issue into a buildable issue
+
+For an issue that is still thin (title, one-line intent, `blocked by`). This is where "thin issues get their criteria when they approach Todo" actually happens.
+
+1. Read the issue, its comments, and the issues it was `blocked by`. If any blocker isn't merged, stop and say which: the spec would be written against code that doesn't exist yet.
+2. Read `VISION.md` (scope fence), `AGENTS.md`, `docs/architecture.md`, `DECISIONS.md`, and **the code as it exists now**, especially what the merged blockers built. The spec is grounded in that, not in the original decomposition.
+3. If it's no longer session-sized, say so and propose the split (sub-issues, each itself session-sized). Don't spec an oversized issue.
+4. Write into the issue description: acceptance criteria, entry dependency, the **verification gate** (`[CI]` / `[ARTIFACT]` / `[MANUAL]`, only tiers a tool can actually produce), **protected checks**, a **Model:** line and a **Lane:** line, each with one clause of reasoning, and a `## Loop spec` if it's a loop issue. Apply the matching `tier` and `lane` labels. Keep the original one-line intent at the top.
+5. Product calls you can't resolve from the code and `VISION.md` go under `## Needs human` (numbered, a recommendation each). Don't decide them.
+6. Stop. Don't change status and don't write a plan file. Report the spec in brief, its lane and tier, and any `## Needs human` items. **The human promotes it to Todo; that's the approval of the spec.** If it came out `deep`, the next step after promotion is `/plan <issue-id>` again, which then writes its plan.
 
 ## Issue mode — expand one Deep-lane issue
 
@@ -41,7 +57,7 @@ Stop. Summarize milestones and sequence, list the issues you filed (ids + titles
    - **The concrete work:** files/areas to touch, the approach, what NOT to touch.
    - **Verification gate:** every acceptance criterion becomes at least one gate item tagged `[CI]` / `[ARTIFACT]` / `[MANUAL]`, phone-checkable.
    - **Branch:** `<issue-id>-<slug>` so the tracker auto-links the PR and closes the issue on merge.
-   - **Model (for the build):** re-rate it now that the plan exists (`.cursor/rules/model-policy.mdc` → *A Deep-lane plan re-rates its build*). If this plan leaves the builder no judgment calls, say `mid`, even for schema or data-model work. **Auth, safety behavior, and prompts that ship to users stay `strong`.** One clause of reasoning. Update the issue's `model` label to match.
+   - **Model (for the build):** re-rate it now that the plan exists (`.cursor/rules/model-policy.mdc` → *A Deep-lane plan re-rates its build*). If this plan leaves the builder no judgment calls, say `mid`, even for schema or data-model work. **Auth, safety behavior, and prompts that ship to users stay `strong`.** One clause of reasoning. Update the issue's `tier` label to match.
    - **Protected checks:** the existing tests, evals, or fixtures the gate relies on. The executor may not edit them. Override any default loop bound here if the issue needs it.
    - **Loop spec** *(loop issues only)*: per `plans/README.md`. The verifier must already be merged.
 5. Log expensive-to-reverse decisions in `DECISIONS.md`.
