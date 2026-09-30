@@ -64,6 +64,15 @@ for cmd in plan-phase plan-feature start-unit close-unit context-sync; do
 done
 rmdir "$TARGET/.claude/commands" 2>/dev/null || true
 
+# A synced file the venture's .gitignore swallows would silently never be
+# committed (e.g. a generic `build/` rule hiding .agents/skills/build/).
+ignored="$(cd "$TARGET" && find .agents .claude/agents .claude/settings.json .cursor .githooks scripts/hooks -type f 2>/dev/null | git check-ignore --stdin || true)"
+if [ -n "$ignored" ]; then
+  echo "WARNING: these synced files are gitignored in $TARGET and would never be committed:"
+  printf '  %s\n' $ignored
+  echo "Add a negation to its .gitignore (template: !/.agents/skills/build/)."
+fi
+
 echo "Synced ritual layer into $TARGET:"
 git -C "$TARGET" status --short -- .agents .claude .cursor .githooks scripts/hooks/secret-scan.sh docs/coordinator.md
 echo
