@@ -4,13 +4,13 @@
 
 ## What lives here
 
-- **`plans/features/<issue-id>-<slug>.md`** — one file per **Deep-lane** issue currently in flight, committed on **the issue's branch** (never on `main`), so local and cloud agents both find it. `/plan <issue-id>` cuts the branch from `origin/main`, commits the plan, pushes, and links it on the issue; `/build` or `/start-unit` resumes that branch; `/close-unit` deletes it in the PR that ships the unit (the PR body carries the full plan). Standard- and Fast-lane issues have no plan file: the issue is the spec.
-- **`plans/<project>/README.md`** *(optional)* — phase-level design that doesn't fit an issue: an architecture sketch, sequencing rationale. `/plan <project>` may write it. Not a unit list; the units are issues in the tracker project.
+- **`plans/features/<issue-id>-<slug>.md`** — one file per **Deep-lane** issue currently in flight, committed on **the issue's branch** (never on `main`), so local and cloud agents both find it. `/spec <issue-id>` cuts the branch from `origin/main`, commits the plan, pushes, and links it on the issue; `/build` or `/start-unit` resumes that branch; `/close-unit` deletes it in the PR that ships the unit (the PR body carries the full plan). Standard- and Fast-lane issues have no plan file: the issue is the spec.
+- **`plans/<project>/README.md`** *(optional)* — phase-level design that doesn't fit an issue: an architecture sketch, sequencing rationale. `/spec <project>` may write it. Not a unit list; the units are issues in the tracker project.
 - **`plans/artifacts/`** — committed local-lane evidence (small PNGs), linked by SHA from PR bodies.
 
 1. **The roadmap is in the tracker.** `AGENTS.md`'s landing pad points at the active project and the next Todo issue; nothing here is a roadmap.
 2. **Deep-lane work gets a plan first.** A strong model expands the approved issue into a gated unit here, **writes the plan and stops**; a human reviews before any execution.
-3. **Fully specify only the next unit or two.** Later issues stay thin in the tracker (no criteria, no `lane`/`tier` label) until their blockers merge; then `/plan <issue-id>` specs them against the code as it is.
+3. **Fully specify only the next unit or two.** Later issues stay thin in the tracker (no criteria, no `lane`/`tier` label) until their blockers merge; then `/spec <issue-id>` specs them against the code as it is.
 4. **Each unit has an entry dependency + a verification gate.** Execute one at a time (WIP limit in `AGENTS.md`): build → verify gate → update `docs/status.md` + landing pad → PR → next.
 5. **Expensive-to-reverse decisions** get logged in `DECISIONS.md`.
 

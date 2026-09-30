@@ -50,6 +50,7 @@
   - Rule order is deny → ask → allow, and deny blocks in every mode, `bypassPermissions` included. `Edit(/path)` in project settings anchors at the repo root.
   - Edit-deny also covers `sed`, `tee`, and `>` redirects in Bash, but **not** a script that opens the file itself (Python, Node). For an OS-level guarantee, use the sandbox.
   - `.claude/` is a protected path: writes to it are never auto-approved (prompted in manual/`acceptEdits`, classifier-reviewed in auto), and allow rules don't change that. Cloud sessions ignore `bypassPermissions`/`dontAsk` from repo settings.
+- **Built-in `/plan` enters plan mode** (read-only; *verified in Claude Code's command reference, Sept 30*). A project skill named `plan` collided with it: `/plan NV-2` put the agent in plan mode, where it could only propose writing the plan file. The ritual is `/spec`. Check the command reference before naming a new skill; `/build` has no built-in.
 - **Steward:** the playbook steward is a Claude Code agent launched inside `agent-playbook`.
 
 ## Codex / ChatGPT

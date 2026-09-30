@@ -2,6 +2,14 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-30 — `/plan` renamed `/spec`
+
+**Decided by:** Nathan, Sept 30. NOVA's first `/plan NV-2` landed in Claude Code's native plan mode: read-only, proposing to write the plan file instead of writing it, with an extra approval that added nothing. Cause: Claude Code has a built-in `/plan [description]` that enters plan mode, and Cursor has a Plan mode too. The skill's name collided with a built-in.
+
+- **The ritual is `/spec`** (skill folder `.agents/skills/spec/`). It names its three outputs by what they produce: a **breakdown** (project → issues), an **issue spec** (thin issue → criteria, gate, lane, tier), a **build plan** (Deep-lane issue → plan file on its branch). "Spec mode / project mode / issue mode" are gone, so "`/spec` in spec mode" can't be ambiguous. "Plan" survives only as the Deep-lane *document*, which no tool mistakes for a command.
+- The skill says to run in a normal session, never in a read-only plan mode. Principle 3 and `docs/surfaces.md` record the collision.
+- `sync.sh` replaces `.agents/skills` wholesale, so ventures lose the old `plan` folder on their next sync. Their `AGENTS.md` and `plans/README.md` references are hand-edited in the sync PR.
+
 ## 2026-09-30 — Thin issues stay unlabeled until spec mode; lane labels are standard/deep
 
 **Decided by:** Nathan, Sept 30. The first lane backfill on NOVA marked 18 of 23 issues Deep, almost all of them *provisional* labels on thin issues. "When unsure, go one lane deeper" meets a one-liner and always goes deeper. Lane and tier are judgments about a spec; a thin issue has none. The planning agent had also flagged the deeper gap: the doctrine said thin issues "get their criteria when they approach Todo," but no ritual did it.

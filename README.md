@@ -43,7 +43,7 @@ Coordinator, automations, and bot reviewer are not tiers. Each turns on when its
 ./bootstrap.sh ~/Developer/my-ios-app "My iOS App" "one-liner" --ios
 ```
 
-The bootstrap copies the templates, fills `{{PLACEHOLDERS}}` (including the tracker), inits git with the pre-commit hook enabled, and prints the human steps for the chosen tracker. Then: create a tracker project, `/plan <project>`, accept and promote, `/start-unit <issue-id>`.
+The bootstrap copies the templates, fills `{{PLACEHOLDERS}}` (including the tracker), inits git with the pre-commit hook enabled, and prints the human steps for the chosen tracker. Then: create a tracker project, `/spec <project>`, accept and promote, `/start-unit <issue-id>`.
 
 ## The rituals
 
@@ -51,7 +51,7 @@ Agent Skills in `.agents/skills/<name>/SKILL.md` (Claude Code follows the `.clau
 
 | Skill | When | What it does |
 |---|---|---|
-| `/plan <project \| issue>` | A project goes active, a thin issue is unblocked, or a Deep-lane issue is next | **Project:** decomposes it into issues (first one or two specified, the rest thin and unlabeled); re-run later, it specs the next unblocked thin ones. **Thin issue → spec mode:** writes criteria, gate, lane and tier against the current code; you promote to Todo. **Deep-lane issue → issue mode:** writes its plan on the issue branch. **Standard issue:** "just `/build` it." Never moves status. |
+| `/spec <project \| issue>` | A project goes active, a thin issue is unblocked, or a Deep-lane issue is next | **Project:** decomposes it into issues (first one or two specified, the rest thin and unlabeled); re-run later, it specs the next unblocked thin ones. **Thin issue → issue spec:** writes criteria, gate, lane and tier against the current code; you promote to Todo. **Deep-lane issue → build plan:** writes its plan on the issue branch. **Standard issue:** "just `/build` it." Never moves status. |
 | `/build <issue-id>` | Build mode: hand off one Todo issue | Runs `/start-unit` then `/close-unit` without stopping and delivers an open PR with gate evidence. You iterate by commenting on the PR. Default for cloud agents, the coordinator, and strong gates. |
 | `/start-unit <issue-id>` | Pair mode: begin one unit | Fetches the issue from the declared tracker (stops if it can't), checks Todo + entry dependency + WIP limit, restates the gate as definition of done, branches `<issue-id>-<slug>`, builds only that. |
 | `/close-unit <issue-id>` | Pair mode: gate is met | Verifies every gate item has evidence the reviewer can open, updates `docs/status.md` + landing pad, deletes the plan file if any, commits → pushes → opens the PR. Stops there; the human merges. |
