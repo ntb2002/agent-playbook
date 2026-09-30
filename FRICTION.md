@@ -52,3 +52,7 @@ The one-sync-cycle deprecation stubs from PR #4 were still in `templates/`, so b
 
 Line 3 said day-to-day "how" lives in `plans/`. Since PR #3, what's next lives in the tracker and `plans/` holds Deep-lane specs only. NOVA's copy was fixed by hand before its root commit. Touches: `templates/VISION.md`. → resolved: bootstrap-friction PR.
 
+### 2026-09-30 · nova · Unit branch cut from a stale local `main`
+
+NV-1's branch started at the scaffold commit because local `main` hadn't been pulled after nova#1 merged on GitHub. `AGENTS.md` appeared to revert, and the branch would have conflicted with or undone #1. Same failure seen earlier in SmartSport. Touches: `/start-unit`, `/close-unit`, `docs/git-workflow.md`. → resolved: branch-from-`origin/main` PR. NV-1 itself was repaired by hand (`git fetch origin && git merge origin/main`).
+

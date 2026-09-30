@@ -13,7 +13,8 @@ A **commit** is a named snapshot. A **branch** is an independent line of commits
 
 ## The unit of work: one issue = one branch = one PR
 
-1. **Branch** off `main`: `git checkout -b <issue-id>-<slug>` (e.g. `SS-42-onboarding-copy`, or `42-onboarding-copy` on the GitHub tier). The id in the branch is what lets the tracker link the PR and close the issue on merge.
+1. **Branch** off GitHub's `main`: `git fetch origin && git checkout --no-track -b <issue-id>-<slug> origin/main` (e.g. `SS-42-onboarding-copy`, or `42-onboarding-copy` on the GitHub tier). The id in the branch is what lets the tracker link the PR and close the issue on merge.
+   > **Why `origin/main` and not `main`:** clicking *Merge* (GitHub web, GitHub mobile, Linear Reviews, `gh pr merge`) merges on GitHub's servers. Your local `main` doesn't change until something pulls, even when the browser is on the same laptop. A branch cut from a stale local `main` is missing merged work and will conflict with it or quietly undo it. `/start-unit` and `/close-unit` handle this; do the same by hand.
 2. **Commit** as you go (the pre-commit hook runs if `core.hooksPath` is enabled).
 3. **Push:** `git push -u origin HEAD`.
 4. **Open a PR** with `gh pr create` using `.github/pull_request_template.md`; fill the gate checklist with evidence.
