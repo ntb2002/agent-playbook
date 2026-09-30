@@ -2,7 +2,7 @@
 name: close-unit
 description: Verify a plan unit's gate, sync docs, and open the PR
 disable-model-invocation: true
-allowed-tools: Read, Edit, Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git checkout:*), Bash(git commit:*), Bash(git push:*), Bash(gh pr create:*)
+allowed-tools: Read, Edit, Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git rm:*), Bash(git checkout:*), Bash(git commit:*), Bash(git fetch:*), Bash(git merge:*), Bash(git push:*), Bash(gh pr create:*)
 ---
 
 # /close-unit $ARGUMENTS
@@ -22,6 +22,7 @@ Close out the issue `$ARGUMENTS` only after its gate is fully met. The gate is i
 2. Update **`docs/status.md`** (one dated line for the unit) and the **`AGENTS.md` landing pad** (*Next unit* → clear it or name the next Todo issue; the tracker owns the queue, so this is usually one line).
 3. Log expensive-to-reverse decisions in `DECISIONS.md`.
 4. **Keep the repo clean:** the PR body is the durable record, not the plan file. If the unit had a plan file (Deep lane), paste the *entire* plan unit (not just the gate) into the PR body, then `git rm plans/features/<issue-id>-<slug>.md` in the same commit. Fast/Standard lanes have no plan file — the PR body carries the cause, fix, and gate. `plans/features/` holds only *open* units; the tracker issue + merged PR hold the history. Project design notes under `plans/<project>/README.md` stay.
-5. Open the PR (never commit to `main`): ensure work is on its branch `<issue-id>-<slug>`; `git add`, commit (concise why-focused message), `git push -u origin HEAD`; `gh pr create` with the body filled from `.github/pull_request_template.md` (plan + gate checklist + evidence). Put **every** bundled issue id in the PR title (e.g. `SP-7 SP-9: …`) so the tracker links and closes all of them on merge; on the GitHub tier also write `Closes #n` in the body. **Stop at the open PR — do not merge.** Return the PR URL.
+5. **Bring the branch current before pushing.** `git fetch origin && git merge origin/main`. `main` may have moved during the session. If the merge brings in changes, re-run the `[CI]` gate items. If it conflicts, resolve only what's inside this issue's scope; otherwise stop and report the conflict. Never force-push.
+6. Open the PR (never commit to `main`): ensure work is on its branch `<issue-id>-<slug>`; `git add`, commit (concise why-focused message), `git push -u origin HEAD`; `gh pr create` with the body filled from `.github/pull_request_template.md` (plan + gate checklist + evidence). Put **every** bundled issue id in the PR title (e.g. `SP-7 SP-9: …`) so the tracker links and closes all of them on merge; on the GitHub tier also write `Closes #n` in the body. **Stop at the open PR — do not merge.** Return the PR URL.
 
 Report the gate results and the PR URL.

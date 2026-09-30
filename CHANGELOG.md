@@ -2,6 +2,17 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-30 — Branch from `origin/main`, merge it before the PR
+
+NOVA's first unit (NV-1) was cut from a local `main` still at the scaffold commit, after nova#1 had merged on GitHub. The branch missed #1's design notes and landing-pad lines, and its `AGENTS.md` looked like it had reverted. SmartSport had hit the same thing. Cause: `/start-unit` ran `git checkout -b` from whatever was checked out. Merges happen on GitHub's servers (web, mobile, Linear Reviews, `gh pr merge`), so local `main` is almost always behind in this workflow, laptop included.
+
+Fix, in the ritual rather than in anyone's memory:
+- `/start-unit` refuses a dirty tree, fetches, and cuts the branch from `origin/main` (`--no-track`). A resumed branch merges `origin/main`.
+- `/close-unit` fetches and merges `origin/main` before pushing, re-runs `[CI]` items if that brought changes, resolves only in-scope conflicts, and never force-pushes. Its `allowed-tools` gain `git fetch`/`git merge`, plus the `git rm` its own step 4 already needed.
+- `docs/git-workflow.md` explains why.
+
+Not adopted: auto-pulling local `main`. Branching from `origin/main` makes local `main`'s staleness irrelevant, and it can't fail on local changes. A NOVA-only patch to the skill was also declined: `sync.sh` replaces skills wholesale, so it would have been overwritten and SmartSport would never have received it.
+
 ## 2026-09-29 — Bootstrap friction from NOVA: root commit, retired stubs, VISION header
 
 NOVA was bootstrapped on Sept 28–29 and surfaced three small gaps; Nathan decided each.

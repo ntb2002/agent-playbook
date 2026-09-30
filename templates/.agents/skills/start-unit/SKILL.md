@@ -13,7 +13,12 @@ Begin exactly one issue — no scope creep. `$ARGUMENTS` is an issue id (`SP-7`,
 3. Load the spec. **The issue is the spec.** If a Deep-lane plan file exists at `plans/features/<issue-id>-*.md`, read it too, and prefer the issue's acceptance criteria if they disagree. If the issue still has a `## Needs human` section or no acceptance criteria, stop — it isn't ready to build.
 4. Read the relevant conventions: `AGENTS.md` + scoped `.cursor/rules/*.mdc` for the files you'll touch; `docs/architecture.md` for the area.
 5. Restate the **verification gate** as your definition of done; keep it visible.
-6. Create the branch: `git checkout -b <issue-id>-<slug>` (the tracker auto-links the PR from the id). Implement only what this issue specifies. In-scope tweaks you discover are commits here; out-of-scope finds become a new issue (Fast lane if you're fixing it now, a one-line Triage capture if not) — never silent extra scope. Follow `.cursor/rules/model-policy.mdc`.
+6. **Branch from GitHub's `main`, never your local copy.** PRs merge on GitHub, so local `main` is usually behind even on a laptop, and a branch cut from it silently misses merged work.
+   - `git status` first. If there are uncommitted changes, stop and ask. Don't carry another unit's work onto this branch.
+   - `git fetch origin`, then `git checkout --no-track -b <issue-id>-<slug> origin/main`. The tracker auto-links the PR from the id.
+   - **Resuming** a branch that already exists: check it out and `git merge origin/main`, so it has everything merged since it was cut.
+
+   Implement only what this issue specifies. In-scope tweaks you discover are commits here; out-of-scope finds become a new issue (Fast lane if you're fixing it now, a one-line Triage capture if not) — never silent extra scope. Follow `.cursor/rules/model-policy.mdc`.
 7. **Work autonomously inside the box** (`AGENTS.md` → *Autonomy inside the box*): iterate until the gate passes, call subagents as needed, never edit a protected check, and escalate on a loop bound rather than pressing on. A loop issue runs its `## Loop spec` exactly.
 8. As you go, verify each gate item and gather its evidence. For iOS `[ARTIFACT]` taps, the Xcode MCP must appear in **this** session's live tool catalog (`DeviceInteraction*`). Cached descriptors on disk do not count. If it is absent, gather `[CI]` evidence and leave the taps for a local session with Xcode connected — do not invent a `[MANUAL]` human for work the MCP would have done.
 
