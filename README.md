@@ -66,7 +66,7 @@ Agent Skills in `.agents/skills/<name>/SKILL.md` (Claude Code follows the `.clau
 - A tracker issue as the record. Issues live in the declared tracker and nowhere else.
 - One issue = one branch `<issue-id>-<slug>` = one PR. `main` is sacred.
 - Gate evidence on the PR, tiered `[CI]` / `[ARTIFACT]` / `[MANUAL]`, judgeable in ~30 seconds on a small screen (so it's fast on a laptop too). Only tag what a tool the agent actually has can produce.
-- Agents never move issue status by hand (undoing their own mistake and the Fast lane excepted). Humans click.
+- Agents never move issue status by hand, with three exceptions: undoing their own mistake, the Fast lane, and Todo → In Progress when a human starts `/build` or `/start-unit` on that issue. Humans click every approval.
 - One issue being built per repo at a time. Open PRs awaiting review don't count.
 - Execution agents never read the thinking layer.
 

@@ -77,7 +77,7 @@
 - **Linear Reviews** = the same GitHub PRs; squash-and-merge there is a GitHub merge.
 - **Linear Agent** shapes the product side of issues (no code access). **Linear MCP** (`https://mcp.linear.app/mcp`) in Cursor, Claude Code, and the Cloud Agents MCP config.
 - **Attachments:** `prepare_attachment_upload` → PUT bytes → `create_attachment_from_upload` renders inline on the phone. Never paste `uploads.linear.app` signed URLs into GitHub; they expire.
-- **Status is never moved by an agent** except to undo its own mistake or in the Fast lane (issue filed straight into In Progress after in-chat approval).
+- **Status is never moved by an agent** except to undo its own mistake, in the Fast lane (issue filed straight into In Progress after in-chat approval), or Todo → In Progress when a human starts `/build`/`/start-unit` on that issue. *(Verified Sept 30 against Linear's docs:)* the GitHub integration moves status only on PR events (drafted, opened, review requested, ready for merge, merged; configurable per team under *Workflows & automations*), never on branch creation or push, hence the build-start exception. Copying the branch name from Linear can also move an issue to started (account-level *Code & Reviews* setting).
 
 ## GitHub
 
