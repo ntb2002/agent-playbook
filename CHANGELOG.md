@@ -2,6 +2,13 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-09-30 — Lane recorded on the issue; a Deep-lane plan can lower the build's tier
+
+**Decided by:** Nathan, Sept 30.
+
+- **Lane is explicit.** Nathan couldn't tell whether an issue was Deep-lane except by reading its `strong` model tier, and the steward's own shorthand ("strong basically means Deep") encouraged that. Lane (does it need a plan first?) and model (who builds it?) are separate questions that happen to share triggers. `/plan` now writes a `Lane:` line and a `lane` label (`fast` / `standard` / `deep`) on every issue it files, provisional on thin issues. `bootstrap.sh` lists the label group.
+- **The plan re-rates the build.** "Schema/auth/prompts/safety → `strong` regardless" meant a Deep-lane plan never made its build cheaper, which undercut the premise of one strong plan amortized over cheaper execution. Now the plan's Model line may say `mid` when it leaves the builder no judgment calls, even for schema or data-model work. **Auth, safety behavior, and user-facing prompts stay `strong`** for the build. A `mid` build that escalates reruns on `strong`, as before.
+
 ## 2026-09-30 — Starting a build moves the issue to In Progress
 
 **Decided by:** Nathan, Sept 30. The status rule protects the human's *approvals*: accept out of Triage, promote into Todo. But Linear's GitHub integration moves status only on PR events (verified against Linear's docs), so an issue being built by `/build` read "Todo" until the PR opened. That misstated the work and hid the WIP limit. Now, when a human runs `/build` or `/start-unit` on a Todo issue, the agent moves that issue Todo → In Progress as its first write. This is the third exception, after undoing your own mistake and the Fast lane. Typing the command was the approval; the status move just records it. No agent ever moves an issue into Todo, Backlog, or Done. The steward's own standing rule, "never move a tracker issue's status", is unchanged: the steward doesn't build units.
