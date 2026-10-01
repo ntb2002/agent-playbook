@@ -12,11 +12,13 @@ One ritual. The argument, and the state of the issue, decide what it produces:
 |---|---|---|
 | `/spec <project>` | — (not yet broken down) | a **breakdown**: the project split into session-sized issues |
 | `/spec <project>` | — (already broken down) | an **issue spec** for each of the next one or two thin issues whose blockers have all merged |
-| `/spec <issue-id>` | thin (no criteria / gate / lane) | an **issue spec** written into the issue |
-| `/spec <issue-id>` | specified, `lane: deep` | a **build plan** on the issue's branch |
+| `/spec <issue-id>` | thin (no criteria / gate / lane) | an **issue spec** written into the issue; if it comes out `deep` with no open questions, **its build plan too, in the same run** |
+| `/spec <issue-id>` | specified, `lane: deep`, no plan yet | a **build plan** on the issue's branch (after folding any answered questions) |
 | `/spec <issue-id>` | specified, `lane: standard` | nothing: say "no plan needed; `/build <id>`" and stop |
 
 Issue ids look like `SS-42`, `NV-7`, `#42`, or a bare `42` on the GitHub tier.
+
+Every `/spec <issue-id>` run starts with **Folding answered questions** below, so you never stop on questions the human has already answered.
 
 **Not the tool's plan mode.** This skill writes files and pushes a branch, so run it in a normal session. If you find yourself in a read-only plan mode, say so and ask the human to switch modes rather than proposing the steps.
 
@@ -37,6 +39,13 @@ The strong-model step whose cost is amortized across many cheap execution units.
 
 Stop. Summarize milestones and sequence, list the issues you filed (ids + titles), and name the one you'd promote to Todo first. The human presses the keys.
 
+## Folding answered questions (first, on every `/spec <issue-id>`)
+
+If the issue has a `## Needs human` section, read the issue's comments:
+
+- **Every item has a human reply** (a person's comment, not an agent's): fold them. Replace `## Needs human` with `## Decided`, one line per item stating the answer. Update any acceptance criteria, gate items, or Loop spec the answers change. Resolve the comment threads and comment on the issue that you folded them. Then continue.
+- **Any item is unanswered:** stop and list exactly which ones. Don't fold a partial set, and never infer an answer from silence, a recommendation, or an earlier chat.
+
 ## Issue spec: turn one thin issue into a buildable issue
 
 For an issue that is still thin (title, one-line intent, `blocked by`). This is where "thin issues get their criteria when they approach Todo" actually happens.
@@ -46,13 +55,18 @@ For an issue that is still thin (title, one-line intent, `blocked by`). This is 
 3. If it's no longer session-sized, say so and propose the split (sub-issues, each itself session-sized). Don't spec an oversized issue.
 4. Write into the issue description: acceptance criteria, entry dependency, the **verification gate** (`[CI]` / `[ARTIFACT]` / `[MANUAL]`, only tiers a tool can actually produce), **protected checks**, a **Model:** line and a **Lane:** line, each with one clause of reasoning, and a `## Loop spec` if it's a loop issue. Apply the matching `tier` and `lane` labels. Keep the original one-line intent at the top.
 5. Product calls you can't resolve from the code and `VISION.md` go under `## Needs human` (numbered, a recommendation each). Don't decide them.
-6. Stop. Don't change status and don't write a plan file. Report the spec in brief, its lane and tier, and any `## Needs human` items. **The human promotes it to Todo; that's the approval of the spec.** If it came out `deep`, the next step after promotion is `/spec <issue-id>` again, which then writes its plan.
+6. Decide whether to continue:
+   - **`lane: standard`:** stop. Report the spec in brief, its lane and tier.
+   - **`lane: deep` and no `## Needs human`:** go straight on to **Build plan** below in this same run. You've just read the code, so the plan is nearly free now, and the human reviews the spec and the plan together.
+   - **Any `## Needs human` open:** stop. The plan depends on the answers. Report the questions. Once the human answers in comments, the next `/spec <issue-id>` folds them and writes the plan.
+
+   Don't change status. **The human promoting it to Todo approves the spec** (and the plan, when one was written in the same run).
 
 ## Build plan: expand one specified Deep-lane issue
 
 **Deep lane only.** Standard-lane issues don't get a plan file — the issue is the spec and `/start-unit` reads it directly. Use this when the issue is ambiguous, risky, cross-cutting, `strong` tier, or touches prompts, safety, schema, or auth. If the issue turns out to be Standard-lane, say so and stop; don't write a plan nobody needs.
 
-1. Read the issue — title, description, acceptance criteria, comments (Linear MCP `get_issue`, or `gh issue view <n> --comments`). If it still has a `## Needs human` section, or acceptance criteria are missing or ambiguous, **stop and say what's missing**. A comment that answers the questions is not enough until those answers are folded into `## Decided` in the description.
+1. Read the issue — title, description, acceptance criteria, comments (Linear MCP `get_issue`, or `gh issue view <n> --comments`). Answered questions were already folded at the start of the run. If acceptance criteria are missing or ambiguous, **stop and say what's missing**. If a plan branch `origin/<issue-id>-<slug>` already exists, don't write a second plan: link it, and revise it only if the human asked for changes in comments.
 2. Read `VISION.md` (scope fence), `AGENTS.md`, `docs/architecture.md` for the area, `DECISIONS.md`, and the code the issue touches. If the issue violates the scope fence, stop and flag it.
 3. Decide size. If this is genuinely a subsystem (several PRs, several sessions), say so and recommend converting it to a tracker project and running `/spec <project>` — do not cram it into one unit.
 4. **Put the plan on the issue's branch** so every agent (local or cloud) that builds the issue finds it. `git status` must be clean (otherwise stop and ask). `git fetch origin && git checkout --no-track -b <issue-id>-<slug> origin/main`. Then write `plans/features/<issue-id>-<slug>.md`. Don't restate the issue; link it and add what the code tells you:
@@ -68,4 +82,4 @@ For an issue that is still thin (title, one-line intent, `blocked by`). This is 
 6. Update the `AGENTS.md` landing pad's *Next unit* line to this issue if it is now the top of the queue.
 7. Commit the plan (and any `DECISIONS.md` / landing-pad edits) on that branch, `git push -u origin HEAD`, and comment on the issue with a link to the plan file on the branch. **Don't open a PR.** The unit's PR opens when it's built, and `/close-unit` deletes the plan file in it.
 
-Stop. Summarize the gate and flag anything the issue left undecided. The human reviews the plan from the link. Changes are requested as comments on the issue, and you revise the plan on the same branch. **Approval is the human starting the build:** `/build <issue-id>` or `/start-unit <issue-id>`, or `@Cursor /build <issue-id>` for a cloud agent. It resumes this branch.
+Stop. Summarize the gate and flag anything the issue left undecided. The human reviews the plan from the link (together with the issue spec, when both were written in one run). Changes are requested as comments on the issue, and you revise the plan on the same branch. **Approval is the human starting the build:** `/build <issue-id>` or `/start-unit <issue-id>`, or `@Cursor /build <issue-id>` for a cloud agent. It resumes this branch.
