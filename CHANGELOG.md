@@ -2,6 +2,15 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-10-01 — `/spec` writes a Deep issue's plan in the same run, and folds answered questions
+
+**Decided by:** Nathan, Oct 1. Under #16/#17, a thin issue that specced out Deep took two strong-model sessions and two reviews: `/spec` → issue spec → promote → a new session, `/spec` again → build plan → review → `/build`. The second session re-read the same code the first had just read. Separately, answered `## Needs human` items needed a separate fold step (Linear agent or human) before `/spec` would proceed (FRICTION, Sept 30).
+
+- **A Deep issue spec continues straight into the build plan** when it has no open `## Needs human`. One review covers both; promoting to Todo approves both.
+- **Open questions still stop the run after the spec,** because the plan depends on the answers.
+- **Every `/spec <issue-id>` run starts by folding:** if every `## Needs human` item has a human reply, it writes `## Decided`, updates what the answers change, resolves the threads, and continues. It stops on anything unanswered and never infers an answer from silence or a recommendation.
+- Also: `/spec` won't write a second plan when the issue's plan branch already exists. It links the existing plan and revises it only on request.
+
 ## 2026-09-30 — `/plan` renamed `/spec`
 
 **Decided by:** Nathan, Sept 30. NOVA's first `/plan NV-2` landed in Claude Code's native plan mode: read-only, proposing to write the plan file instead of writing it, with an extra approval that added nothing. Cause: Claude Code has a built-in `/plan [description]` that enters plan mode, and Cursor has a Plan mode too. The skill's name collided with a built-in.

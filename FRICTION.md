@@ -70,7 +70,7 @@ The session entered native plan mode (read-only), proposed writing the plan file
 
 ### 2026-09-30 · nova · Answered `## Needs human` still needs a separate fold step
 
-NV-2's questions were answered in comments, but `/spec` (then `/plan`) stops until someone moves the answers into `## Decided`, so a Linear agent or a human has to run an extra step. Proposal for review: when every `## Needs human` item has a human reply in the comments, `/spec` folds them itself (writes `## Decided`, resolves the threads, comments that it folded) and continues. It stops only when something is actually unanswered. Touches: *Tracker rules → Product questions*, `/spec`.
+NV-2's questions were answered in comments, but `/spec` (then `/plan`) stops until someone moves the answers into `## Decided`, so a Linear agent or a human has to run an extra step. Proposal for review: when every `## Needs human` item has a human reply in the comments, `/spec` folds them itself (writes `## Decided`, resolves the threads, comments that it folded) and continues. It stops only when something is actually unanswered. Touches: *Tracker rules → Product questions*, `/spec`. → resolved: `/spec` folds answered questions itself (spec-deep-in-one-run PR).
 
 ### 2026-09-30 · agent-playbook · Every sync needs hand edits to repo-owned files
 
