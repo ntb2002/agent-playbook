@@ -64,3 +64,15 @@ It checked `[ -d "$TARGET/.git" ]`, but in a worktree `.git` is a file, so a syn
 
 `sync.sh` carries skills, subagents, and rules, but not `AGENTS.md`, which is venture-owned. After #7 the skills point at `AGENTS.md` → *Autonomy inside the box*, which only bootstrapped repos (NOVA) had. SmartSport's section was added by hand in smartSportApp#31. Any future generic constitution section will have the same gap. Options: (a) `sync.sh` prints a warning when a template `AGENTS.md` section heading is missing from the venture's file; (b) move generic rules out of `AGENTS.md` into a synced file (e.g. `.cursor/rules/autonomy.mdc`, always-apply) that `AGENTS.md` points to. Leaning (a): keeps one constitution, costs a few lines of shell. Touches: `sync.sh`, principle 7.
 
+### 2026-09-30 · nova · `/plan NV-2` ran Claude Code's built-in `/plan`, not the skill
+
+The session entered native plan mode (read-only), proposed writing the plan file instead of writing it, and its proposal branched from local `main` (`git switch main && git switch -c …`) even though nova#6 had synced the branch-from-`origin/main` rule. Most likely the skill never loaded: Claude Code's built-in `/plan [description]` took the command, and the agent improvised the ritual from the repo. Touches: skill naming, *principle 3*. → resolved: renamed `/spec` (#17), synced in nova#8 / smartSportApp#35. Watch the first `/spec` run to confirm it loads the skill.
+
+### 2026-09-30 · nova · Answered `## Needs human` still needs a separate fold step
+
+NV-2's questions were answered in comments, but `/spec` (then `/plan`) stops until someone moves the answers into `## Decided`, so a Linear agent or a human has to run an extra step. Proposal for review: when every `## Needs human` item has a human reply in the comments, `/spec` folds them itself (writes `## Decided`, resolves the threads, comments that it folded) and continues. It stops only when something is actually unanswered. Touches: *Tracker rules → Product questions*, `/spec`.
+
+### 2026-09-30 · agent-playbook · Every sync needs hand edits to repo-owned files
+
+Five syncs in a row (#7–#17) needed manual edits to `AGENTS.md`, `plans/README.md`, `docs/coordinator.md`, `CLAUDE.md`, or `SETUP.md`, because `sync.sh` only carries skills/rules/hooks and those files are venture-owned. Extends the Sept 30 `AGENTS.md`-section entry. Proposal for review: `sync.sh` greps the target's repo-owned docs for references the current templates no longer use (retired skill names like `/plan`; template lines whose wording changed) and prints each file:line to hand-edit, so no one has to remember them. Touches: `sync.sh`.
+
