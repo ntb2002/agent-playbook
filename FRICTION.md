@@ -76,3 +76,15 @@ NV-2's questions were answered in comments, but `/spec` (then `/plan`) stops unt
 
 Five syncs in a row (#7–#17) needed manual edits to `AGENTS.md`, `plans/README.md`, `docs/coordinator.md`, `CLAUDE.md`, or `SETUP.md`, because `sync.sh` only carries skills/rules/hooks and those files are venture-owned. Extends the Sept 30 `AGENTS.md`-section entry. Proposal for review: `sync.sh` greps the target's repo-owned docs for references the current templates no longer use (retired skill names like `/plan`; template lines whose wording changed) and prints each file:line to hand-edit, so no one has to remember them. Touches: `sync.sh`.
 
+### 2026-11-08 · agent-playbook · Commit guard repo root was path-relative, not the git toplevel
+
+`templates/.cursor/hooks/commit-guard.sh` derived the repo root with `dirname "$0")/../.."`. That works when the script path is under `.cursor/hooks/`, but it is not the same invariant as `.githooks/pre-commit` (`git rev-parse --show-toplevel`), and a one-level mistake lands on `.cursor/` where `scripts/hooks/secret-scan.sh` does not exist — the guard can deny every commit or silently miss the scanner. Touches: `templates/.cursor/hooks/commit-guard.sh`, `ci/test-commit-guard.sh`.
+
+### 2026-11-08 · agent-playbook · Playbook repo CI was a green no-op; template CI looked real
+
+This repo had no `.github/workflows/ci.yml`; bootstrapped ventures copied a workflow that only echoed a placeholder, so a green check proved nothing. Touches: `.github/workflows/ci.yml`, `templates/.github/workflows/ci.yml`, `ci/test-commit-guard.sh`.
+
+### 2026-11-08 · agent-playbook · Ritual docs contradicted each other on MANUAL gates, Fast lane, main, loop reverts
+
+`/build` allowed opening a PR with unchecked `[MANUAL]` items; `/close-unit` step 1 required them confirmed first. `SETUP.md` asked to verify the hook blocks commits to `main`; the hook only secret-scans. `/start-unit` stopped on a missing `lane` label, which Fast-lane issues omit by design. `plans/README.md` said reverted loop trials were reset away; NOVA uses `git revert`. Touches: `close-unit`, `start-unit`, `SETUP.md`, `plans/README.md`.
+

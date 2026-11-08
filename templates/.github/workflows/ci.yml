@@ -4,7 +4,9 @@ name: CI
 # which machine/agent produced the commits, so it can't be bypassed like a local hook.
 # Make `main` require this check via branch protection (see docs/git-workflow.md).
 #
-# Replace the placeholder job with your stack. Examples below.
+# ⚠️ This file is a scaffold: the job below fails on purpose until you replace it with
+# your stack's install / lint / test steps. Copy the examples below or delete the
+# placeholder job after you add real checks.
 
 on:
   pull_request:
@@ -16,14 +18,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check:
-    name: Lint + test
+  not-configured:
+    name: "CI not configured (customize me)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # --- replace with your stack's install / lint / test steps ---
-      - run: echo "Add lint + test commands here."
+      - name: Fail until this workflow is customized
+        run: |
+          echo "::error::This workflow is still the agent-playbook placeholder."
+          echo "Replace templates/.github/workflows/ci.yml (in your repo: .github/workflows/ci.yml)"
+          echo "with real lint and test steps for your stack. See SETUP.md and the examples"
+          echo "commented at the bottom of this file."
+          exit 1
 
+  # --- After customizing, delete `not-configured` above and uncomment one `check` job. ---
   # --- Python (uv) example ---
   # check:
   #   runs-on: ubuntu-latest

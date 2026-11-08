@@ -4,7 +4,8 @@
 set -uo pipefail
 cat >/dev/null 2>&1 || true
 
-root="$(cd "$(dirname "$0")/../.." && pwd)"
+hook_dir="$(cd "$(dirname "$0")" && pwd)"
+root="$(git -C "$hook_dir" rev-parse --show-toplevel)"
 
 if msg="$("$root/scripts/hooks/secret-scan.sh" 2>&1)"; then
   echo '{"permission":"allow"}'

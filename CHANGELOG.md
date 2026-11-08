@@ -2,6 +2,18 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-11-08 — Commit guard uses git toplevel; real playbook CI; template CI fails until customized; ritual doc fixes
+
+**Decided by:** Nathan, Nov 8. Three gaps blocked trustworthy commits and CI, and four doc contradictions were confusing agents and humans.
+
+- **Commit guard:** `templates/.cursor/hooks/commit-guard.sh` now resolves the repo with `git -C … rev-parse --show-toplevel`, matching `.githooks/pre-commit`. `ci/test-commit-guard.sh` proves the guard finds `secret-scan.sh` and returns deny JSON on a staged fake secret.
+- **Playbook CI:** this repo runs shellcheck on hook/bootstrap scripts, `ci/test-commit-guard.sh`, and a `bootstrap.sh` smoke test into a temp dir.
+- **Template CI:** the copied workflow job is named and fails loudly until the venture replaces it with stack-specific lint/test steps — no more green echo placeholder.
+- **`[MANUAL]` gates:** `/close-unit` aligns with `/build` — list unchecked boxes in the PR, do not claim them; human confirms before merge; `[CI]`/`[ARTIFACT]` failures still block opening the PR.
+- **Fast lane:** `/start-unit` no longer treats a missing `lane` label as thin when the issue is Fast lane (`tier: fast`).
+- **SETUP cloud checklist:** commit guard is verified with a staged fake secret; `main` is protected by branch rules, not the hook.
+- **Loop trials:** reverted trials are undone with `git revert`, not `git reset`.
+
 ## 2026-10-01 — `/spec` writes a Deep issue's plan in the same run, and folds answered questions
 
 **Decided by:** Nathan, Oct 1. Under #16/#17, a thin issue that specced out Deep took two strong-model sessions and two reviews: `/spec` → issue spec → promote → a new session, `/spec` again → build plan → review → `/build`. The second session re-read the same code the first had just read. Separately, answered `## Needs human` items needed a separate fold step (Linear agent or human) before `/spec` would proceed (FRICTION, Sept 30).
