@@ -56,7 +56,7 @@ Escalate:     loop bounds in AGENTS.md
 ```
 
 - **Entry dependency: the protected verifier is already merged.** Build the scorer and fixtures in an earlier, ordinary issue. A loop issue can't build its own judge. Put them under `evals/` (already on the `.claude/settings.json` deny list). If they live elsewhere, that verifier issue adds its path to `deny`.
-- A kept trial is a commit on the issue branch; a reverted trial is reset away. The log keeps every trial, kept or not.
+- A kept trial is a commit on the issue branch; a reverted trial is undone with `git revert` (not `git reset`), so history stays linear and the log keeps every trial, kept or not.
 - **Gate:** the trial log `[ARTIFACT]`, the final metric vs the stop condition, and a comparison table plus a recommendation. Any decision the loop informs (a library, an architecture) is made by the human in `DECISIONS.md`, not by the loop.
 - Not loopable: taste and design quality. Those stay `[MANUAL]`.
 

@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  playbook:
+    name: Playbook self-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck jq
+      - name: Shellcheck
+        run: |
+          shellcheck -S error bootstrap.sh sync.sh \
+            templates/.githooks/pre-commit \
+            templates/.cursor/hooks/commit-guard.sh \
+            templates/scripts/hooks/*.sh \
+            ci/test-commit-guard.sh
+      - name: Hook and guard test
+        run: bash ci/test-commit-guard.sh
+      - name: Bootstrap smoke test
+        run: |
+          target="$(mktemp -d)"
+          ./bootstrap.sh "$target" "CI Smoke" "Smoke-test scaffold" --tracker github
+          test -x "$target/.githooks/pre-commit"
+          test -x "$target/scripts/hooks/secret-scan.sh"
+          test -f "$target/.github/workflows/ci.yml"
+          rm -rf "$target"

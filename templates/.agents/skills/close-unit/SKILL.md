@@ -9,11 +9,11 @@ allowed-tools: Read, Edit, Bash(git status:*), Bash(git diff:*), Bash(git add:*)
 
 Close out the issue `$ARGUMENTS` only after its gate is fully met. The gate is in the issue (and in the Deep-lane plan file, if one exists).
 
-1. Walk the unit's **verification gate**. For each item confirm evidence exists:
+1. Walk the unit's **verification gate**. For each item confirm evidence exists (or is honestly pending):
    - `[CI]` → run lint/tests now and capture output.
    - `[ARTIFACT]` → confirm the screenshot/recording/log/curl exists and will be **viewable by the reviewer** (see *Evidence placement* below — a broken image is a failed gate item).
-   - `[MANUAL]` → confirm the exact steps were performed with the expected result.
-   If any item fails, stop and report what's missing — do not mark the unit done.
+   - `[MANUAL]` → you cannot perform these. List each as an **unchecked** box in the PR with the exact steps and expected result; do not claim they passed. They stay pending until the human checks them before merge.
+   If any `[CI]` or `[ARTIFACT]` item fails, stop and report what's missing — do not mark the unit done or open a PR. Pending `[MANUAL]` items are fine when opening the PR.
 
    **Evidence placement.** PR bodies and tracker issues are *comments*, not repo files: `![](plans/artifacts/x.png)` 404s. On a **private** repo, GitHub's image proxy (Camo) fetches without your login, so `raw.githubusercontent.com` and `blob/…?raw=true` embeds also break; and no token can upload to GitHub's drag-and-drop attachment host — don't spend a turn trying. Two lanes:
    - **Local lane** (you are running on a laptop / Remote Control, e.g. Xcode MCP screenshots): commit the image under `plans/artifacts/<issue-id>-<what>.png` (PNG, keep it small; never video in git). In the PR body **link** — don't `![]`-embed — the SHA-pinned blob URL `https://github.com/<owner>/<repo>/blob/<commit-sha>/plans/artifacts/<file>.png`; it renders for a signed-in reviewer on web and GitHub mobile. Also attach the same file natively to the tracker issue (Linear MCP: `prepare_attachment_upload` → PUT bytes → `create_attachment_from_upload`) — that is what renders inline on the phone. Never paste `uploads.linear.app` signed URLs into GitHub; they expire. Recordings go to the tracker attachment only.
