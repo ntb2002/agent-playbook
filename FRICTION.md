@@ -26,7 +26,7 @@ Cursor Projects, Automations, Remote Control, Grok Bot, Claude Code desktop are 
 
 ### 2026-09-22 · agent-playbook · Stacked PRs merged into each other, not `main`
 
-#4 and #5 were based on the branch below them. After #3 merged, their bases were not retargeted, so merging them landed doctrine on dead branches while GitHub showed them as MERGED. Cause: `delete_branch_on_merge` is off here, though `templates/SETUP.md` tells ventures to turn it on. Correction: turn on "Automatically delete head branches" for this repo (Nathan — settings), and before merging any stacked PR confirm its base is `main`. Touches: *principle 6*, steward workflow. → resolved: content restored by the stack-restore PR; setting change pending.
+#4 and #5 were based on the branch below them. After #3 merged, their bases were not retargeted, so merging them landed doctrine on dead branches while GitHub showed them as MERGED. Cause: `delete_branch_on_merge` is off here, though `templates/SETUP.md` tells ventures to turn it on. Correction: turn on "Automatically delete head branches" for this repo (Nathan — settings), and before merging any stacked PR confirm its base is `main`. Touches: *principle 6*, steward workflow. → resolved: content restored by the stack-restore PR; setting change pending. → resolved: `delete_branch_on_merge` enabled on this repo (verified Nov 2026).
 
 ### 2026-09-28 · agent-playbook · Watch: automatic session learning
 
@@ -62,7 +62,7 @@ It checked `[ -d "$TARGET/.git" ]`, but in a worktree `.git` is a file, so a syn
 
 ### 2026-09-30 · smartSportApp · Synced skills reference an `AGENTS.md` section `sync.sh` never delivers
 
-`sync.sh` carries skills, subagents, and rules, but not `AGENTS.md`, which is venture-owned. After #7 the skills point at `AGENTS.md` → *Autonomy inside the box*, which only bootstrapped repos (NOVA) had. SmartSport's section was added by hand in smartSportApp#31. Any future generic constitution section will have the same gap. Options: (a) `sync.sh` prints a warning when a template `AGENTS.md` section heading is missing from the venture's file; (b) move generic rules out of `AGENTS.md` into a synced file (e.g. `.cursor/rules/autonomy.mdc`, always-apply) that `AGENTS.md` points to. Leaning (a): keeps one constitution, costs a few lines of shell. Touches: `sync.sh`, principle 7.
+`sync.sh` carries skills, subagents, and rules, but not `AGENTS.md`, which is venture-owned. After #7 the skills point at `AGENTS.md` → *Autonomy inside the box*, which only bootstrapped repos (NOVA) had. SmartSport's section was added by hand in smartSportApp#31. Any future generic constitution section will have the same gap. Options: (a) `sync.sh` prints a warning when a template `AGENTS.md` section heading is missing from the venture's file; (b) move generic rules out of `AGENTS.md` into a synced file (e.g. `.cursor/rules/autonomy.mdc`, always-apply) that `AGENTS.md` points to. Leaning (a): keeps one constitution, costs a few lines of shell. Touches: `sync.sh`, principle 7. → resolved: issue #21 (missing-section warnings in `sync.sh`).
 
 ### 2026-09-30 · nova · `/plan NV-2` ran Claude Code's built-in `/plan`, not the skill
 
@@ -74,17 +74,17 @@ NV-2's questions were answered in comments, but `/spec` (then `/plan`) stops unt
 
 ### 2026-09-30 · agent-playbook · Every sync needs hand edits to repo-owned files
 
-Five syncs in a row (#7–#17) needed manual edits to `AGENTS.md`, `plans/README.md`, `docs/coordinator.md`, `CLAUDE.md`, or `SETUP.md`, because `sync.sh` only carries skills/rules/hooks and those files are venture-owned. Extends the Sept 30 `AGENTS.md`-section entry. Proposal for review: `sync.sh` greps the target's repo-owned docs for references the current templates no longer use (retired skill names like `/plan`; template lines whose wording changed) and prints each file:line to hand-edit, so no one has to remember them. Touches: `sync.sh`.
+Five syncs in a row (#7–#17) needed manual edits to `AGENTS.md`, `plans/README.md`, `docs/coordinator.md`, `CLAUDE.md`, or `SETUP.md`, because `sync.sh` only carries skills/rules/hooks and those files are venture-owned. Extends the Sept 30 `AGENTS.md`-section entry. Proposal for review: `sync.sh` greps the target's repo-owned docs for references the current templates no longer use (retired skill names like `/plan`; template lines whose wording changed) and prints each file:line to hand-edit, so no one has to remember them. Touches: `sync.sh`. → resolved: issue #21 (stale-ref warnings via `templates/sync-stale-patterns.txt`).
 
 ### 2026-11-08 · agent-playbook · Commit guard repo root was path-relative, not the git toplevel
 
-`templates/.cursor/hooks/commit-guard.sh` derived the repo root with `dirname "$0")/../.."`. That works when the script path is under `.cursor/hooks/`, but it is not the same invariant as `.githooks/pre-commit` (`git rev-parse --show-toplevel`), and a one-level mistake lands on `.cursor/` where `scripts/hooks/secret-scan.sh` does not exist — the guard can deny every commit or silently miss the scanner. Touches: `templates/.cursor/hooks/commit-guard.sh`, `ci/test-commit-guard.sh`.
+`templates/.cursor/hooks/commit-guard.sh` derived the repo root with `dirname "$0")/../.."`. That works when the script path is under `.cursor/hooks/`, but it is not the same invariant as `.githooks/pre-commit` (`git rev-parse --show-toplevel`), and a one-level mistake lands on `.cursor/` where `scripts/hooks/secret-scan.sh` does not exist — the guard can deny every commit or silently miss the scanner. Touches: `templates/.cursor/hooks/commit-guard.sh`, `ci/test-commit-guard.sh`. → resolved: PR #20
 
 ### 2026-11-08 · agent-playbook · Playbook repo CI was a green no-op; template CI looked real
 
-This repo had no `.github/workflows/ci.yml`; bootstrapped ventures copied a workflow that only echoed a placeholder, so a green check proved nothing. Touches: `.github/workflows/ci.yml`, `templates/.github/workflows/ci.yml`, `ci/test-commit-guard.sh`.
+This repo had no `.github/workflows/ci.yml`; bootstrapped ventures copied a workflow that only echoed a placeholder, so a green check proved nothing. Touches: `.github/workflows/ci.yml`, `templates/.github/workflows/ci.yml`, `ci/test-commit-guard.sh`. → resolved: PR #20
 
 ### 2026-11-08 · agent-playbook · Ritual docs contradicted each other on MANUAL gates, Fast lane, main, loop reverts
 
-`/build` allowed opening a PR with unchecked `[MANUAL]` items; `/close-unit` step 1 required them confirmed first. `SETUP.md` asked to verify the hook blocks commits to `main`; the hook only secret-scans. `/start-unit` stopped on a missing `lane` label, which Fast-lane issues omit by design. `plans/README.md` said reverted loop trials were reset away; NOVA uses `git revert`. Touches: `close-unit`, `start-unit`, `SETUP.md`, `plans/README.md`.
+`/build` allowed opening a PR with unchecked `[MANUAL]` items; `/close-unit` step 1 required them confirmed first. `SETUP.md` asked to verify the hook blocks commits to `main`; the hook only secret-scans. `/start-unit` stopped on a missing `lane` label, which Fast-lane issues omit by design. `plans/README.md` said reverted loop trials were reset away; NOVA uses `git revert`. Touches: `close-unit`, `start-unit`, `SETUP.md`, `plans/README.md`. → resolved: PR #20
 

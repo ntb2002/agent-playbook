@@ -2,6 +2,14 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-11-04 — `sync.sh` warns on missing `AGENTS.md` sections and stale venture-owned references
+
+**Decided by:** Nathan, Nov 4, 2026. After five venture syncs, hand merges to constitution and repo-owned docs were easy to forget. FRICTION (Sept 30) proposed warnings only — sync still succeeds.
+
+- **Missing sections:** compare each `##` heading in `templates/AGENTS.md` to the venture's `AGENTS.md` (emoji-prefixed headings match after normalization). Print each missing section name.
+- **Stale references:** grep venture-owned paths (`AGENTS.md`, `CLAUDE.md`, `VISION.md`, `DECISIONS.md`, `SETUP.md`, `docs/coordinator.md`, `docs/git-workflow.md`, `docs/status.md`, `plans/README.md`) for fixed strings in `templates/sync-stale-patterns.txt` (retired rituals like `/plan-phase`, legacy paths, known retired wording). Print `file:line:…` for each hit. Steward adds a line when templates retire a name or change wording agents must merge by hand.
+- **`ci/test-sync-warnings.sh`** exercises a dirty fixture (missing section + stale string) and a bootstrapped clean fixture (quiet).
+
 ## 2026-11-08 — Commit guard uses git toplevel; real playbook CI; template CI fails until customized; ritual doc fixes
 
 **Decided by:** Nathan, Nov 8. Three gaps blocked trustworthy commits and CI, and four doc contradictions were confusing agents and humans.
