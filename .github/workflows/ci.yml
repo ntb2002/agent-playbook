@@ -23,9 +23,11 @@ jobs:
             templates/.githooks/pre-commit \
             templates/.cursor/hooks/commit-guard.sh \
             templates/scripts/hooks/*.sh \
-            ci/test-commit-guard.sh
+            ci/test-commit-guard.sh ci/test-sync-warnings.sh
       - name: Hook and guard test
         run: bash ci/test-commit-guard.sh
+      - name: Sync warning test
+        run: bash ci/test-sync-warnings.sh
       - name: Bootstrap smoke test
         run: |
           target="$(mktemp -d)"

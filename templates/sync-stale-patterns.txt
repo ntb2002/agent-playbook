@@ -1,0 +1,11 @@
+# Stale patterns for sync.sh — venture-owned docs only.
+# Maintained with templates: add a line when a ritual is retired or template wording
+# agents must hand-merge after sync (see CHANGELOG / FRICTION).
+# Blank lines and # comments are ignored. Everything else is a fixed-string grep (-F).
+
+/plan-phase
+/plan-feature
+.claude/commands/
+`/plan `
+/plan mode
+day-to-day "how" lives in `plans/`
