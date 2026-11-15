@@ -35,6 +35,7 @@
 - **Artifacts:** on by default; uploaded from wherever the worker runs to Cursor storage; embed in PR bodies only for PRs the cloud agent itself opened, via long public URLs (*Allow posting artifacts to GitHub*). Decide per venture.
 - **Projects** (coordinator): persistent, delegates to subagents on isolated VMs, subscribes to its own PRs, can watch Slack or run on a schedule. Beta pricing on cloud-agent allowance.
 - **Automations:** dashboard → Automations or `/automate`; prompts versioned in `.cursor/automations/`.
+- **A project skill named `build` never loads** *(observed Nov 14 on NOVA; not in Cursor's docs)*. `.agents/skills/build/` was missing from Customize → Skills and the `/` menu, while a copy named `build-test` with the same file loaded; Claude Code ran `/build` fine. The ritual is `/build-unit`. After naming a new skill, check it appears in Customize → Skills.
 - **Computer Use** is a separate capability (`agent worker --computer-use`), not Remote Control; needs Accessibility + Screen Recording permissions on macOS.
 - **Cursor iOS app:** launch/steer cloud agents, review diffs and artifacts, merge. Remote Control hands a laptop agent to the phone.
 
@@ -50,7 +51,7 @@
   - Rule order is deny → ask → allow, and deny blocks in every mode, `bypassPermissions` included. `Edit(/path)` in project settings anchors at the repo root.
   - Edit-deny also covers `sed`, `tee`, and `>` redirects in Bash, but **not** a script that opens the file itself (Python, Node). For an OS-level guarantee, use the sandbox.
   - `.claude/` is a protected path: writes to it are never auto-approved (prompted in manual/`acceptEdits`, classifier-reviewed in auto), and allow rules don't change that. Cloud sessions ignore `bypassPermissions`/`dontAsk` from repo settings.
-- **Built-in `/plan` enters plan mode** (read-only; *verified in Claude Code's command reference, Sept 30*). A project skill named `plan` collided with it: `/plan NV-2` put the agent in plan mode, where it could only propose writing the plan file. The ritual is `/spec`. Check the command reference before naming a new skill; `/build` has no built-in.
+- **Built-in `/plan` enters plan mode** (read-only; *verified in Claude Code's command reference, Sept 30*). A project skill named `plan` collided with it: `/plan NV-2` put the agent in plan mode, where it could only propose writing the plan file. The ritual is `/spec`. Check the command reference before naming a new skill, and check that Cursor lists it too (see *Cursor*: a skill named `build` never loads there).
 - **Steward:** the playbook steward is a Claude Code agent launched inside `agent-playbook`.
 
 ## Codex / ChatGPT
@@ -79,7 +80,7 @@
 - **Linear Reviews** = the same GitHub PRs; squash-and-merge there is a GitHub merge.
 - **Linear Agent** shapes the product side of issues (no code access). **Linear MCP** (`https://mcp.linear.app/mcp`) in Cursor, Claude Code, and the Cloud Agents MCP config.
 - **Attachments:** `prepare_attachment_upload` → PUT bytes → `create_attachment_from_upload` renders inline on the phone. Never paste `uploads.linear.app` signed URLs into GitHub; they expire.
-- **Status is never moved by an agent** except to undo its own mistake, in the Fast lane (issue filed straight into In Progress after in-chat approval), or Todo → In Progress when a human starts `/build`/`/start-unit` on that issue. *(Verified Sept 30 against Linear's docs:)* the GitHub integration moves status only on PR events (drafted, opened, review requested, ready for merge, merged; configurable per team under *Workflows & automations*), never on branch creation or push, hence the build-start exception. Copying the branch name from Linear can also move an issue to started (account-level *Code & Reviews* setting).
+- **Status is never moved by an agent** except to undo its own mistake, in the Fast lane (issue filed straight into In Progress after in-chat approval), or Todo → In Progress when a human starts `/build-unit`/`/start-unit` on that issue. *(Verified Sept 30 against Linear's docs:)* the GitHub integration moves status only on PR events (drafted, opened, review requested, ready for merge, merged; configurable per team under *Workflows & automations*), never on branch creation or push, hence the build-start exception. Copying the branch name from Linear can also move an issue to started (account-level *Code & Reviews* setting).
 
 ## GitHub
 

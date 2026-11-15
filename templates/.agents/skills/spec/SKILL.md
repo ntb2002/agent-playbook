@@ -14,7 +14,7 @@ One ritual. The argument, and the state of the issue, decide what it produces:
 | `/spec <project>` | — (already broken down) | an **issue spec** for each of the next one or two thin issues whose blockers have all merged |
 | `/spec <issue-id>` | thin (no criteria / gate / lane) | an **issue spec** written into the issue; if it comes out `deep` with no open questions, **its build plan too, in the same run** |
 | `/spec <issue-id>` | specified, `lane: deep`, no plan yet | a **build plan** on the issue's branch (after folding any answered questions) |
-| `/spec <issue-id>` | specified, `lane: standard` | nothing: say "no plan needed; `/build <id>`" and stop |
+| `/spec <issue-id>` | specified, `lane: standard` | nothing: say "no plan needed; `/build-unit <id>`" and stop |
 
 Issue ids look like `SS-42`, `NV-7`, `#42`, or a bare `42` on the GitHub tier.
 
@@ -82,4 +82,4 @@ For an issue that is still thin (title, one-line intent, `blocked by`). This is 
 6. Update the `AGENTS.md` landing pad's *Next unit* line to this issue if it is now the top of the queue.
 7. Commit the plan (and any `DECISIONS.md` / landing-pad edits) on that branch, `git push -u origin HEAD`, and comment on the issue with a link to the plan file on the branch. **Don't open a PR.** The unit's PR opens when it's built, and `/close-unit` deletes the plan file in it.
 
-Stop. Summarize the gate and flag anything the issue left undecided. The human reviews the plan from the link (together with the issue spec, when both were written in one run). Changes are requested as comments on the issue, and you revise the plan on the same branch. **Approval is the human starting the build:** `/build <issue-id>` or `/start-unit <issue-id>`, or `@Cursor /build <issue-id>` for a cloud agent. It resumes this branch.
+Stop. Summarize the gate and flag anything the issue left undecided. The human reviews the plan from the link (together with the issue spec, when both were written in one run). Changes are requested as comments on the issue, and you revise the plan on the same branch. **Approval is the human starting the build:** `/build-unit <issue-id>` or `/start-unit <issue-id>`, or `@Cursor /build-unit <issue-id>` for a cloud agent. It resumes this branch.

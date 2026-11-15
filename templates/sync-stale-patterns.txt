@@ -9,3 +9,7 @@
 `/plan `
 /plan mode
 day-to-day "how" lives in `plans/`
+`/build`
+`/build <
+@Cursor /build 
+!/.agents/skills/build/

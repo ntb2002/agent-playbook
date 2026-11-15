@@ -51,8 +51,8 @@ Agent Skills in `.agents/skills/<name>/SKILL.md` (Claude Code follows the `.clau
 
 | Skill | When | What it does |
 |---|---|---|
-| `/spec <project \| issue>` | A project goes active, a thin issue is unblocked, or a Deep-lane issue is next | **Project:** decomposes it into issues (first one or two specified, the rest thin and unlabeled); re-run later, it specs the next unblocked thin ones. **Thin issue → issue spec:** writes criteria, gate, lane and tier against the current code; when it comes out Deep with no open questions, writes the build plan in the same run. You review and promote to Todo. **Answered questions:** folded into `## Decided` automatically. **Specified Deep issue → build plan** on the issue branch. **Standard issue:** "just `/build` it." Never moves status. |
-| `/build <issue-id>` | Build mode: hand off one Todo issue | Runs `/start-unit` then `/close-unit` without stopping and delivers an open PR with gate evidence. You iterate by commenting on the PR. Default for cloud agents, the coordinator, and strong gates. |
+| `/spec <project \| issue>` | A project goes active, a thin issue is unblocked, or a Deep-lane issue is next | **Project:** decomposes it into issues (first one or two specified, the rest thin and unlabeled); re-run later, it specs the next unblocked thin ones. **Thin issue → issue spec:** writes criteria, gate, lane and tier against the current code; when it comes out Deep with no open questions, writes the build plan in the same run. You review and promote to Todo. **Answered questions:** folded into `## Decided` automatically. **Specified Deep issue → build plan** on the issue branch. **Standard issue:** "just `/build-unit` it." Never moves status. |
+| `/build-unit <issue-id>` | Build mode: hand off one Todo issue | Runs `/start-unit` then `/close-unit` without stopping and delivers an open PR with gate evidence. You iterate by commenting on the PR. Default for cloud agents, the coordinator, and strong gates. |
 | `/start-unit <issue-id>` | Pair mode: begin one unit | Fetches the issue from the declared tracker (stops if it can't), checks Todo + entry dependency + WIP limit, restates the gate as definition of done, branches `<issue-id>-<slug>`, builds only that. |
 | `/close-unit <issue-id>` | Pair mode: gate is met | Verifies every gate item has evidence the reviewer can open, updates `docs/status.md` + landing pad, deletes the plan file if any, commits → pushes → opens the PR. Stops there; the human merges. |
 | `/context-sync` | After any session | Reconciles `docs/status.md`, landing pad, conventions, decisions with what actually changed. No feature code. |
@@ -66,7 +66,7 @@ Agent Skills in `.agents/skills/<name>/SKILL.md` (Claude Code follows the `.clau
 - A tracker issue as the record. Issues live in the declared tracker and nowhere else.
 - One issue = one branch `<issue-id>-<slug>` = one PR. `main` is sacred.
 - Gate evidence on the PR, tiered `[CI]` / `[ARTIFACT]` / `[MANUAL]`, judgeable in ~30 seconds on a small screen (so it's fast on a laptop too). Only tag what a tool the agent actually has can produce.
-- Agents never move issue status by hand, with three exceptions: undoing their own mistake, the Fast lane, and Todo → In Progress when a human starts `/build` or `/start-unit` on that issue. Humans click every approval.
+- Agents never move issue status by hand, with three exceptions: undoing their own mistake, the Fast lane, and Todo → In Progress when a human starts `/build-unit` or `/start-unit` on that issue. Humans click every approval.
 - One issue being built per repo at a time. Open PRs awaiting review don't count.
 - Execution agents never read the thinking layer.
 
