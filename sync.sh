@@ -67,12 +67,12 @@ done
 rmdir "$TARGET/.claude/commands" 2>/dev/null || true
 
 # A synced file the venture's .gitignore swallows would silently never be
-# committed (e.g. a generic `build/` rule hiding .agents/skills/build/).
+# committed (e.g. a generic `build/` rule hiding a skill folder named build).
 ignored="$(cd "$TARGET" && find .agents .claude/agents .claude/settings.json .cursor .githooks scripts/hooks -type f 2>/dev/null | git check-ignore --stdin || true)"
 if [ -n "$ignored" ]; then
   echo "WARNING: these synced files are gitignored in $TARGET and would never be committed:"
   printf '  %s\n' $ignored
-  echo "Add a negation to its .gitignore (template: !/.agents/skills/build/)."
+  echo "Add a negation to its .gitignore (e.g. !/.agents/skills/<name>/)."
 fi
 
 # --- Venture-owned docs: warn only (sync still succeeds) ---

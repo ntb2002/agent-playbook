@@ -2,6 +2,15 @@
 
 > One entry per merged doctrine PR: date, what was decided, why. This is the steward's memory and the only place the playbook's history lives. Newest at the top. `PLAYBOOK.md` says what the rule is; this file says why it became the rule.
 
+## 2026-11-14 — `/build` is now `/build-unit`
+
+**Decided by:** Nathan, Nov 14. On NOVA, Cursor never loaded a skill named `build`: not in Customize → Skills, not in the `/` menu. An identical copy named `build-test` loaded. Claude Code ran `/build` fine. Same lesson as `/plan` → `/spec` (Sept 30), from the other tool.
+
+- **`/build-unit`** replaces `/build` everywhere: the skill folder and name, templates, README, PLAYBOOK, coordinator brief, model policy's `@Cursor` delegation example. It also pairs with `/start-unit` and `/close-unit`. Old `/build NV-…` mentions in ventures' history (`DECISIONS.md`, `docs/status.md`) stay.
+- **`templates/gitignore` drops `!/.agents/skills/build/`.** The folder is `build-unit/`, which `build/` no longer matches.
+- **`sync.sh`** replaces `.agents/skills` wholesale, so a venture's old `build/` folder goes on its next sync. `sync-stale-patterns.txt` flags leftover `` `/build` ``, `` `/build < ``, `@Cursor /build ` and the old exception in venture-owned docs.
+- **`docs/surfaces.md`:** naming a new skill means checking both tools (Claude Code's command reference, and that Cursor lists it).
+
 ## 2026-11-04 — `sync.sh` warns on missing `AGENTS.md` sections and stale venture-owned references
 
 **Decided by:** Nathan, Nov 4, 2026. After five venture syncs, hand merges to constitution and repo-owned docs were easy to forget. FRICTION (Sept 30) proposed warnings only — sync still succeeds.
