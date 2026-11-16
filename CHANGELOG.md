@@ -11,14 +11,6 @@
 - **`sync.sh`** replaces `.agents/skills` wholesale, so a venture's old `build/` folder goes on its next sync. `sync-stale-patterns.txt` flags leftover `` `/build` ``, `` `/build < ``, `@Cursor /build ` and the old exception in venture-owned docs.
 - **`docs/surfaces.md`:** naming a new skill means checking both tools (Claude Code's command reference, and that Cursor lists it).
 
-## 2026-11-04 — `sync.sh` warns on missing `AGENTS.md` sections and stale venture-owned references
-
-**Decided by:** Nathan, Nov 4, 2026. After five venture syncs, hand merges to constitution and repo-owned docs were easy to forget. FRICTION (Sept 30) proposed warnings only — sync still succeeds.
-
-- **Missing sections:** compare each `##` heading in `templates/AGENTS.md` to the venture's `AGENTS.md` (emoji-prefixed headings match after normalization). Print each missing section name.
-- **Stale references:** grep venture-owned paths (`AGENTS.md`, `CLAUDE.md`, `VISION.md`, `DECISIONS.md`, `SETUP.md`, `docs/coordinator.md`, `docs/git-workflow.md`, `docs/status.md`, `plans/README.md`) for fixed strings in `templates/sync-stale-patterns.txt` (retired rituals like `/plan-phase`, legacy paths, known retired wording). Print `file:line:…` for each hit. Steward adds a line when templates retire a name or change wording agents must merge by hand.
-- **`ci/test-sync-warnings.sh`** exercises a dirty fixture (missing section + stale string) and a bootstrapped clean fixture (quiet).
-
 ## 2026-11-08 — Commit guard uses git toplevel; real playbook CI; template CI fails until customized; ritual doc fixes
 
 **Decided by:** Nathan, Nov 8. Three gaps blocked trustworthy commits and CI, and four doc contradictions were confusing agents and humans.
@@ -30,6 +22,14 @@
 - **Fast lane:** `/start-unit` no longer treats a missing `lane` label as thin when the issue is Fast lane (`tier: fast`).
 - **SETUP cloud checklist:** commit guard is verified with a staged fake secret; `main` is protected by branch rules, not the hook.
 - **Loop trials:** reverted trials are undone with `git revert`, not `git reset`.
+
+## 2026-11-04 — `sync.sh` warns on missing `AGENTS.md` sections and stale venture-owned references
+
+**Decided by:** Nathan, Nov 4, 2026. After five venture syncs, hand merges to constitution and repo-owned docs were easy to forget. FRICTION (Sept 30) proposed warnings only — sync still succeeds.
+
+- **Missing sections:** compare each `##` heading in `templates/AGENTS.md` to the venture's `AGENTS.md` (emoji-prefixed headings match after normalization). Print each missing section name.
+- **Stale references:** grep venture-owned paths (`AGENTS.md`, `CLAUDE.md`, `VISION.md`, `DECISIONS.md`, `SETUP.md`, `docs/coordinator.md`, `docs/git-workflow.md`, `docs/status.md`, `plans/README.md`) for fixed strings in `templates/sync-stale-patterns.txt` (retired rituals like `/plan-phase`, legacy paths, known retired wording). Print `file:line:…` for each hit. Steward adds a line when templates retire a name or change wording agents must merge by hand.
+- **`ci/test-sync-warnings.sh`** exercises a dirty fixture (missing section + stale string) and a bootstrapped clean fixture (quiet).
 
 ## 2026-10-01 — `/spec` writes a Deep issue's plan in the same run, and folds answered questions
 
