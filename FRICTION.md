@@ -90,5 +90,5 @@ This repo had no `.github/workflows/ci.yml`; bootstrapped ventures copied a work
 
 ### 2026-11-14 · nova · Cursor never loaded the `/build` skill
 
-`/build` was missing from Cursor's Customize → Skills and `/` menu, while every sibling skill loaded. Removing the template's `build/` ignore rule (and its `!/.agents/skills/build/` exception) didn't fix it; a copy named `build-test` with the same file loaded at once. Cursor appears to refuse a skill named exactly `build` (undocumented). Claude Code was unaffected. Touches: the `/build` skill and every doc that names it, `templates/gitignore`, `docs/surfaces.md`. → resolved: rename to `/build-unit` (this PR)
+`/build` was missing from Cursor's Customize → Skills and `/` menu, while every sibling skill loaded. Removing the template's `build/` ignore rule (and its `!/.agents/skills/build/` exception) didn't fix it; a copy named `build-test` with the same file loaded at once. Cursor appears to refuse a skill named exactly `build` (undocumented). Claude Code was unaffected. Touches: the `/build` skill and every doc that names it, `templates/gitignore`, `docs/surfaces.md`. → resolved: rename to `/build-unit` (PR #23)
 
